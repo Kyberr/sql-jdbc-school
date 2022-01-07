@@ -9,11 +9,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Reader {
-    
     public List<String> toList(String filePath) throws IOException, 
                                                        InvalidPathException {
-        
-        try(Stream<String> data = Files.lines(Paths.get(filePath))) {
+
+        try (Stream<String> data = Files.lines(Paths.get(filePath))) {
             return data.collect(Collectors.toList());
         } 
     }

@@ -33,10 +33,9 @@ public class SqlJdbcSchoolSession {
         URL tablesCreationSQLScriptFile = SqlJdbcSchoolSession.class.getClassLoader()
                                                                     .getResource(tablesCreationSQLScript);
         List<String> SQLScript = reader.toList(new File(tablesCreationSQLScriptFile.getFile()).getPath());
-        //databaseCommander.send(SQLScript);
-       // databaseGenerator.generate(parser.toString(SQLScript));
+        databaseGenerator.generate(parser.toStringList(SQLScript));
 
-        System.out.println(parser.toString(SQLScript));
+        System.out.println(parser.toStringList(SQLScript));
         
         
         

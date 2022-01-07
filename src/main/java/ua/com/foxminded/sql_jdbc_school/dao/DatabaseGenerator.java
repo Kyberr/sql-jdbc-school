@@ -19,15 +19,23 @@ public class DatabaseGenerator {
         try {
             connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
             statement = connection.createStatement();
-            resultSet = statement.executeQuery(SQLScript);
+            statement.executeUpdate(SQLScript);
         } catch (SQLException e) {
             System.out.println("The connection is failure: " + e);
             throw new SQLException("The connection is failure", e);
         } finally {
             try {
-                resultSet.close();
-                statement.close();
-                connection.close();
+                if (resultSet != null) {
+                    resultSet.close(); 
+                }
+                
+                if (statement != null) {
+                    statement.close();
+                }
+                
+                if (connection != null) {
+                    connection.close(); 
+                }
             } catch (SQLException exc) {
                 System.out.println("The connection is not closed: " + exc);
                 throw new SQLException("The connection is not closed", exc);

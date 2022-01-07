@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Parser {
-    public String toString(List<String> list) {
+    public String toStringList(List<String> list) {
         return list.stream().collect(Collectors.joining("\n"));
     }
 }

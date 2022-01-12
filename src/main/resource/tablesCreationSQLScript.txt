@@ -1,3 +1,39 @@
-DROP TABLE IF EXISTS books.one;
+-- DROP TABLE IF EXISTS books.one;
 -- CREATE TABLE IF NOT EXISTS books.one()
--- TABLESPACE pg_default;
+
+-- create role school with login password '4321';
+-- create database school from tamplate0 owner school;
+
+drop schema if exists school;
+
+create schema if not exists school authorization school;
+
+create sequence school.groups_group_id_seq as integer;
+create table school.groups 
+(
+group_id integer not null default nextval('school.groups_group_id_seq'::regclass) primary key,
+group_name varchar collate pg_catalog."default" not null unique 
+)
+tablespace pg_default;
+alter sequence school.groups_group_id_seq owned by school.groups.group_id;
+
+create sequence school.students_student_id_seq as integer;
+create table school.students
+(
+student_id integer not null default nextval('school.students_student_id_seq'::regclass) primary key,
+group_id integer references school.groups (group_id),
+fist_name varchar collate pg_catalog."default" not null,
+last_name varchar collate pg_catalog."default" not null
+)
+tablespace pg_default;
+alter sequence school.students_student_id_seq owned by school.students.student_id;
+
+create sequence school.courses_course_id_seq as integer;
+create table school.courses
+(
+course_id integer not null default nextval('school.courses_course_id_seq'::regclass) primary key,
+course_name varchar collate pg_catalog."default" not null,
+course_description varchar collate pg_catalog."default"
+)
+tablespace pg_default;
+alter sequence school.courses_course_id_seq owned by school.courses.course_id;

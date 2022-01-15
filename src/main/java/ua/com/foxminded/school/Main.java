@@ -1,13 +1,13 @@
-package ua.com.foxminded.sql_jdbc_school;
+package ua.com.foxminded.school;
 
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.sql.SQLException;
 
-import ua.com.foxminded.sql_jdbc_school.dao.DatabaseConmmander;
-import ua.com.foxminded.sql_jdbc_school.dao.DatabaseGenerator;
-import ua.com.foxminded.sql_jdbc_school.services.Parser;
-import ua.com.foxminded.sql_jdbc_school.services.Reader;
+import ua.com.foxminded.school.dao.DatabaseConmmander;
+import ua.com.foxminded.school.dao.DatabaseGenerator;
+import ua.com.foxminded.school.services.Parser;
+import ua.com.foxminded.school.services.Reader;
 
 public class Main {
 

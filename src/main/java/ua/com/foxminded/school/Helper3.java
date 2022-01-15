@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school;
+package ua.com.foxminded.school;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

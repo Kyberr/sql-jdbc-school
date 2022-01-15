@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school;
+package ua.com.foxminded.school;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,10 +6,11 @@ import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.sql.SQLException;
 import java.util.List;
-import ua.com.foxminded.sql_jdbc_school.dao.DatabaseConmmander;
-import ua.com.foxminded.sql_jdbc_school.dao.DatabaseGenerator;
-import ua.com.foxminded.sql_jdbc_school.services.Parser;
-import ua.com.foxminded.sql_jdbc_school.services.Reader;
+
+import ua.com.foxminded.school.dao.DatabaseConmmander;
+import ua.com.foxminded.school.dao.DatabaseGenerator;
+import ua.com.foxminded.school.services.Parser;
+import ua.com.foxminded.school.services.Reader;
 
 public class SqlJdbcSchoolSession {
     private Reader reader;
@@ -33,9 +34,11 @@ public class SqlJdbcSchoolSession {
         URL tablesCreationSQLScriptFile = SqlJdbcSchoolSession.class.getClassLoader()
                                                                     .getResource(tablesCreationSQLScript);
         List<String> SQLScript = reader.toList(new File(tablesCreationSQLScriptFile.getFile()).getPath());
-        databaseGenerator.generate(parser.toStringList(SQLScript));
+        //databaseGenerator.generate(parser.toStringList(SQLScript));
 
-        System.out.println(parser.toStringList(SQLScript));
+        //System.out.println(parser.toStringList(SQLScript));
+        
+        databaseGenerator.generate("select * from books.books;");
         
         
         

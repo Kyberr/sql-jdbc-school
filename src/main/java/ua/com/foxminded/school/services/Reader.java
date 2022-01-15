@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.services;
+package ua.com.foxminded.school.services;
 
 import java.io.IOException;
 import java.nio.file.Files;

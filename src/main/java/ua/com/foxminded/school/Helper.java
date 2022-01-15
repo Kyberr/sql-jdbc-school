@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school;
+package ua.com.foxminded.school;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,8 @@ import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import ua.com.foxminded.sql_jdbc_school.services.Reader;
+
+import ua.com.foxminded.school.services.Reader;
 
 public class Helper {
 

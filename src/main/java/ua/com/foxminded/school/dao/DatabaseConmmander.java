@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao;
+package ua.com.foxminded.school.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -10,9 +10,19 @@ import org.apache.logging.log4j.Logger;
 
 public class PostgresAccountDAO implements AccountDAO {
     private static final Logger LOGGER = LogManager.getLogger(PostgresAccountDAO.class);
-    private static final String COLUMN_ROLNAME = "rolname";
-    private static final String ROLE_CREATION = "create role %s with login password '%s'";
-    private static final String ROLE_SELECTION = "select rolname from pg_roles where rolname = ?";
+    private static final String CREAT_ROLE_SQL = "create role %s with login password '%s'";
+    private static final String SELECT_ROLE_SQL = "select rolname from pg_roles where rolname = ?";
+    private static final String COLUMN_NAME_SQL = "rolname";
+    private static final String ERROR = "The connection is failure";
+    private static final String LOG_ERROR = "The connection is failure. The SQL state: {}\n{}";
+    private static final String ACCOUNT_IS_READY_MES = "The account with the name \"%s\" has been created.";
+    private static final String ACCOUNT_EXISTS_MES = "The account with the name \"%s\" has already existed.";
+    private static final String DROP_ROLE_SQL = "drop role %s";
+    private static final String REASSIGN_ROLE_SQL = "reassign owned by %s to postgres";
+    private static final String NO_ACCOUNT_MES = "The account with the name \"%s\" doesn't exist.";
+    private static final String REASSIGN_MES = "\nAll the objects owned by the account \"%s\""
+                                             + " have been reassigned to the account \"postgres\".";
+    private static final String DELETE_ROLE_MES = "\nThe account \"%s\" has been deleted.";
     private String user;
     private String password;
     
@@ -22,39 +32,39 @@ public class PostgresAccountDAO implements AccountDAO {
     }
     
     public void createAccountDAO(String accountName, String accountPassword) throws SQLException {
-        
-        
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Connection connection = null;
         
         try {
             connection = PostgresDAOFactory.createConnection(user, password);
-            preparedStatement = connection.prepareStatement(ROLE_SELECTION);
+            preparedStatement = connection.prepareStatement(SELECT_ROLE_SQL);
             preparedStatement.setString(1, accountName);
             resultSet = preparedStatement.executeQuery();
+            String role = null;
             
-            if (resultSet.getString(COLUMN_ROLNAME) == null) {
-                preparedStatement = connection.prepareStatement(String.format(ROLE_CREATION, 
+            while (resultSet.next()) {
+                role = resultSet.getString(COLUMN_NAME_SQL);
+            }
+            
+            if (role == null) {
+                preparedStatement = connection.prepareStatement(String.format(CREAT_ROLE_SQL, 
                                                                               accountName, 
                                                                               accountPassword)); 
                 // ? Resource leak: 'preparedStatement' is not closed at this location
                 int accountCreation = preparedStatement.executeUpdate();
                 
-                if (accountCreation == 1) {
-                    LOGGER.info("The {} account has been created", accountName);
+                if (accountCreation == 0) {
+                    System.out.printf(ACCOUNT_IS_READY_MES, accountName);
                 }
             } else {
-                LOGGER.info("The account with {} name has already existed", accountName);
+                System.out.printf(ACCOUNT_EXISTS_MES, accountName);
             }
         } catch (SQLException e) {
-            LOGGER.error("The connection is failure. The SQL state: {}\n{}",  e.getSQLState(), e.getMessage());
-            throw new SQLException("The connection is failure", e);
+            LOGGER.error(LOG_ERROR,  e.getSQLState(), e.getMessage());
+            throw new SQLException(ERROR, e);
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
                 
                 if (preparedStatement != null) {
                     preparedStatement.close();
@@ -65,51 +75,49 @@ public class PostgresAccountDAO implements AccountDAO {
                 }
                 
             } catch (SQLException e) {
-                LOGGER.info("The connection is failure", e);
-                throw new SQLException("The closing connection is faluer", e); //? Exceptions should not be thrown in finally blocks
+                LOGGER.error(LOG_ERROR,  e.getSQLState(), e.getMessage());
+                throw new SQLException(ERROR, e); 
+                //? Exceptions should not be thrown in finally blocks
             }
             
         }
     }
     
     public void deleteAccountDAO(String accountName) throws SQLException {
-        String roleDeletion = "drop role ?";
-        String roleReassign = "reassign owned by ? to postgres";
-        String roleSelection = "select rolname from pg_roles where rolname='?'";
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         
         try {
             connection = PostgresDAOFactory.createConnection(user, password);
-            preparedStatement = connection.prepareStatement(roleSelection);
+            preparedStatement = connection.prepareStatement(SELECT_ROLE_SQL);
             preparedStatement.setString(1, accountName);
             resultSet = preparedStatement.executeQuery();
+            String role = null;
             
-            if (resultSet.getString(COLUMN_ROLNAME) == null) {
-                LOGGER.info("The specified account doesn't exist.");
+            while (resultSet.next()) {
+                role = resultSet.getString(COLUMN_NAME_SQL);
+            }
+            
+            if (role == null) {
+                System.out.printf(NO_ACCOUNT_MES, accountName);
             } else {
-                preparedStatement = connection.prepareStatement(roleReassign);
-                preparedStatement.setString(1, accountName);
-                int reassignedRole = preparedStatement.executeUpdate();
+                preparedStatement = connection.prepareStatement(String.format(REASSIGN_ROLE_SQL, 
+                                                                              accountName));
+                boolean reassignRole = preparedStatement.execute();
                 
-                if (reassignedRole == 1) {
-                    LOGGER.info("All the objects owned by {} have been reassigned to the postgres role.", accountName);
-                    preparedStatement = connection.prepareStatement(roleDeletion);
-                    preparedStatement.setString(1, accountName);
+                if (!reassignRole) {
+                    System.out.printf(REASSIGN_MES, accountName);
+                    preparedStatement = connection.prepareStatement(String.format(DROP_ROLE_SQL, accountName));
                     preparedStatement.executeUpdate();
-                    LOGGER.info("The {} role has been deleted.", accountName);
+                    System.out.printf(DELETE_ROLE_MES, accountName);
                 }
             }
         } catch (SQLException e) {
-            LOGGER.info("The connection is failure", e);
-            throw new SQLException("The connection is failure", e);
+            LOGGER.error(LOG_ERROR,  e.getSQLState(), e.getMessage());
+            throw new SQLException(ERROR, e);
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                
                 if (preparedStatement != null) {
                     preparedStatement.close();
                 }
@@ -118,8 +126,8 @@ public class PostgresAccountDAO implements AccountDAO {
                     connection.close();
                 }
             } catch (SQLException e) {
-                LOGGER.info("The closing connection is faluer", e);
-                throw new SQLException ("The closing connection is faluer", e);
+                LOGGER.error(LOG_ERROR,  e.getSQLState(), e.getMessage());
+                throw new SQLException (ERROR, e);
             }
         }
     }

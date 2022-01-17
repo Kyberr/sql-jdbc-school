@@ -28,6 +28,7 @@ public class Main {
             DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             AccountDAO accountDAO = postgresFactory.getAccountDAO(USER_NAME, PASSWORD);
             accountDAO.createAccountDAO("children", "1234");
+            accountDAO.deleteAccountDAO("children");
         } catch (SQLException e) {
             System.out.println("Somthing wrong " + e);
         }

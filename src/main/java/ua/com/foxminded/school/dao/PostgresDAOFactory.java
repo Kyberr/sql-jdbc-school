@@ -9,20 +9,27 @@ import org.apache.logging.log4j.Logger;
 public class PostgresDAOFactory extends DAOFactory {
     private static final Logger LOGGER = LogManager.getLogger(PostgresDAOFactory.class);
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String ERROR_CONNECT = "The connection is failure";
+    private static final String LOG_ERROR_CONNECT = "The connection is failure. The SQL state: {}\n{}.";
 
-    public static Connection createConnection(String username, String password) throws SQLException {
+    public static Connection createConnection(String superuserName, String superuserPass) throws SQLException {
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, username, password);
+            Connection connection = DriverManager.getConnection(DB_URL, superuserName, superuserPass);
             return connection;
         } catch (SQLException e) {
-            LOGGER.error("The connection is failure", e);
-            throw new SQLException ("The connection is falure", e); 
+            LOGGER.error(LOG_ERROR_CONNECT, e.getSQLState(), e.getMessage());
+            throw new SQLException (ERROR_CONNECT, e); 
         }
     }
     
     @Override
-    public AccountDAO getAccountDAO(String user, String password) {
-        return new PostgresAccountDAO(user, password);
+    public AccountDAO getAccountDAO() {
+        return new PostgresAccountDAO();
+    }
+    
+    @Override
+    public DDLStatementDAO getDDLStatementDAO(String user, String password) {
+        return new PostgresDDLStatementDAO(user, password);
     }
     /*
     public StudentDAO getStudentDAO() {

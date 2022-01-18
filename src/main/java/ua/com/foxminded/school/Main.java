@@ -3,58 +3,44 @@ package ua.com.foxminded.school;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.school.dao.AccountDAO;
 import ua.com.foxminded.school.dao.DAOFactory;
-import ua.com.foxminded.school.dao.DatabaseConmmander;
-import ua.com.foxminded.school.dao.DatabaseGenerator;
 import ua.com.foxminded.school.dao.PostgresDAOFactory;
+import ua.com.foxminded.school.services.Menu;
 import ua.com.foxminded.school.services.Parser;
 import ua.com.foxminded.school.services.Reader;
+import ua.com.foxminded.school.services.SchoolServices;
 
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
-    private static final String PASSWORD = "1234";
-    private static final String USER_NAME = "postgres";
+    private static final String SUPERUSER_NAME = "postgres";
+    private static final String SUPERUSER_PASS = "1234";
+    private static final String SQL_SCRIPT_FILE_NAME = "tablesCreationSQLScript.txt";
 
     public static void main(String[] args) {
         
-        LOGGER.info("Hello");
-        
-        try {
-            DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            AccountDAO accountDAO = postgresFactory.getAccountDAO(USER_NAME, PASSWORD);
-            accountDAO.createAccountDAO("children", "1234");
-            accountDAO.deleteAccountDAO("children");
-        } catch (SQLException e) {
-            System.out.println("Somthing wrong " + e);
-        }
-       
-        
-        
-        /*
-        String tablesCreationSQLScript = "tablesCreationSQLScript.txt";
         Reader reader = new Reader();
-        DatabaseConmmander databaseCreation = new DatabaseConmmander();
-        DatabaseGenerator databaseGenerator = new DatabaseGenerator();
         Parser parser = new Parser();
-        SqlJdbcSchoolSession session = new SqlJdbcSchoolSession(reader, 
-                                                                databaseCreation, 
-                                                                databaseGenerator,
-                                                                parser);
-
+        SchoolServices services = new SchoolServices(reader, parser);
+        
         try {
-            session.boot(tablesCreationSQLScript);
-        } catch (InvalidPathException e) {
-            System.out.println("The path of the resource is wrong: " + e);
-        } catch (IOException e) {
-            System.out.println("I/O Error of the resourses:" + e);
+            //services.createAccount(SUPERUSER_NAME, SUPERUSER_PASS, "oner", "2345");
+            services.deleteAccount(SUPERUSER_NAME, SUPERUSER_PASS, "school");
+            
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Error");
         }
-        */
+        
+        
+        
+       // menu.boot(services);
+        
+        
+        
+        
     }
 }

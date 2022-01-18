@@ -3,7 +3,8 @@ package ua.com.foxminded.school.dao;
 public abstract class DAOFactory {
     public static final int POSTGRES = 1;
 
-    public abstract AccountDAO getAccountDAO(String user, String password);
+    public abstract AccountDAO getAccountDAO();
+    public abstract DDLStatementDAO getDDLStatementDAO(String user, String password);
    /*
     public abstract StudentDAO getStudentDAO();
     public abstract GroupDAO getGroupDAO();

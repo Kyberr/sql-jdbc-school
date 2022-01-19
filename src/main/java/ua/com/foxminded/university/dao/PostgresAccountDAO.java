@@ -35,7 +35,6 @@ public class PostgresAccountDAO implements AccountDAO {
     
     public void createAccount(String newAccountName, 
                               String newAccountPass) throws SQLException {
-        
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Connection connection = null;
@@ -87,10 +86,7 @@ public class PostgresAccountDAO implements AccountDAO {
         }
     }
     
-    public void deleteAccount(String superuserName, 
-                              String superuserPass, 
-                              String deleteAccount) throws SQLException {
-        
+    public void deleteAccount(String deleteAccountName) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -98,7 +94,7 @@ public class PostgresAccountDAO implements AccountDAO {
         try {
             connection = PostgresDAOFactory.createConnection(superuserName, superuserPass);
             preparedStatement = connection.prepareStatement(SQL_SELECT_ROLE);
-            preparedStatement.setString(1, deleteAccount);
+            preparedStatement.setString(1, deleteAccountName);
             resultSet = preparedStatement.executeQuery();
             String role = null;
             
@@ -107,17 +103,17 @@ public class PostgresAccountDAO implements AccountDAO {
             }
             
             if (role == null) {
-                System.out.printf(MES_NO_ACCOUNT, deleteAccount);
+                System.out.printf(MES_NO_ACCOUNT, deleteAccountName);
             } else {
                 preparedStatement = connection.prepareStatement(String.format(SQL_REASSIGN_ROLE, 
-                                                                              deleteAccount));
+                                                                              deleteAccountName));
                 boolean reassignRole = preparedStatement.execute();
                 
                 if (!reassignRole) {
-                    System.out.printf(MES_REASSIGN, deleteAccount);
-                    preparedStatement = connection.prepareStatement(String.format(SQL_DROP_ROLE, deleteAccount));
+                    System.out.printf(MES_REASSIGN, deleteAccountName);
+                    preparedStatement = connection.prepareStatement(String.format(SQL_DROP_ROLE, deleteAccountName));
                     preparedStatement.executeUpdate();
-                    System.out.printf(DELETE_ROLE_MES, deleteAccount);
+                    System.out.printf(DELETE_ROLE_MES, deleteAccountName);
                 }
             }
         } catch (SQLException e) {

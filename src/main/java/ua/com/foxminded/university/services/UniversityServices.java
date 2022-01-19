@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import ua.com.foxminded.university.dao.AccountDAO;
 import ua.com.foxminded.university.dao.DAOFactory;
+import ua.com.foxminded.university.dao.DatabaseDAO;
 import ua.com.foxminded.university.dao.PostgresDAOFactory;
 import ua.com.foxminded.university.services.Parser;
 import ua.com.foxminded.university.services.Reader;
@@ -25,24 +26,37 @@ public class UniversityServices {
     
     public void createAccount(String superuserName, 
                               String superuserPass, 
-                              String newUserName, 
-                              String newUserPass) throws SQLException {
+                              String newAccountName, 
+                              String newAccountPass) throws SQLException {
         
-        DAOFactory postgresDAO = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-        AccountDAO accountDAO = postgresDAO.getAccountDAO();
-        accountDAO.createAccountDAO(superuserName, superuserPass, newUserName, newUserPass);
+        DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+        AccountDAO accountDAO = postgresFactory.getAccountDAO(superuserName, superuserPass);
+        accountDAO.createAccount(newAccountName, newAccountPass);
     }
     
     public void deleteAccount(String superuserName, 
                               String superuserPass, 
                               String deleteAccountName) throws SQLException {
-        DAOFactory postgresDAO = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-        AccountDAO accountDAO = postgresDAO.getAccountDAO();
-        accountDAO.deleteAccount(superuserName, superuserPass, deleteAccountName);
+        DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+        AccountDAO accountDAO = postgresFactory.getAccountDAO(superuserName, superuserPass);
+        accountDAO.deleteAccount(deleteAccountName);
     }
     
-    public void createDatabase() {
-        
+    public void createDatabase(String superuserName,
+                               String superuserPass, 
+                               String ownerName, 
+                               String databaseName) throws SQLException {
+        DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+        DatabaseDAO databaseDAO = postgresFactory.getDatabaseDAO(superuserName, superuserPass);
+        databaseDAO.createDatabase(databaseName, ownerName);
+    }
+    
+    public void deleteDatabase(String superuserName,
+                               String superuserPass, 
+                               String databaseName) throws SQLException {
+        DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+        DatabaseDAO databaseDAO = postgresDAOFactory.getDatabaseDAO(superuserName, superuserPass);
+        databaseDAO.deleteDatabase(databaseName);
     }
     
     

@@ -12,10 +12,9 @@ public class PostgresDAOFactory extends DAOFactory {
     private static final String ERROR_CONNECT = "The connection is failure";
     private static final String LOG_ERROR_CONNECT = "The connection is failure. The SQL state: {}\n{}.";
 
-    public static Connection createConnection(String superuserName, String superuserPass) throws SQLException {
+    public static Connection createConnection(String user, String password) throws SQLException {
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, superuserName, superuserPass);
-            return connection;
+            return DriverManager.getConnection(DB_URL, user, password);
         } catch (SQLException e) {
             LOGGER.error(LOG_ERROR_CONNECT, e.getSQLState(), e.getMessage());
             throw new SQLException (ERROR_CONNECT, e); 
@@ -23,13 +22,13 @@ public class PostgresDAOFactory extends DAOFactory {
     }
     
     @Override
-    public AccountDAO getAccountDAO() {
-        return new PostgresAccountDAO();
+    public AccountDAO getAccountDAO(String superuserName, String superuserPass) {
+        return new PostgresAccountDAO(superuserName, superuserPass);
     }
     
     @Override
-    public DatabaseDAO getDatabaseDAO() {
-        return new PostgresDatabaseDAO();
+    public DatabaseDAO getDatabaseDAO(String superuserName, String superuserPass) {
+        return new PostgresDatabaseDAO(superuserName, superuserPass);
     }
     /*
     public StudentDAO getStudentDAO() {

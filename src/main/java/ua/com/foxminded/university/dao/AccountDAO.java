@@ -5,9 +5,7 @@ import java.sql.SQLException;
 public interface AccountDAO {
 
     public void createAccount(String newAccountName, 
-                                 String newAccountPass) throws SQLException;
+                              String newAccountPass) throws SQLException;
 
-    public void deleteAccount(String superuserName, 
-                                 String superuserPass, 
-                                 String deleteAccount) throws SQLException;
+    public void deleteAccount(String accountName) throws SQLException;
 }

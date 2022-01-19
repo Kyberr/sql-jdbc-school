@@ -4,5 +4,7 @@ import java.sql.SQLException;
 
 public interface DatabaseDAO {
 
-    public void createDatabaseDAO(String sql) throws SQLException;
+    public void createDatabase(String databaseName, String ownerAccount) throws SQLException;
+
+    public void deleteDatabase(String databaseName) throws SQLException;
 }

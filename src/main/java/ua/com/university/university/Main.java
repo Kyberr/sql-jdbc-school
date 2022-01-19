@@ -12,8 +12,8 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
     private static final String SUPERUSER_NAME = "postgres";
     private static final String SUPERUSER_PASS = "1234";
-    private static final String NEW_USER_NAME = "teacher";
-    private static final String NEW_USER_PASS = "2345";
+    private static final String NEW_ACCOUNT_NAME = "teacher";
+    private static final String NEW_ACCOUNT_PASS = "2345";
     private static final String SQL_SCRIPT_FILE_NAME = "tablesCreationSQLScript.txt";
 
     public static void main(String[] args) {
@@ -23,10 +23,12 @@ public class Main {
         UniversityServices services = new UniversityServices(reader, parser);
         
         try {
-            services.createAccount(SUPERUSER_NAME, SUPERUSER_PASS, 
-                                   NEW_USER_NAME, NEW_USER_PASS);
+            //services.createAccount(SUPERUSER_NAME, SUPERUSER_PASS, 
+              //                     NEW_ACCOUNT_NAME, NEW_ACCOUNT_PASS);
+           // services.createDatabase(SUPERUSER_NAME, SUPERUSER_PASS, NEW_ACCOUNT_NAME, "ten");
             //services.deleteAccount(SUPERUSER_NAME, SUPERUSER_PASS, "school");
-            services.createDatabase();
+            
+            services.deleteDatabase(SUPERUSER_NAME, SUPERUSER_PASS, "universty");
             
             
             

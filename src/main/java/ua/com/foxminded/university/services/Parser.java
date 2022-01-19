@@ -1,4 +1,4 @@
-package ua.com.foxminded.school.services;
+package ua.com.foxminded.university.services;
 
 import java.util.List;
 import java.util.stream.Collectors;

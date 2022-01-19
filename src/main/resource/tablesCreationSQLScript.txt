@@ -6,7 +6,7 @@
 
 drop schema if exists school;
 
-create schema if not exists school authorization school;
+create schema school authorization school;
 
 create sequence school.groups_group_id_seq as integer;
 create table school.groups 

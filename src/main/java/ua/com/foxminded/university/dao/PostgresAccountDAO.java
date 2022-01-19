@@ -1,4 +1,4 @@
-package ua.com.foxminded.school.dao;
+package ua.com.foxminded.university.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,11 +25,16 @@ public class PostgresAccountDAO implements AccountDAO {
     private static final String MES_REASSIGN = "All the objects owned by the account \"%s\""
                                              + " have been reassigned to the account \"postgres\".";
     private static final String DELETE_ROLE_MES = "\nThe account \"%s\" has been deleted.";
+    private String superuserName;
+    private String superuserPass;
     
-    public void createAccountDAO(String superuserName, 
-                                 String superuserPass, 
-                                 String newName, 
-                                 String newPass) throws SQLException {
+    public PostgresAccountDAO(String superuserName, String superuserPass) {
+        this.superuserName = superuserName;
+        this.superuserPass = superuserPass;
+    }
+    
+    public void createAccount(String newAccountName, 
+                              String newAccountPass) throws SQLException {
         
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -38,7 +43,7 @@ public class PostgresAccountDAO implements AccountDAO {
         try {
             connection = PostgresDAOFactory.createConnection(superuserName, superuserPass);
             preparedStatement = connection.prepareStatement(SQL_SELECT_ROLE);
-            preparedStatement.setString(1, newName);
+            preparedStatement.setString(1, newAccountName);
             resultSet = preparedStatement.executeQuery();
             String role = null;
             
@@ -48,16 +53,16 @@ public class PostgresAccountDAO implements AccountDAO {
             
             if (role == null) {
                 preparedStatement = connection.prepareStatement(String.format(SQL_CREAT_ROLE, 
-                                                                              newName, 
-                                                                              newPass)); 
+                                                                              newAccountName, 
+                                                                              newAccountPass)); 
                 // ? Resource leak: 'preparedStatement' is not closed at this location
                 int accountCreation = preparedStatement.executeUpdate();
                 
                 if (accountCreation == 0) {
-                    System.out.printf(MES_ACCOUNT_IS_READY, newName);
+                    System.out.printf(MES_ACCOUNT_IS_READY, newAccountName);
                 }
             } else {
-                System.out.printf(MES_ACCOUNT_EXISTS, newName);
+                System.out.printf(MES_ACCOUNT_EXISTS, newAccountName);
             }
         } catch (SQLException e) {
             LOGGER.error(LOG_ERROR_CONNECT,  e.getSQLState(), e.getMessage());
@@ -82,9 +87,9 @@ public class PostgresAccountDAO implements AccountDAO {
         }
     }
     
-    public void deleteAccountDAO(String superuserName, 
-                                 String superuserPass, 
-                                 String deleteName) throws SQLException {
+    public void deleteAccount(String superuserName, 
+                              String superuserPass, 
+                              String deleteAccount) throws SQLException {
         
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -93,7 +98,7 @@ public class PostgresAccountDAO implements AccountDAO {
         try {
             connection = PostgresDAOFactory.createConnection(superuserName, superuserPass);
             preparedStatement = connection.prepareStatement(SQL_SELECT_ROLE);
-            preparedStatement.setString(1, deleteName);
+            preparedStatement.setString(1, deleteAccount);
             resultSet = preparedStatement.executeQuery();
             String role = null;
             
@@ -102,17 +107,17 @@ public class PostgresAccountDAO implements AccountDAO {
             }
             
             if (role == null) {
-                System.out.printf(MES_NO_ACCOUNT, deleteName);
+                System.out.printf(MES_NO_ACCOUNT, deleteAccount);
             } else {
                 preparedStatement = connection.prepareStatement(String.format(SQL_REASSIGN_ROLE, 
-                                                                              deleteName));
+                                                                              deleteAccount));
                 boolean reassignRole = preparedStatement.execute();
                 
                 if (!reassignRole) {
-                    System.out.printf(MES_REASSIGN, deleteName);
-                    preparedStatement = connection.prepareStatement(String.format(SQL_DROP_ROLE, deleteName));
+                    System.out.printf(MES_REASSIGN, deleteAccount);
+                    preparedStatement = connection.prepareStatement(String.format(SQL_DROP_ROLE, deleteAccount));
                     preparedStatement.executeUpdate();
-                    System.out.printf(DELETE_ROLE_MES, deleteName);
+                    System.out.printf(DELETE_ROLE_MES, deleteAccount);
                 }
             }
         } catch (SQLException e) {

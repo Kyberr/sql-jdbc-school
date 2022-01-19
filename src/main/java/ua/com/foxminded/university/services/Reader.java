@@ -1,4 +1,4 @@
-package ua.com.foxminded.school.services;
+package ua.com.foxminded.university.services;
 
 import java.io.IOException;
 import java.nio.file.Files;

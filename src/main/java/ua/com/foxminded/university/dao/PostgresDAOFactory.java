@@ -1,4 +1,4 @@
-package ua.com.foxminded.school.dao;
+package ua.com.foxminded.university.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,8 +28,8 @@ public class PostgresDAOFactory extends DAOFactory {
     }
     
     @Override
-    public DDLStatementDAO getDDLStatementDAO(String user, String password) {
-        return new PostgresDDLStatementDAO(user, password);
+    public DatabaseDAO getDatabaseDAO() {
+        return new PostgresDatabaseDAO();
     }
     /*
     public StudentDAO getStudentDAO() {

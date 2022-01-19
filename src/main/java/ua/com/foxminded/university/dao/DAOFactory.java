@@ -1,10 +1,12 @@
-package ua.com.foxminded.school.dao;
+package ua.com.foxminded.university.dao;
 
 public abstract class DAOFactory {
     public static final int POSTGRES = 1;
+    public static final int UNIVERSITY = 2;
 
     public abstract AccountDAO getAccountDAO();
-    public abstract DDLStatementDAO getDDLStatementDAO(String user, String password);
+    public abstract DatabaseDAO getDatabaseDAO();
+    
    /*
     public abstract StudentDAO getStudentDAO();
     public abstract GroupDAO getGroupDAO();
@@ -15,6 +17,8 @@ public abstract class DAOFactory {
         switch (whichFactory) {
         case POSTGRES:
             return new PostgresDAOFactory();
+        case UNIVERSITY:
+            return new UniversityDAOFactory();
         default:
             return null;
         }

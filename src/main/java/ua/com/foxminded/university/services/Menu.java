@@ -1,10 +1,10 @@
-package ua.com.foxminded.school.services;
+package ua.com.foxminded.university.services;
 
 import java.util.Scanner;
 
 public class Menu {
     
-    public void boot(SchoolServices services) {
+    public void boot(UniversityServices services) {
         
         int intInput = toInt(scan());
         

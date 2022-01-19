@@ -1,4 +1,4 @@
-package ua.com.foxminded.school.dao;
+package ua.com.foxminded.university.dao;
 
 public interface StudentDAO {
     public int addStudent(String firstName, String lastName);

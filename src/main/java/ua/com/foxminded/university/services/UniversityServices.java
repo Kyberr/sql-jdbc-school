@@ -1,4 +1,4 @@
-package ua.com.foxminded.school.services;
+package ua.com.foxminded.university.services;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,40 +8,40 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
-import ua.com.foxminded.school.dao.AccountDAO;
-import ua.com.foxminded.school.dao.DAOFactory;
-import ua.com.foxminded.school.dao.PostgresDAOFactory;
-import ua.com.foxminded.school.services.Parser;
-import ua.com.foxminded.school.services.Reader;
+import ua.com.foxminded.university.dao.AccountDAO;
+import ua.com.foxminded.university.dao.DAOFactory;
+import ua.com.foxminded.university.dao.PostgresDAOFactory;
+import ua.com.foxminded.university.services.Parser;
+import ua.com.foxminded.university.services.Reader;
 
-public class SchoolServices {
+public class UniversityServices {
     private Reader reader;
     private Parser parser;
     
-    public SchoolServices(Reader reader, Parser parser) {
+    public UniversityServices(Reader reader, Parser parser) {
         this.reader = reader;
         this.parser = parser;
     }
     
     public void createAccount(String superuserName, 
                               String superuserPass, 
-                              String newName, 
-                              String newPass) throws SQLException {
+                              String newUserName, 
+                              String newUserPass) throws SQLException {
         
         DAOFactory postgresDAO = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
         AccountDAO accountDAO = postgresDAO.getAccountDAO();
-        accountDAO.createAccountDAO(superuserName, superuserPass, newName, newPass);
+        accountDAO.createAccountDAO(superuserName, superuserPass, newUserName, newUserPass);
     }
     
     public void deleteAccount(String superuserName, 
                               String superuserPass, 
-                              String deleteName) throws SQLException {
+                              String deleteAccountName) throws SQLException {
         DAOFactory postgresDAO = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
         AccountDAO accountDAO = postgresDAO.getAccountDAO();
-        accountDAO.deleteAccountDAO(superuserName, superuserPass, deleteName);
+        accountDAO.deleteAccount(superuserName, superuserPass, deleteAccountName);
     }
     
-    public void authoriseAccount(String userName, String userPass) {
+    public void createDatabase() {
         
     }
     
@@ -52,7 +52,7 @@ public class SchoolServices {
                                                             IOException, 
                                                             SQLException {
         
-        URL SQLScriptFile = SchoolServices.class.getClassLoader().getResource(nameFile);
+        URL SQLScriptFile = UniversityServices.class.getClassLoader().getResource(nameFile);
         List<String> SQLScript = reader.toList(new File(SQLScriptFile.getFile()).getPath());
         
         

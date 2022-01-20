@@ -66,8 +66,8 @@ public class UniversityServices {
                                                      IOException, 
                                                      SQLException {
         
-        URL SQLScriptFile = UniversityServices.class.getClassLoader().getResource(nameFile);
-        List<String> sqlScriptList = reader.toList(new File(SQLScriptFile.getFile()).getPath());
+        URL sqlScriptFile = UniversityServices.class.getClassLoader().getResource(nameFile);
+        List<String> sqlScriptList = reader.toList(new File(sqlScriptFile.getFile()).getPath());
         String sqlScript = parser.toStringList(sqlScriptList); 
         DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
         TablesDAO tablesDAO = universityFactory.getTablesDAO(role, password);

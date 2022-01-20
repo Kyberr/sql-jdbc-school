@@ -1,10 +1,14 @@
-package ua.com.foxminded.university.dao;
+package ua.com.foxminded.university.dao.postgres;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import ua.com.foxminded.university.dao.DAOFactory;
+import ua.com.foxminded.university.dao.RoleDAO;
+import ua.com.foxminded.university.dao.TablesDAO;
 
 public class PostgresDAOFactory extends DAOFactory {
     private static final Logger LOGGER = LogManager.getLogger(PostgresDAOFactory.class);
@@ -22,25 +26,7 @@ public class PostgresDAOFactory extends DAOFactory {
     }
     
     @Override
-    public AccountDAO getAccountDAO(String superuserName, String superuserPass) {
-        return new PostgresAccountDAO(superuserName, superuserPass);
+    public TablesDAO getTablesDAO(String role, String password) {
+       return new PostgresTablesDAO(role, password);
     }
-    
-    @Override
-    public DatabaseDAO getDatabaseDAO(String superuserName, String superuserPass) {
-        return new PostgresDatabaseDAO(superuserName, superuserPass);
-    }
-    /*
-    public StudentDAO getStudentDAO() {
-        return new PostgresStudentDAO();
-    }
-    
-    public GroupDAO getGroupDAO() {
-        return new PostgresGroupDAO();
-    }
-    
-    public CourseDAO getCourseDAO() {
-        return new PostgresCourseDAO();
-    }
-    */
 }

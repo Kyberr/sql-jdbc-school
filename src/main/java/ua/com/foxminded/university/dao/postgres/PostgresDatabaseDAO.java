@@ -1,4 +1,4 @@
-package ua.com.foxminded.university.dao;
+package ua.com.foxminded.university.dao.postgres;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,14 +13,14 @@ public class PostgresDatabaseDAO implements DatabaseDAO {
     private static final String ERROR_CLOSING = "The connection closing is failure.";
     private static final String LOG_ERROR_CONNECT = "The connection is failure. The SQL state: {}\n{}.";
     private static final String LOG_ERROR_CLOSING = "The connection closing is failure.";
-    private static final String SQL_SELECT_DATABASE = "select datname from pg_database where datname = ?";
     private static final String DATABASE_COLUMN_NAME = "datname";
-    private static final String MES_DATABASE_EXISTENCE = "The database with the name \"%s\" is already exist.";
-    private static final String MES_NO_DATABASE = "The database with the name \"%s\" is absent.";
-    private static final String MES_DATABASE_DELETION = "The database with the name \"%s\" has been deleted.";
+    private static final String MES_DATABASE_EXISTENCE = "The database with the name \"%s\" has already existed.\n";
+    private static final String MES_NO_DATABASE = "The database with the name \"%s\" is absent.\n";
+    private static final String MES_DATABASE_DELETION = "The database with the name \"%s\" has been deleted.\n";
     private static final String MES_DATABASE_CREATION = "The database with the name \"%s\" has been created."
-            + "\nThe owner is an account with the name \"%s\".";
-    private static final String MES_ROLE_EXISTENCE = "The account with the name \"%s\" is not exist. Create an account.";
+            + "\nThe owner of the database is an account with the name \"%s\".\n";
+    private static final String MES_ROLE_EXISTENCE = "The account with the name \"%s\" is not exist. Create an account.\n";
+    private static final String SQL_SELECT_DATABASE = "select datname from pg_database where datname = ?";
     private static final String SQL_CREATE_DATABASE = "create database %s owner %s";
     private static final String SQL_SELECT_ROLE = "select rolname from pg_roles where rolname = ?";
     private static final String SQL_DROP_DATABASE = "drop database %s";
@@ -34,7 +34,7 @@ public class PostgresDatabaseDAO implements DatabaseDAO {
         this.superuserPass = superuserPass;
     }
     
-    public void createDatabase(String databaseName, String ownerAccount) throws SQLException {
+    public void createDatabase(String databaseName, String ownerDatabase) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -51,7 +51,7 @@ public class PostgresDatabaseDAO implements DatabaseDAO {
             }
             
             preparedStatement = connection.prepareStatement(SQL_SELECT_ROLE);
-            preparedStatement.setString(1, ownerAccount);
+            preparedStatement.setString(1, ownerDatabase);
             resultSet = preparedStatement.executeQuery();
             String roleExistence = null;
             
@@ -62,28 +62,22 @@ public class PostgresDatabaseDAO implements DatabaseDAO {
             if (databaseExistence != null) {
                 System.out.printf(MES_DATABASE_EXISTENCE, databaseName);
             } else if (roleExistence == null) {
-                System.out.printf(MES_ROLE_EXISTENCE, ownerAccount);
+                System.out.printf(MES_ROLE_EXISTENCE, ownerDatabase);
             } else {
                 preparedStatement = connection.prepareStatement(String.format(SQL_CREATE_DATABASE, 
                                                                               databaseName, 
-                                                                              ownerAccount));
+                                                                              ownerDatabase));
                 preparedStatement.execute();
-                System.out.printf(MES_DATABASE_CREATION, databaseName, ownerAccount);
+                System.out.printf(MES_DATABASE_CREATION, databaseName, ownerDatabase);
             }
         } catch (SQLException e) {
             LOGGER.error(LOG_ERROR_CONNECT, e.getSQLState(), e.getMessage());
             throw new SQLException(ERROR_CONNECT, e);
         } finally {
             try {
-                if (resultSet != null) {
+                if (resultSet != null && preparedStatement != null && connection != null) {
                     resultSet.close();
-                }
-                
-                if (preparedStatement != null) {
                     preparedStatement.close();
-                }
-                
-                if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException e) {
@@ -121,15 +115,9 @@ public class PostgresDatabaseDAO implements DatabaseDAO {
             throw new SQLException(ERROR_CONNECT, e);
         } finally {
             try {
-                if (resultSet != null) {
+                if (resultSet != null && preparedStatement != null && connection != null) {
                     resultSet.close();
-                }
-                
-                if (preparedStatement != null) {
                     preparedStatement.close();
-                }
-                
-                if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException e) {

@@ -8,10 +8,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
-import ua.com.foxminded.university.dao.AccountDAO;
+import ua.com.foxminded.university.dao.RoleDAO;
+import ua.com.foxminded.university.dao.TablesDAO;
+import ua.com.foxminded.university.dao.postgres.DatabaseDAO;
+import ua.com.foxminded.university.dao.postgres.PostgresDAOFactory;
 import ua.com.foxminded.university.dao.DAOFactory;
-import ua.com.foxminded.university.dao.DatabaseDAO;
-import ua.com.foxminded.university.dao.PostgresDAOFactory;
 import ua.com.foxminded.university.services.Parser;
 import ua.com.foxminded.university.services.Reader;
 
@@ -24,31 +25,31 @@ public class UniversityServices {
         this.parser = parser;
     }
     
-    public void createAccount(String superuserName, 
-                              String superuserPass, 
-                              String newAccountName, 
-                              String newAccountPass) throws SQLException {
+    public void createRole(String superuserName, 
+                           String superuserPass, 
+                           String newRoleName, 
+                           String newRolePass) throws SQLException {
         
         DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-        AccountDAO accountDAO = postgresFactory.getAccountDAO(superuserName, superuserPass);
-        accountDAO.createAccount(newAccountName, newAccountPass);
+        RoleDAO roleDAO = postgresFactory.getRoleDAO(superuserName, superuserPass);
+        roleDAO.createRole(newRoleName, newRolePass);
     }
     
-    public void deleteAccount(String superuserName, 
-                              String superuserPass, 
-                              String deleteAccountName) throws SQLException {
+    public void deleteRole(String superuserName, 
+                           String superuserPass, 
+                           String deleteRoleName) throws SQLException {
         DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-        AccountDAO accountDAO = postgresFactory.getAccountDAO(superuserName, superuserPass);
-        accountDAO.deleteAccount(deleteAccountName);
+        RoleDAO roleDAO = postgresFactory.getRoleDAO(superuserName, superuserPass);
+        roleDAO.deleteRole(deleteRoleName);
     }
     
     public void createDatabase(String superuserName,
                                String superuserPass, 
-                               String ownerName, 
+                               String ownerDatabase, 
                                String databaseName) throws SQLException {
         DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
         DatabaseDAO databaseDAO = postgresFactory.getDatabaseDAO(superuserName, superuserPass);
-        databaseDAO.createDatabase(databaseName, ownerName);
+        databaseDAO.createDatabase(databaseName, ownerDatabase);
     }
     
     public void deleteDatabase(String superuserName,
@@ -58,27 +59,18 @@ public class UniversityServices {
         DatabaseDAO databaseDAO = postgresDAOFactory.getDatabaseDAO(superuserName, superuserPass);
         databaseDAO.deleteDatabase(databaseName);
     }
-    
-    
-    
 
-    public void createTables(String nameFile) throws InvalidPathException, 
-                                                            IOException, 
-                                                            SQLException {
+    public void createTables(String role, 
+                             String password, 
+                             String nameFile) throws InvalidPathException, 
+                                                     IOException, 
+                                                     SQLException {
         
         URL SQLScriptFile = UniversityServices.class.getClassLoader().getResource(nameFile);
-        List<String> SQLScript = reader.toList(new File(SQLScriptFile.getFile()).getPath());
-        
-        
-        
-        
-        //databaseGenerator.generate(parser.toStringList(SQLScript));
-
-        //System.out.println(parser.toStringList(SQLScript));
-        
-        
-        
+        List<String> sqlScriptList = reader.toList(new File(SQLScriptFile.getFile()).getPath());
+        String sqlScript = parser.toStringList(sqlScriptList); 
+        DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+        TablesDAO tablesDAO = universityFactory.getTablesDAO(role, password);
+        tablesDAO.createTables(sqlScript);
     }
-    
-
 }

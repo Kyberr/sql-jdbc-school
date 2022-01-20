@@ -3,7 +3,7 @@
 -- create role school with login password '4321';
 -- create database school from tamplate0 owner school;
 
-drop schema if exists department;
+drop schema if exists department cascade;
 
 create schema department authorization university;
 

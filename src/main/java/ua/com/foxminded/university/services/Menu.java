@@ -1,10 +1,12 @@
 package ua.com.foxminded.university.services;
 
 import java.util.Scanner;
+import ua.com.foxminded.university.services.postgres.PostgresTableService;
 
 public class Menu {
+    private static final String MES_TABLES_CREATION = "The tabels has been created.";
     
-    public void boot(UniversityServices services) {
+    public void boot(PostgresTableService services) {
         
         int intInput = toInt(scan());
         

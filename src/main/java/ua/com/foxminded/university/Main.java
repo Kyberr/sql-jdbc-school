@@ -1,31 +1,27 @@
 package ua.com.foxminded.university;
 
-import java.io.IOException;
-import java.nio.file.InvalidPathException;
-import java.sql.SQLException;
-import java.sql.SQLTransientException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.foxminded.university.dao.postgres.PostgresDAOPropertyCache;
 import ua.com.foxminded.university.services.Parser;
 import ua.com.foxminded.university.services.Reader;
-import ua.com.foxminded.university.services.UniversityServices;
+import ua.com.foxminded.university.services.postgres.PostgresTableService;
 
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
-    private static final String ROLE_NAME = "university";
-    private static final String ROLE_PASS = "2345";
-    private static final String SQL_SCRIPT_FILE_NAME = "tablesCreationSQLScript.txt";
 
     public static void main(String[] args) {
 
         Reader reader = new Reader();
         Parser parser = new Parser();
-        UniversityServices services = new UniversityServices(reader, parser);
+        PostgresTableService services = new PostgresTableService(reader, parser);
 
         try {
-            services.createTables(ROLE_NAME, ROLE_PASS, SQL_SCRIPT_FILE_NAME);
+            System.out.println(services.createTables());
+            //System.out.println( PostgresDAOPropertyCache.getInstance().getProperty("Password"));
+            
+            
             
             
             

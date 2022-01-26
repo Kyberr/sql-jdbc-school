@@ -2,10 +2,13 @@ package ua.com.foxminded.university.services;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Parser {
     
     public String toStringList(List<String> list) {
-        return list.stream().collect(Collectors.joining("\n"));
+        try(Stream<String> stream = list.stream()) {
+            return stream.collect(Collectors.joining("\n"));
+        }
     }
 }

@@ -1,6 +1,6 @@
 package ua.com.foxminded.university.dao;
 
-import ua.com.foxminded.university.dao.university.UniversityDAOFactory;
+import ua.com.foxminded.university.dao.postgres.PostgresDAOFactory;
 
 public abstract class DAOFactory {
     public static final int POSTGRES = 1;
@@ -9,15 +9,11 @@ public abstract class DAOFactory {
     public static DAOFactory getDAOFactory(int whichFactory) {
         switch (whichFactory) {
         case UNIVERSITY:
-            return new UniversityDAOFactory();
+            return new PostgresDAOFactory();
         default:
             return null;
         }
     }
     
-    public abstract TablesDAO getTablesDAO(String role, String password);
-    
-    
-    
-    
+    public abstract TableDAO getTableDAO();
 }

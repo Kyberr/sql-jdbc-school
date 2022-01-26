@@ -9,11 +9,14 @@ import ua.com.foxminded.university.dao.DAOPropertyCache;
 public class PostgresDAOPropertyCache implements DAOPropertyCache<String> {
     private static final String PROPERTIES_FILE_NAME = "database.properties";
     private static final String ERROR_PROPERTIES_FILE = "The database properties has not loaded.";
-    private static final String ERROR_INSTANCE = "The instance of the PostgresDAOPropertyCache class has not created.";
+    private static final String ERROR_INSTANCE = "The instance of the "
+            + "PostgresDAOPropertyCache class has not created.";
     private Properties property = new Properties();
 
     private PostgresDAOPropertyCache() throws PropertyFileLoadFail {
-        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME)) {
+        try (InputStream input = this.getClass()
+                                     .getClassLoader()
+                                     .getResourceAsStream(PROPERTIES_FILE_NAME)) {
             property.load(input);
         } catch (Exception e) {
             throw new DAOException.PropertyFileLoadFail(ERROR_PROPERTIES_FILE, e);

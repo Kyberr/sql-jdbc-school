@@ -2,7 +2,7 @@ package ua.com.foxminded.university.services;
 
 import ua.com.foxminded.university.services.ServicesException.TableCreationFail;
 
-public interface TableService {
+public interface TableService<T> {
     
-    public int createTables() throws TableCreationFail;
+    public T createTables() throws TableCreationFail;
 }

@@ -1,19 +1,18 @@
-package ua.com.foxminded.university.dao.postgres;
+package ua.com.foxminded.university;
 
 import java.io.InputStream;
 import java.util.Properties;
 import ua.com.foxminded.university.dao.DAOException;
 import ua.com.foxminded.university.dao.DAOException.PropertyFileLoadFail;
-import ua.com.foxminded.university.dao.DAOPropertyCache;
 
-public class PostgresDAOPropertyCache implements DAOPropertyCache<String> {
-    private static final String PROPERTIES_FILE_NAME = "database.properties";
-    private static final String ERROR_PROPERTIES_FILE = "The database properties has not loaded.";
+public class PropertyCache implements Cache<String> {
+    private static final String PROPERTIES_FILE_NAME = "project.properties";
+    private static final String ERROR_PROPERTIES_FILE = "The project properties has not been loaded.";
     private static final String ERROR_INSTANCE = "The instance of the "
             + "PostgresDAOPropertyCache class has not created.";
     private Properties property = new Properties();
 
-    private PostgresDAOPropertyCache() throws PropertyFileLoadFail {
+    private PropertyCache() throws PropertyFileLoadFail {
         try (InputStream input = this.getClass()
                                      .getClassLoader()
                                      .getResourceAsStream(PROPERTIES_FILE_NAME)) {
@@ -23,7 +22,7 @@ public class PostgresDAOPropertyCache implements DAOPropertyCache<String> {
         }
     }
 
-    public static PostgresDAOPropertyCache getInstance() throws PropertyFileLoadFail {
+    public static PropertyCache getInstance() throws PropertyFileLoadFail {
         try {
             return LazyHolder.getInstance();
         } catch (PropertyFileLoadFail e) {
@@ -38,10 +37,10 @@ public class PostgresDAOPropertyCache implements DAOPropertyCache<String> {
 
     private static class LazyHolder {
 
-        private static final PostgresDAOPropertyCache getInstance() throws PropertyFileLoadFail {
-            PostgresDAOPropertyCache propertyCache;
+        private static final PropertyCache getInstance() throws PropertyFileLoadFail {
+            PropertyCache propertyCache;
             try {
-                propertyCache = new PostgresDAOPropertyCache();
+                propertyCache = new PropertyCache();
             } catch (PropertyFileLoadFail e) {
                 throw new PropertyFileLoadFail(ERROR_INSTANCE, e);
             }

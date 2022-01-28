@@ -3,7 +3,7 @@ package ua.com.foxminded.university.services;
 import java.util.Scanner;
 
 import ua.com.foxminded.university.dao.DAOException;
-import ua.com.foxminded.university.services.postgres.PostgresTableService;
+import ua.com.foxminded.university.services.university.UniversityTableService;
 
 public class Menu {
     private static final String MES_TABLES_CREATION = "The tabels has been created.";

@@ -17,4 +17,12 @@ public class ServicesException {
             super(message, error);
         }
     }
+    
+    public static class StudentInsertionFail extends Exception {
+        private static final long serialVersionUID = 3L;
+        
+        public StudentInsertionFail(String message, Throwable error) {
+            super(message, error);
+        }
+    }
 }

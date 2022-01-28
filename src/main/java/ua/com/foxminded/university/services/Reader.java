@@ -10,13 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ua.com.foxminded.university.services.ServicesException.ReadFail;
-
 public class Reader {
     private static final String ERROR_TO_LIST = "The content converting of the "
             + "file to a list of strings is a failure."; 
     
-    public List<String> toList(String fileName) throws ReadFail {
+    public List<String> toList(String fileName) throws ServicesException.ReadFail {
         URL fileURL = this.getClass().getClassLoader().getResource(fileName);
         String filePath = new File(fileURL.getFile()).getPath();
         

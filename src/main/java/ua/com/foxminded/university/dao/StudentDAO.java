@@ -1,6 +1,10 @@
 package ua.com.foxminded.university.dao;
 
-public interface StudentDAO<T> {
+import java.util.List;
+import ua.com.foxminded.university.dao.DAOException.StudentInsertionFail;
+import ua.com.foxminded.university.dto.StudentData;
+
+public interface StudentDAO {
     
-    public int insertStudent(T studend);
+    public int insertStudents(List<StudentData> studend) throws StudentInsertionFail;
 }

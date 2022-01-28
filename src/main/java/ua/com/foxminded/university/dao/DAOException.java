@@ -29,4 +29,13 @@ public class DAOException {
             super(error);
         }
     }
+    
+    public static class StudentInsertionFail extends Exception {
+        private static final long serialVersionUID = 4L;
+        
+        
+        public StudentInsertionFail(Throwable error) {
+            super(error);
+        }
+    }
 }

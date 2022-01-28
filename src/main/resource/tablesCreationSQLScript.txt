@@ -21,7 +21,7 @@ create table department.students
 (
 student_id integer not null default nextval('department.students_student_id_seq'::regclass) primary key,
 group_id integer references department.groups (group_id),
-fist_name varchar collate pg_catalog."default" not null,
+first_name varchar collate pg_catalog."default" not null,
 last_name varchar collate pg_catalog."default" not null
 )
 tablespace pg_default;

@@ -1,6 +1,6 @@
 package ua.com.foxminded.university.services;
 
-public interface StudentService {
+public interface StudentService<T> {
     
-    public int insertStudents();
+    public T insertStudents() throws ServicesException.StudentInsertionFail;
 }

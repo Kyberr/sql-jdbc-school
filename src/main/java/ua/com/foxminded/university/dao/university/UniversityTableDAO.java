@@ -1,22 +1,20 @@
-package ua.com.foxminded.university.dao.postgres;
+package ua.com.foxminded.university.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import ua.com.foxminded.university.dao.DAOException;
-import ua.com.foxminded.university.dao.DAOException.DatabaseConnectionFail;
-import ua.com.foxminded.university.dao.DAOException.TableCreationFail;
 import ua.com.foxminded.university.dao.TableDAO;
 
-public class PostgresTableDAO implements TableDAO {
+public class UniversityTableDAO implements TableDAO {
     private static final String ERROR_TABALES_CREATION = "The creation of the tables in the database is failed!";
     
-    public int createTables(String sql) throws TableCreationFail {
-        try (Connection connection = PostgresDAOFactory.creatConnection();
+    public int createTables(String sql) throws DAOException.TableCreationFail {
+        try (Connection connection = UniversityDAOFactory.creatConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
              int status = preparedStatement.executeUpdate();
              return status;
-        } catch (DatabaseConnectionFail | SQLException e) {
+        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
             throw new DAOException.TableCreationFail(ERROR_TABALES_CREATION, e);
         }
     }

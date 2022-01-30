@@ -1,10 +1,9 @@
 package ua.com.foxminded.sql_jdbc_school.services;
 
-import ua.com.foxminded.sql_jdbc_school.BaseException;
 
 public class ServicesException {
     
-    public static class ReadFail extends BaseException {
+    public static class ReadFail extends Exception {
         private static final long serialVersionUID = 1L; 
         
         public ReadFail(String message, Throwable cause) {
@@ -12,7 +11,7 @@ public class ServicesException {
         }
     }
     
-    public static class TableCreationFail extends BaseException {
+    public static class TableCreationFail extends Exception {
         private static final long serialVersionUID = 2L;
         
         public TableCreationFail(String message, Throwable cause) {
@@ -20,7 +19,7 @@ public class ServicesException {
         }
     }
     
-    public static class StudentCreationFail extends BaseException {
+    public static class StudentCreationFail extends Exception {
         private static final long serialVersionUID = 3L;
         
         public StudentCreationFail(String message, Throwable cause) {
@@ -28,7 +27,7 @@ public class ServicesException {
         }
     }
     
-    public static class GroupCreationFail extends BaseException {
+    public static class GroupCreationFail extends Exception {
         private static final long serialVersionUID = 4L;
 
         public GroupCreationFail(String message, Throwable cause) {
@@ -36,6 +35,30 @@ public class ServicesException {
         }
 
         public GroupCreationFail(Throwable cause) {
+            super(cause);
+        }
+    }
+    
+    public static class PropertyFileLoadingFail extends Exception {
+        private static final long serialVersionUID = 5L;
+
+        public PropertyFileLoadingFail(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public PropertyFileLoadingFail(Throwable cause) {
+            super(cause);
+        }
+    }
+    
+    public static class CoursesCreationServiceFail extends Exception {
+        private static final long serialVersionUID = 6L;
+
+        public CoursesCreationServiceFail(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public CoursesCreationServiceFail(Throwable cause) {
             super(cause);
         }
     }

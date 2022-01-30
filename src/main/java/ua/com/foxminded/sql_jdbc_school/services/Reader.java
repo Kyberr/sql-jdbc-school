@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public class Reader {
     private static final String ERROR_TO_LIST = "The content converting of the "
-            + "file to a list of strings is a failure."; 
+            + "file to a list of strings is failed."; 
     
     public List<String> toList(String fileName) throws ServicesException.ReadFail {
         URL fileURL = this.getClass().getClassLoader().getResource(fileName);

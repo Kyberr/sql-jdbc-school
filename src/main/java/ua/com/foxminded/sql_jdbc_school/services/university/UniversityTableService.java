@@ -5,8 +5,8 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
 import ua.com.foxminded.sql_jdbc_school.services.Parser;
-import ua.com.foxminded.sql_jdbc_school.services.PropertyCache;
 import ua.com.foxminded.sql_jdbc_school.services.Reader;
+import ua.com.foxminded.sql_jdbc_school.services.ReaderServicesPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException;
 import ua.com.foxminded.sql_jdbc_school.services.TableService;
 
@@ -23,13 +23,13 @@ public class UniversityTableService implements TableService<Integer> {
     
     public Integer creatTables() throws ServicesException.TableCreationFail {
         try {
-            String fileName = PropertyCache.getInstance().getProperty(SQL_FILE_NAME_KEY);
+            String fileName = ReaderServicesPropertiesCache.getInstance().getProperty(SQL_FILE_NAME_KEY);
             List<String> sqlScriptList = reader.toList(fileName);
             String sqlScript = parser.toStringList(sqlScriptList); 
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             TableDAO universityTableDAO = universityDAOFactory.getTableDAO();
             return universityTableDAO.createTables(sqlScript);
-        } catch (DAOException.PropertyFileLoadFail |
+        } catch (ServicesException.PropertyFileLoadingFail |
                  ServicesException.ReadFail |
                  DAOException.TableCreationFail e) {
             throw new ServicesException.TableCreationFail(ERROR_TABLE_CREATION, e);

@@ -5,8 +5,8 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.services.Generator;
-import ua.com.foxminded.sql_jdbc_school.services.PropertyCache;
 import ua.com.foxminded.sql_jdbc_school.services.Reader;
+import ua.com.foxminded.sql_jdbc_school.services.ReaderServicesPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException;
 import ua.com.foxminded.sql_jdbc_school.services.StudentService;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
@@ -26,15 +26,17 @@ public class UniversityStudentService implements StudentService<Integer> {
     public Integer createStudents() throws ServicesException.StudentCreationFail {
         
         try {
-            String fistNameFilename = PropertyCache.getInstance().getProperty(FIST_NAME_FILENAME_KEY);
-            String lastNameFilename = PropertyCache.getInstance().getProperty(LAST_NAME_FILENAME_KEY);
+            String fistNameFilename = ReaderServicesPropertiesCache.getInstance()
+                                                                   .getProperty(FIST_NAME_FILENAME_KEY);
+            String lastNameFilename = ReaderServicesPropertiesCache.getInstance()
+                                                                   .getProperty(LAST_NAME_FILENAME_KEY);
             List<String> firstNames = reader.toList(fistNameFilename);
             List<String> lastNames = reader.toList(lastNameFilename);
             List<StudentDTO> students = studentGenerator.generateStudents(firstNames, lastNames);
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.insertStudents(students);
-        } catch (DAOException.PropertyFileLoadFail | 
+        } catch (ServicesException.PropertyFileLoadingFail | 
                  ServicesException.ReadFail | 
                  DAOException.StudentInsertionFail e) {
             throw new ServicesException.StudentCreationFail(ERROR_INSERT, e);

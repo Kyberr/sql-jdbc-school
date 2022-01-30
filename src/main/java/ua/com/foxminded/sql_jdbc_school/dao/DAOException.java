@@ -1,10 +1,8 @@
 package ua.com.foxminded.sql_jdbc_school.dao;
 
-import ua.com.foxminded.sql_jdbc_school.BaseException;
-
 public class DAOException {
     
-    public static class DatabaseConnectionFail extends BaseException {
+    public static class DatabaseConnectionFail extends Exception {
         private static final long serialVersionUID = 1L;
         
         public DatabaseConnectionFail(String message, Throwable cause) {
@@ -12,7 +10,7 @@ public class DAOException {
         }
     }
     
-    public static class TableCreationFail extends BaseException {
+    public static class TableCreationFail extends Exception {
         private static final long serialVersionUID = 2L;
 
         public TableCreationFail(String message, Throwable cause) {
@@ -20,19 +18,19 @@ public class DAOException {
         }
     }
     
-    public static class PropertyFileLoadFail extends BaseException {
+    public static class PropertyFileLoadingFail extends Exception {
         private static final long serialVersionUID = 3L;
         
-        public PropertyFileLoadFail (String message, Throwable cause) {
+        public PropertyFileLoadingFail (String message, Throwable cause) {
             super(message, cause);
         }
         
-        public PropertyFileLoadFail (Throwable cause) {
+        public PropertyFileLoadingFail (Throwable cause) {
             super(cause);
         }
     }
     
-    public static class StudentInsertionFail extends BaseException {
+    public static class StudentInsertionFail extends Exception {
         private static final long serialVersionUID = 4L;
         
         
@@ -41,11 +39,27 @@ public class DAOException {
         }
     }
     
-    public static class GroupInsertionFail extends BaseException {
+    public static class GroupInsertionFail extends Exception {
         private static final long serialVersionUID = 5L;
         
         public GroupInsertionFail(Throwable cause) {
             super(cause);
+        }
+
+        public GroupInsertionFail(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    public static class CourseInsertionFail extends Exception {
+        private static final long serialVersionUID = 6L;
+
+        public CourseInsertionFail(Throwable cause) {
+            super(cause);
+        }
+
+        public CourseInsertionFail(String message, Throwable cause) {
+            super(message, cause);
         }
     }
 }

@@ -5,6 +5,11 @@ import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOFactory;
 public abstract class DAOFactory {
     public static final int UNIVERSITY = 1;
     
+    public abstract TableDAO getTableDAO();
+    public abstract StudentDAO getStudentDAO();
+    public abstract GroupDAO getGroupDAO();
+    public abstract CourseDAO getCourseDAO();
+    
     public static DAOFactory getDAOFactory(int whichFactory) {
         switch (whichFactory) {
         case UNIVERSITY:
@@ -13,8 +18,4 @@ public abstract class DAOFactory {
             return null;
         }
     }
-    
-    public abstract TableDAO getTableDAO();
-    public abstract StudentDAO getStudentDAO();
-    public abstract GroupDAO getGroupDAO();
 }

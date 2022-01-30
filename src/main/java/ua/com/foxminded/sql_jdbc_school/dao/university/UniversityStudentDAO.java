@@ -1,19 +1,20 @@
-package ua.com.foxminded.university.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.List;
-import ua.com.foxminded.university.dao.DAOException;
-import ua.com.foxminded.university.dao.DAOException.DatabaseConnectionFail;
-import ua.com.foxminded.university.dao.StudentDAO;
-import ua.com.foxminded.university.dto.StudentData;
+
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException.DatabaseConnectionFail;
+import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 
 public class UniversityStudentDAO implements StudentDAO {
     private static final String SQL_INSERT = "insert into department.students (first_name, last_name) values (?, ?)";
     
-    public int insertStudents(List<StudentData> students) throws DAOException.StudentInsertionFail  {
+    public int insertStudents(List<StudentDTO> students) throws DAOException.StudentInsertionFail  {
         try(Connection connection = UniversityDAOFactory.creatConnection();
             PreparedStatement prepareStatement = connection.prepareStatement(SQL_INSERT);) {
             
@@ -23,7 +24,7 @@ public class UniversityStudentDAO implements StudentDAO {
             try {
                 int status = 0;
                 
-                for (StudentData student : students) {
+                for (StudentDTO student : students) {
                     prepareStatement.setString(1, student.getFirstName());
                     prepareStatement.setString(2, student.getLastName());
                     status = prepareStatement.executeUpdate();

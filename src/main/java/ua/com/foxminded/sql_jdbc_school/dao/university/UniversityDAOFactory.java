@@ -1,14 +1,16 @@
-package ua.com.foxminded.university.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import ua.com.foxminded.university.PropertyCache;
-import ua.com.foxminded.university.dao.DAOException;
-import ua.com.foxminded.university.dao.DAOException.PropertyFileLoadFail;
-import ua.com.foxminded.university.dao.DAOFactory;
-import ua.com.foxminded.university.dao.StudentDAO;
-import ua.com.foxminded.university.dao.TableDAO;
+
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException.PropertyFileLoadFail;
+import ua.com.foxminded.sql_jdbc_school.services.PropertyCache;
 
 public class UniversityDAOFactory extends DAOFactory {
     private static final String DB_URL_KEY = "UniversityDatabaseURL";
@@ -39,5 +41,10 @@ public class UniversityDAOFactory extends DAOFactory {
     @Override
     public StudentDAO getStudentDAO() {
         return new UniversityStudentDAO();
+    }
+    
+    @Override
+    public GroupDAO getGroupDAO() {
+        return new UniversityGroupDAO();
     }
 }

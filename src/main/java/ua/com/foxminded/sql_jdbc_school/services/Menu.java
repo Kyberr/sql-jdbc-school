@@ -1,9 +1,9 @@
-package ua.com.foxminded.university.services;
+package ua.com.foxminded.sql_jdbc_school.services;
 
 import java.util.Scanner;
 
-import ua.com.foxminded.university.dao.DAOException;
-import ua.com.foxminded.university.services.university.UniversityTableService;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.services.university.UniversityTableService;
 
 public class Menu {
     private static final String MES_TABLES_CREATION = "The tabels has been created.";

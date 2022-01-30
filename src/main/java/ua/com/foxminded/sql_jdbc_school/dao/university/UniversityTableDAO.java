@@ -1,10 +1,11 @@
-package ua.com.foxminded.university.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import ua.com.foxminded.university.dao.DAOException;
-import ua.com.foxminded.university.dao.TableDAO;
+
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
 
 public class UniversityTableDAO implements TableDAO {
     private static final String ERROR_TABALES_CREATION = "The creation of the tables in the database is failed!";

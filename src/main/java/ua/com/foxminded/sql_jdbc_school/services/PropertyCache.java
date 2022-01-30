@@ -1,9 +1,10 @@
-package ua.com.foxminded.university;
+package ua.com.foxminded.sql_jdbc_school.services;
 
 import java.io.InputStream;
 import java.util.Properties;
-import ua.com.foxminded.university.dao.DAOException;
-import ua.com.foxminded.university.dao.DAOException.PropertyFileLoadFail;
+
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException.PropertyFileLoadFail;
 
 public class PropertyCache implements Cache<String> {
     private static final String PROPERTIES_FILE_NAME = "project.properties";

@@ -1,14 +1,14 @@
-package ua.com.foxminded.university.services.university;
+package ua.com.foxminded.sql_jdbc_school.services.university;
 
 import java.util.List;
-import ua.com.foxminded.university.PropertyCache;
-import ua.com.foxminded.university.dao.DAOException;
-import ua.com.foxminded.university.dao.DAOFactory;
-import ua.com.foxminded.university.dao.TableDAO;
-import ua.com.foxminded.university.services.Parser;
-import ua.com.foxminded.university.services.Reader;
-import ua.com.foxminded.university.services.ServicesException;
-import ua.com.foxminded.university.services.TableService;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
+import ua.com.foxminded.sql_jdbc_school.services.Parser;
+import ua.com.foxminded.sql_jdbc_school.services.PropertyCache;
+import ua.com.foxminded.sql_jdbc_school.services.Reader;
+import ua.com.foxminded.sql_jdbc_school.services.ServicesException;
+import ua.com.foxminded.sql_jdbc_school.services.TableService;
 
 public class UniversityTableService implements TableService<Integer> {
     private static final String ERROR_TABLE_CREATION = "The table creation service dosn't work.";
@@ -21,12 +21,11 @@ public class UniversityTableService implements TableService<Integer> {
         this.parser = parser;
     }
     
-    public Integer createTables() throws ServicesException.TableCreationFail {
+    public Integer creatTables() throws ServicesException.TableCreationFail {
         try {
             String fileName = PropertyCache.getInstance().getProperty(SQL_FILE_NAME_KEY);
             List<String> sqlScriptList = reader.toList(fileName);
             String sqlScript = parser.toStringList(sqlScriptList); 
-            
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             TableDAO universityTableDAO = universityDAOFactory.getTableDAO();
             return universityTableDAO.createTables(sqlScript);

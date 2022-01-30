@@ -1,12 +1,12 @@
-package ua.com.foxminded.university.dto;
+package ua.com.foxminded.sql_jdbc_school.services.dto;
 
 import java.util.Objects;
 
-public class StudentData {
+public class StudentDTO {
     private String firstName;
     private String lastName;
    
-    public StudentData(String firstName, String lastName) {
+    public StudentDTO(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -40,7 +40,7 @@ public class StudentData {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        StudentData other = (StudentData) obj;
+        StudentDTO other = (StudentDTO) obj;
         return Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName);
     }
 

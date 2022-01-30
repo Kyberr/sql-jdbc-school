@@ -1,4 +1,4 @@
-package ua.com.foxminded.university;
+package ua.com.foxminded.sql_jdbc_school.services;
 
 public interface Cache<T> {
     

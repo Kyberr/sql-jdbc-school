@@ -1,6 +1,6 @@
-package ua.com.foxminded.university.dao;
+package ua.com.foxminded.sql_jdbc_school.dao;
 
-import ua.com.foxminded.university.dao.university.UniversityDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOFactory;
 
 public abstract class DAOFactory {
     public static final int UNIVERSITY = 1;
@@ -16,4 +16,5 @@ public abstract class DAOFactory {
     
     public abstract TableDAO getTableDAO();
     public abstract StudentDAO getStudentDAO();
+    public abstract GroupDAO getGroupDAO();
 }

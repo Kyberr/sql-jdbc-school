@@ -35,11 +35,23 @@ public class UniversityStudentService implements StudentService<Integer> {
             List<StudentDTO> students = studentGenerator.generateStudents(firstNames, lastNames);
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-            return studentDAO.insertStudents(students);
+            return studentDAO.insertStudent(students);
         } catch (ServicesException.PropertyFileLoadingFail | 
                  ServicesException.ReadFail | 
                  DAOException.StudentInsertionFail e) {
             throw new ServicesException.StudentCreationFail(ERROR_INSERT, e);
+        }
+    }
+    
+    public Integer assignGroup() throws ServicesException.AssignGgoupToStudentsFail {
+        try {
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+            List<StudentDTO> students = studentDAO.getAllStudents(); 
+            
+            
+        } catch (Exception e) {
+            
         }
     }
 }

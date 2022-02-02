@@ -2,6 +2,14 @@ package ua.com.foxminded.sql_jdbc_school.dao;
 
 public class DAOException {
     
+    public static class GetAllSutudentsFail extends Exception {
+        public static final long serialVersionUID = 8L;
+
+        public GetAllSutudentsFail(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     public static class DatabaseConnectionFail extends Exception {
         private static final long serialVersionUID = 1L;
         
@@ -37,6 +45,10 @@ public class DAOException {
         public StudentInsertionFail(Throwable cause) {
             super(cause);
         }
+
+        public StudentInsertionFail(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
     
     public static class GroupInsertionFail extends Exception {
@@ -59,6 +71,14 @@ public class DAOException {
         }
 
         public CourseInsertionFail(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    public static class StudentUptatingFail extends Exception {
+        private static final long serialVersionUID = 7L;
+
+        public StudentUptatingFail(String message, Throwable cause) {
             super(message, cause);
         }
     }

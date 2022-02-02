@@ -1,5 +1,9 @@
 package ua.com.foxminded.sql_jdbc_school;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +33,29 @@ public class Main {
         StudentService<Integer> studentServices = new UniversityStudentService(reader, generator);
         GroupService<Integer> groupServices = new UniversityGroupService(generator);
         CourseService<Integer> courseServices = new UniversityCourseService(reader);
+        
+        
+        List<Integer> result = generator.generateStudentNumber(200, 10);
 
+        
+        int i = 1;
+        
+        for (Integer element : result) {
+            System.out.print(element);
+            System.out.println("-" + i++);
+        }
+        System.out.println("size " + result.size());
+        
+        /*
+        List<Integer> result2 = new ArrayList<>();
+        result2.add(0);
+        result2.add(0);
+        result2.add(0);
+        System.out.println(result2.size());
+        */
+       
+        
+/*
         try {
             System.out.println(tableServices.creatTables());
             System.out.println(studentServices.createStudents());
@@ -38,5 +64,6 @@ public class Main {
         } catch (Exception e) {
             LOGGER.error("Error", e);
         }
+        */
     }
 }

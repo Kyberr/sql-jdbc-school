@@ -29,7 +29,14 @@ public class UniversityCourseDAO implements CourseDAO {
                 con.commit();
                 return status;
             } catch (SQLException e) {
-                con.rollback(save1);
+                if (con != null) {
+                    try {
+                        con.rollback(save1);
+                    } catch (SQLException exc) {
+                        throw new SQLException(exc);
+                    }
+                }
+                
                 throw new SQLException(e);
             }
         } catch (DAOException.DatabaseConnectionFail |

@@ -8,12 +8,13 @@ public class StudentDTO {
     private String firstName;
     private String lastName;
     
-    public StudentDTO(String groupId, String firstName, String lastName) {
+    public StudentDTO(String studentId, String groupId, String firstName, String lastName) {
+        this.studentId = studentId;
         this.groupId = groupId;
         this.firstName = firstName;
         this.lastName = lastName;
     }
-    
+
     public StudentDTO(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;

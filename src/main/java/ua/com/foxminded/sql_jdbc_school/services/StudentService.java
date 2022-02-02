@@ -1,8 +1,12 @@
 package ua.com.foxminded.sql_jdbc_school.services;
 
-public interface StudentService<T> {
+import java.util.List;
+
+import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
+
+public interface StudentService {
     
-    public T createStudents() throws ServicesException.StudentCreationFail;
+    public Integer createStudents() throws ServicesException.StudentCreationFail;
     
-    public T assignGroup() throws ServicesException.AssignGgoupToStudentsFail;
+    public List<StudentDTO> assignGroup() throws ServicesException.AssignGgoupToStudentsFail;
 }

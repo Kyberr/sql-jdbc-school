@@ -18,7 +18,8 @@ public class Generator {
             double probability = new Random().nextInt(9) / 10.0;
             int zeroProbability = (int) ((probability + 0.5) - (probability - 0.5));
             double studentsNumberProbability = (new Random().nextInt(10)) / 10.0;
-            int studentsOfGroup = (int) (zeroProbability * (studentsNumber / groupsNumber + 10 * studentsNumberProbability));
+            int studentsOfGroup = (int) (zeroProbability * (studentsNumber / groupsNumber 
+                                                           + 10 * studentsNumberProbability));
 
             if (studentsOfGroup <= remainder || studentsOfGroup == 0 && remainder != 0) {
                 result.add(studentsOfGroup);

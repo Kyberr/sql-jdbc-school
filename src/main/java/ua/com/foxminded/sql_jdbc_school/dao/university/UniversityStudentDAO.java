@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
@@ -19,6 +20,10 @@ public class UniversityStudentDAO implements StudentDAO {
     private static final String SQL_SELECT_ALL = "select * from department.students";
     private static final String SQL_UPDATE = "update department.students set group_id = ?, "
                                            + "first_name = ?, last_name = ? where student_id = ?";
+    private static final String COLUMN_NAME_STUDENT_ID = "student_id";
+    private static final String COLUMN_NAME_GROUP_ID = "group_id";
+    private static final String COLUMN_NAME_FIRST_NAME = "first_name";
+    private static final String COLUMN_NAME_LAST_NAME = "last_name";
     private static final String ERROR_GET_ALL = "The getting of all the students is failed.";
     private static final String ERROR_INSERT = "The inserting of the students is failed.";
     private static final String ERROR_UDATE = "The updating of the students infurmation is failed.";
@@ -33,7 +38,7 @@ public class UniversityStudentDAO implements StudentDAO {
                 int status = 0;
                 
                 for (StudentDTO student : students) {
-                    statement.setString(1, student.getGroupId());
+                    statement.setObject(1, student.getGroupId());
                     statement.setString(2, student.getFirstName());
                     statement.setString(3, student.getLastName());
                     status = statement.executeUpdate();
@@ -64,11 +69,12 @@ public class UniversityStudentDAO implements StudentDAO {
             List<StudentDTO> students = new ArrayList<>();
             
             while(resultSet.next()) {
-                students.add(new StudentDTO(resultSet.getString("student_id"),
-                                            resultSet.getString("group_id"),
-                                            resultSet.getString("first_name"),
-                                            resultSet.getString("last_name")));
+                students.add(new StudentDTO((Integer) resultSet.getObject(COLUMN_NAME_STUDENT_ID),
+                                            (Integer) resultSet.getObject(COLUMN_NAME_GROUP_ID),
+                                            resultSet.getString(COLUMN_NAME_FIRST_NAME),
+                                            resultSet.getString(COLUMN_NAME_LAST_NAME)));
             }
+            
             return students;
         } catch (DAOException.DatabaseConnectionFail | SQLException e) {
             throw new DAOException.GetAllSutudentsFail(ERROR_GET_ALL, e);
@@ -84,8 +90,8 @@ public class UniversityStudentDAO implements StudentDAO {
             
             try {
                 for (StudentDTO student : students) {
-                    statement.setString(4, student.getStudentId());
-                    statement.setString(1, student.getGroupId());
+                    statement.setInt(4, student.getStudentId());
+                    statement.setObject(1, student.getGroupId());
                     statement.setString(2, student.getFirstName());
                     statement.setString(3, student.getLastName());
                 }

@@ -3,12 +3,12 @@ package ua.com.foxminded.sql_jdbc_school.services.dto;
 import java.util.Objects;
 
 public class StudentDTO {
-    private String studentId;
-    private String groupId;
+    private Integer studentId;
+    private Integer groupId;
     private String firstName;
     private String lastName;
     
-    public StudentDTO(String studentId, String groupId, String firstName, String lastName) {
+    public StudentDTO(Integer studentId, Integer groupId, String firstName, String lastName) {
         this.studentId = studentId;
         this.groupId = groupId;
         this.firstName = firstName;
@@ -20,19 +20,19 @@ public class StudentDTO {
         this.lastName = lastName;
     }
 
-    public String getStudentId() {
+    public Integer getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(String studentId) {
+    public void setStudentId(Integer studentId) {
         this.studentId = studentId;
     }
 
-    public String getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(String groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 

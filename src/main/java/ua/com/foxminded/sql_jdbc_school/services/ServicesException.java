@@ -3,6 +3,22 @@ package ua.com.foxminded.sql_jdbc_school.services;
 
 public class ServicesException {
     
+    public static class LoadUniversityMenuFail extends Exception {
+        private static final long serialVersionUID = 9L;
+
+        public LoadUniversityMenuFail(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    public static class BootstrapFail extends Exception {
+        private static final long serialVersionUID = 8L;
+
+        public BootstrapFail(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     public static class AssignGgoupToStudentsFail extends Exception {
         private static final long serialVersionUID = 7L;
 

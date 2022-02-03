@@ -7,8 +7,9 @@ import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.services.Generator;
 import ua.com.foxminded.sql_jdbc_school.services.GroupService;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException;
+import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
 
-public class UniversityGroupService implements GroupService<Integer> {
+public class UniversityGroupService implements GroupService<List<GroupDTO>> {
     
     private Generator generator;
     
@@ -16,13 +17,15 @@ public class UniversityGroupService implements GroupService<Integer> {
         this.generator = generator;
     }
     
-    public Integer createGroups() throws ServicesException.GroupCreationFail {
+    public List<GroupDTO> createGroups() throws ServicesException.GroupCreationFail {
         try {
             List<String> groupList = generator.generateGroups();
             DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
-            return groupDAO.insertGroup(groupList);
-        } catch (DAOException.GroupInsertionFail e) {
+            groupDAO.insertGroup(groupList);
+            return groupDAO.getAllGroups();
+        } catch (DAOException.GroupInsertionFail |
+                 DAOException.GetAllGroupsFail e) {
             throw new ServicesException.GroupCreationFail(e);
         }
     }

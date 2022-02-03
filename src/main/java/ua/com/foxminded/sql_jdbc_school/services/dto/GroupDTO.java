@@ -3,12 +3,20 @@ package ua.com.foxminded.sql_jdbc_school.services.dto;
 import java.util.Objects;
 
 public class GroupDTO {
-    private String groupId;
+    private Integer groupId;
     private String groupName;
     
-    public GroupDTO(String groupId, String groupName) {
+    public GroupDTO(Integer groupId, String groupName) {
         this.groupId = groupId;
         this.groupName = groupName;
+    }
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
     }
 
     public String getGroupName() {
@@ -19,15 +27,11 @@ public class GroupDTO {
         this.groupName = groupName;
     }
 
-    public String getGroupId() {
-        return groupId;
-    }
-    
     @Override
     public int hashCode() {
         return Objects.hash(groupId, groupName);
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -39,7 +43,7 @@ public class GroupDTO {
         GroupDTO other = (GroupDTO) obj;
         return Objects.equals(groupId, other.groupId) && Objects.equals(groupName, other.groupName);
     }
-    
+
     @Override
     public String toString() {
         return "GroupDTO [groupId=" + groupId + ", groupName=" + groupName + "]";

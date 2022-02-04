@@ -2,8 +2,6 @@ package ua.com.foxminded.sql_jdbc_school.services;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.IntStream;
-
 import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
@@ -54,9 +52,7 @@ public class UniversityMenu {
             courseService.createCourses();
             studentService.createStudents();
             List<GroupDTO> groups = groupService.createGroups();
-            List<StudentDTO> students = studentService.assignGroup(groups);
-            
-  //          IntStream.range(0, students.size()).forEach((index) -> System.out.println(students.get(index) + " " + this.getClass().getName()));
+            studentService.assignGroup(groups);
             
             
         } catch (ServicesException.TableCreationFail 

@@ -46,7 +46,7 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
                                                                    .setGroupId(groups.get(groupIndex)
                                                                                      .getGroupId());
                                                            }));
-         //   studentDAO.updateStudent(students);
+            studentDAO.updateStudent(students);
             return students;
         } catch (DAOException.GetAllSutudentsFail
                 | DAOException.StudentUptatingFail e) {

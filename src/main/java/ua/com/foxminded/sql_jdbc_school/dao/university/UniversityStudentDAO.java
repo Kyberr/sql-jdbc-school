@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
@@ -18,8 +17,8 @@ public class UniversityStudentDAO implements StudentDAO {
     private static final String SQL_INSERT = "insert into department.students (group_id, "
                                            + "first_name, last_name) values (?, ?, ?)";
     private static final String SQL_SELECT_ALL = "select * from department.students";
-    private static final String SQL_UPDATE = "update department.students set group_id = ?, "
-                                           + "first_name = ?, last_name = ? where student_id = ?";
+    private static final String SQL_UPDATE = "update department.students set group_id=?, "
+                                           + "first_name=?, last_name=? where student_id=?";
     private static final String COLUMN_NAME_STUDENT_ID = "student_id";
     private static final String COLUMN_NAME_GROUP_ID = "group_id";
     private static final String COLUMN_NAME_FIRST_NAME = "first_name";
@@ -94,7 +93,10 @@ public class UniversityStudentDAO implements StudentDAO {
                     statement.setObject(1, student.getGroupId());
                     statement.setString(2, student.getFirstName());
                     statement.setString(3, student.getLastName());
+                    status += statement.executeUpdate();
                 }
+                
+                con.commit();
                 return status;
             } catch (SQLException e) {
                 if (con != null) {
@@ -109,6 +111,21 @@ public class UniversityStudentDAO implements StudentDAO {
             }
         } catch (DAOException.DatabaseConnectionFail | SQLException e) {
             throw new DAOException.StudentUptatingFail(ERROR_UDATE, e);
+        }
+    }
+    
+    public static void printSQlException(SQLException ex) {
+        for (Throwable e : ex) {
+            e.printStackTrace(System.err);
+            System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+            System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+            System.err.println("Message: " + e.getMessage());
+
+            Throwable t = ex.getCause();
+
+            while (t != null) {
+                System.out.println("Cause: " + t);
+            }
         }
     }
 }

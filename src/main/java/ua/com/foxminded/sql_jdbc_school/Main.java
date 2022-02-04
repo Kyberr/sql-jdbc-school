@@ -33,7 +33,6 @@ public class Main {
                        List<GroupDTO>> studentService = new UniversityStudentService(reader, generator);
         CourseService<List<CourseDTO>> courseService = new UniversityCourseService(reader);
         GroupService<List<GroupDTO>> groupService = new UniversityGroupService(generator);
-        
         UniversityMenu menu = new UniversityMenu(tableService, studentService, courseService, groupService);
         
         try {

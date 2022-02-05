@@ -8,14 +8,17 @@ import ua.com.foxminded.sql_jdbc_school.services.Generator;
 import ua.com.foxminded.sql_jdbc_school.services.GroupService;
 import ua.com.foxminded.sql_jdbc_school.services.Parser;
 import ua.com.foxminded.sql_jdbc_school.services.Reader;
+import ua.com.foxminded.sql_jdbc_school.services.StudentCourseService;
 import ua.com.foxminded.sql_jdbc_school.services.StudentService;
 import ua.com.foxminded.sql_jdbc_school.services.TableService;
 import ua.com.foxminded.sql_jdbc_school.services.UniversityMenu;
 import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 import ua.com.foxminded.sql_jdbc_school.services.university.UniversityCourseService;
 import ua.com.foxminded.sql_jdbc_school.services.university.UniversityGroupService;
+import ua.com.foxminded.sql_jdbc_school.services.university.UniversityStudentCourseService;
 import ua.com.foxminded.sql_jdbc_school.services.university.UniversityStudentService;
 import ua.com.foxminded.sql_jdbc_school.services.university.UniversityTableService;
 
@@ -33,7 +36,11 @@ public class Main {
                        List<GroupDTO>> studentService = new UniversityStudentService(reader, generator);
         CourseService<List<CourseDTO>> courseService = new UniversityCourseService(reader);
         GroupService<List<GroupDTO>> groupService = new UniversityGroupService(generator);
-        UniversityMenu menu = new UniversityMenu(tableService, studentService, courseService, groupService);
+        StudentCourseService<List<StudentDTO>, 
+                             List<CourseDTO>, 
+                             List<StudentCourseDTO>> studentCourseService= new UniversityStudentCourseService();
+        UniversityMenu menu = new UniversityMenu(tableService, studentService, courseService, 
+                                                 groupService, studentCourseService);
         
         try {
             menu.load();

@@ -7,6 +7,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.UniversityDAOPropertiesCache;
@@ -53,4 +54,8 @@ public class UniversityDAOFactory extends DAOFactory {
         return new UniversityCourseDAO();
     }
     
+    @Override
+    public StudentCourseDAO getStudentCourseDAO() {
+        return new UniversityStudentCourseDAO();
+    }
 }

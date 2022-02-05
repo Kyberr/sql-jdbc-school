@@ -113,19 +113,4 @@ public class UniversityStudentDAO implements StudentDAO {
             throw new DAOException.StudentUptatingFail(ERROR_UDATE, e);
         }
     }
-    
-    public static void printSQlException(SQLException ex) {
-        for (Throwable e : ex) {
-            e.printStackTrace(System.err);
-            System.err.println("SQLState: " + ((SQLException) e).getSQLState());
-            System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
-            System.err.println("Message: " + e.getMessage());
-
-            Throwable t = ex.getCause();
-
-            while (t != null) {
-                System.out.println("Cause: " + t);
-            }
-        }
-    }
 }

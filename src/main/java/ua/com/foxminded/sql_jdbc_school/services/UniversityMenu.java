@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 
 public class UniversityMenu {
@@ -14,15 +15,19 @@ public class UniversityMenu {
     private StudentService<List<StudentDTO>, List<GroupDTO>> studentService;
     private CourseService<List<CourseDTO>> courseService;
     private GroupService<List<GroupDTO>> groupService;
+    private StudentCourseService<List<StudentDTO>, 
+                                 List<CourseDTO>, 
+                                 List<StudentCourseDTO>> studentCourseView;
 
-    public UniversityMenu(TableService<Integer> tableService, 
-                          StudentService<List<StudentDTO>, List<GroupDTO>> studentService,
-                          CourseService<List<CourseDTO>> courseService, 
-                          GroupService<List<GroupDTO>> groupService) {
+    public UniversityMenu(TableService<Integer> tableService,
+            StudentService<List<StudentDTO>, List<GroupDTO>> studentService,
+            CourseService<List<CourseDTO>> courseService, GroupService<List<GroupDTO>> groupService,
+            StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>> studentCourseView) {
         this.tableService = tableService;
         this.studentService = studentService;
         this.courseService = courseService;
         this.groupService = groupService;
+        this.studentCourseView = studentCourseView;
     }
 
     public void load() throws ServicesException.LoadUniversityMenuFail {
@@ -49,17 +54,22 @@ public class UniversityMenu {
     private void bootstrap() throws ServicesException.BootstrapFail {
         try {
             tableService.creatTables();
-            courseService.createCourses();
+            List<CourseDTO> courses = courseService.createCourses();
             studentService.createStudents();
             List<GroupDTO> groups = groupService.createGroups();
-            studentService.assignGroup(groups);
+            List<StudentDTO> students = studentService.assignGroup(groups);
+            
+            studentCourseView.createStudentCourseRelation(students, courses);
+            
+            
             
             
         } catch (ServicesException.TableCreationFail 
                 | ServicesException.CoursesCreationServiceFail 
                 | ServicesException.GroupCreationFail 
                 | ServicesException.StudentCreationFail
-                | ServicesException.AssignGgoupToStudentsFail e) {
+                | ServicesException.AssignGgoupToStudentsFail 
+                | ServicesException.StudentsCoursesRelationFailure e) {
             throw new ServicesException.BootstrapFail(ERROR_BOOTSTRAP, e);
         }
     }

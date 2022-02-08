@@ -19,7 +19,6 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
     private static final String LAST_NAME_FILENAME_KEY = "LastNameFilename";
     private static final String ERROR_INSERT = "The student addition service to the database fails.";
     private static final String ERROR_ASSIGN_GROUP = "The assining group to students is failed.";
-    private static final int ZERO = 0;
     
     private Reader reader;
     private Generator generator;
@@ -37,14 +36,14 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
             List<Integer> studentsNumberInGroup = generator.generateStudentNumber(students.size(), 
                                                                                   groups.size());
             AtomicInteger atomicInteger = new AtomicInteger();
-            IntStream.range(ZERO, groups.size())
+            IntStream.range(0, groups.size())
                      .parallel()
-                     .forEach((groupIndex) -> IntStream.range(ZERO, studentsNumberInGroup.get(groupIndex))
-                                                  .parallel()
-                                                  .forEach((studentsNumber) -> {
-                                                           students.get(atomicInteger.getAndIncrement())
-                                                                   .setGroupId(groups.get(groupIndex)
-                                                                                     .getGroupId());
+                     .forEach((groupIndex) -> IntStream.range(0, studentsNumberInGroup.get(groupIndex))
+                                                       .parallel()
+                                                       .forEach((studentsNumber) -> {
+                                                               students.get(atomicInteger.getAndIncrement())
+                                                                       .setGroupId(groups.get(groupIndex)
+                                                                                         .getGroupId());
                                                            }));
             studentDAO.updateStudent(students);
             return students;

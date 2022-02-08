@@ -1,7 +1,9 @@
 package ua.com.foxminded.sql_jdbc_school.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,6 +22,38 @@ public class Generator {
     private static final double DOUBLE_AMPL_PROBABILITY = 10.0;
     private static final int INT_AMPL_PROBABILITY = 10;
     private static final int MAX_NO_GROUP_STUDENTS = 10;
+    private static final int CROURSE_AMPLITUDE = 2;
+    private static final int MIN_NUMBER_OF_CROURSES = 2;
+    
+    public List<List<Integer>> generateCoursePerStudent(int studentsNumber, int coursesNumber) {
+        Map<Integer, Integer> studentsAndNumberOfCourses = new HashMap<>();
+        
+        for (int i = 0; i < studentsNumber; i++) {
+            int numberOfCoursesPerStudent = MIN_NUMBER_OF_CROURSES + new Random().nextInt(CROURSE_AMPLITUDE);
+            studentsAndNumberOfCourses.put(i, numberOfCoursesPerStudent);
+        }
+        
+        List<List<Integer>> courseIndexPerStudent = new ArrayList<>();
+        
+        for (int i = 0; i < studentsNumber; i++) {
+            List<Integer> cache = new ArrayList<>();
+            
+            for (int j = 0; j < studentsAndNumberOfCourses.get(i); j++) {
+                int courseIndex = new Random().nextInt(coursesNumber - 1);
+                List<Integer> studentAndCourseIndex = new ArrayList<>();
+                
+                if (!cache.contains(courseIndex)) {
+                    cache.add(courseIndex);
+                    studentAndCourseIndex.add(i);
+                    studentAndCourseIndex.add(courseIndex);
+                    courseIndexPerStudent.add(studentAndCourseIndex);
+                } else {
+                    j -= 1;
+                }
+            }
+        }
+        return courseIndexPerStudent;
+    }
             
     public List<Integer> generateStudentNumber(int studentsNumber, int groupsNumber) {
         List<Integer> result = new ArrayList<>();
@@ -29,7 +63,7 @@ public class Generator {
         for (int i = 0; i < groupsNumber; i++) {
             double probability = new Random().nextInt(INT_PROBABILITY_VALUE) / DOUBLE_PROBABILITY_VALUE;
             int zeroProbability = (int) ((probability + ONE_HALF) - (probability - ONE_HALF));
-            double amplitudeProbability = (new Random().nextInt(INT_AMPL_PROBABILITY)) / DOUBLE_AMPL_PROBABILITY;
+            double amplitudeProbability = new Random().nextInt(INT_AMPL_PROBABILITY) / DOUBLE_AMPL_PROBABILITY;
             int studentsInGroup = (int) (zeroProbability * (MIN_STUDENTS + AMPLITUDE * amplitudeProbability));
 
             if (studentsInGroup <= remainder || studentsInGroup == 0 && remainder != 0) {

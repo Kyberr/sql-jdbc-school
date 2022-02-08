@@ -1,11 +1,18 @@
 package ua.com.foxminded.sql_jdbc_school.dao;
 
 public class DAOException {
+    public static class StudentCourseInsertionFailure extends Exception {
+        private static final long serialVersionUID = 10L;
+
+        public StudentCourseInsertionFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
     
-    public static class CreatingStudentCourseViewFailure extends Exception {
+    public static class CreatingStudentCourseTableFailure extends Exception {
         private static final long serialVersionUID = 11L;
 
-        public CreatingStudentCourseViewFailure(String message, Throwable cause) {
+        public CreatingStudentCourseTableFailure(String message, Throwable cause) {
             super(message, cause);
         }
     }

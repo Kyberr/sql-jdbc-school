@@ -38,7 +38,7 @@ public class Main {
         GroupService<List<GroupDTO>> groupService = new UniversityGroupService(generator);
         StudentCourseService<List<StudentDTO>, 
                              List<CourseDTO>, 
-                             List<StudentCourseDTO>> studentCourseService= new UniversityStudentCourseService();
+                             List<StudentCourseDTO>> studentCourseService= new UniversityStudentCourseService(generator);
         UniversityMenu menu = new UniversityMenu(tableService, studentService, courseService, 
                                                  groupService, studentCourseService);
         

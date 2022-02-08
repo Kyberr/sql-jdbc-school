@@ -21,6 +21,13 @@ public class StudentCourseDTO {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
     }
+    
+    public StudentCourseDTO(Integer studentId, Integer groupId, String firstName, String lastName) {
+        this.studentId = studentId;
+        this.groupId = groupId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public Integer getStudentId() {
         return studentId;
@@ -97,5 +104,12 @@ public class StudentCourseDTO {
                 && Objects.equals(firstName, other.firstName) && Objects.equals(groupId, other.groupId) 
                 && Objects.equals(studentId, other.studentId);
                     
+    }
+
+    @Override
+    public String toString() {
+        return "StudentCourseDTO [studentId=" + studentId + ", groupId=" + groupId + ", firstName=" + firstName
+                + ", lastName=" + lastName + ", courseId=" + courseId + ", courseName=" + courseName
+                + ", courseDescription=" + courseDescription + "]";
     }
 }

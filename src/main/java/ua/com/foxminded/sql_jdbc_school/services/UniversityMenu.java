@@ -6,6 +6,7 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
+import ua.com.foxminded.sql_jdbc_school.services.university.UniversityStudentCourseService;
 
 public class UniversityMenu {
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
@@ -17,17 +18,17 @@ public class UniversityMenu {
     private GroupService<List<GroupDTO>> groupService;
     private StudentCourseService<List<StudentDTO>, 
                                  List<CourseDTO>, 
-                                 List<StudentCourseDTO>> studentCourseView;
+                                 List<StudentCourseDTO>> studentCourseService;
 
     public UniversityMenu(TableService<Integer> tableService,
             StudentService<List<StudentDTO>, List<GroupDTO>> studentService,
             CourseService<List<CourseDTO>> courseService, GroupService<List<GroupDTO>> groupService,
-            StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>> studentCourseView) {
+            StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>> studentCourseService) {
         this.tableService = tableService;
         this.studentService = studentService;
         this.courseService = courseService;
         this.groupService = groupService;
-        this.studentCourseView = studentCourseView;
+        this.studentCourseService = studentCourseService;
     }
 
     public void load() throws ServicesException.LoadUniversityMenuFail {
@@ -58,9 +59,13 @@ public class UniversityMenu {
             studentService.createStudents();
             List<GroupDTO> groups = groupService.createGroups();
             List<StudentDTO> students = studentService.assignGroup(groups);
+            List<StudentCourseDTO> studentCourse = studentCourseService.createStudentCourseRelation(students, courses);
             
-            studentCourseView.createStudentCourseRelation(students, courses);
             
+                  
+            for (int i = 0; i < studentCourse.size(); i++) {
+                System.out.println(studentCourse.get(i));
+            }
             
             
             

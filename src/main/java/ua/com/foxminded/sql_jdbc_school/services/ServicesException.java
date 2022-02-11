@@ -3,6 +3,15 @@ package ua.com.foxminded.sql_jdbc_school.services;
 
 public class ServicesException {
     
+    
+    public static class FindGroupsWithLessOrEqualStudentsFailure extends Exception {
+        private static final long serialVersionUID = 11L;
+
+        public FindGroupsWithLessOrEqualStudentsFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     public static class StudentsCoursesRelationFailure extends Exception {
         private static final long serialVersionUID = 10L;
 

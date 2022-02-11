@@ -21,6 +21,8 @@ import ua.com.foxminded.sql_jdbc_school.services.university.UniversityGroupServi
 import ua.com.foxminded.sql_jdbc_school.services.university.UniversityStudentCourseService;
 import ua.com.foxminded.sql_jdbc_school.services.university.UniversityStudentService;
 import ua.com.foxminded.sql_jdbc_school.services.university.UniversityTableService;
+import ua.com.foxminded.sql_jdbc_school.view.UniversityView;
+import ua.com.foxminded.sql_jdbc_school.view.View;
 
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
@@ -33,14 +35,15 @@ public class Main {
         
         TableService<Integer> tableService = new UniversityTableService(reader, parser);
         StudentService<List<StudentDTO>, 
-                       List<GroupDTO>> studentService = new UniversityStudentService(reader, generator);
+                List<GroupDTO>> studentService = new UniversityStudentService(reader, generator);
         CourseService<List<CourseDTO>> courseService = new UniversityCourseService(reader);
-        GroupService<List<GroupDTO>> groupService = new UniversityGroupService(generator);
+        GroupService<List<GroupDTO>, Integer> groupService = new UniversityGroupService(generator);
         StudentCourseService<List<StudentDTO>, 
-                             List<CourseDTO>, 
-                             List<StudentCourseDTO>> studentCourseService= new UniversityStudentCourseService(generator);
+                List<CourseDTO>, List<StudentCourseDTO>> studentCourseService = 
+                new UniversityStudentCourseService(generator);
+        View<List<GroupDTO>> universityView = new UniversityView();
         UniversityMenu menu = new UniversityMenu(tableService, studentService, courseService, 
-                                                 groupService, studentCourseService);
+                                                 groupService, studentCourseService, universityView);
         
         try {
             menu.load();

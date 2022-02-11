@@ -19,8 +19,6 @@ public class UniversityDAOFactory extends DAOFactory {
     private static final String USER_PASS_KEY = "UniversityPassword";
     private static final String CONNECT_ERROR = "The database connection is failure."; 
     
-    
-    
     public static Connection creatConnection() throws DAOException.DatabaseConnectionFail {
         try {
             return DriverManager.getConnection(UniversityDAOPropertiesCache.getInstance()

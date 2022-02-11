@@ -9,4 +9,7 @@ public interface GroupDAO {
     public int insertGroup(List<String> groupNameList) throws DAOException.GroupInsertionFail;
     
     public List<GroupDTO> getAllGroups() throws DAOException.GetAllGroupsFail;
+    
+    public List<GroupDTO> getGroupsWithLessOrEqualStudents(int students) 
+            throws DAOException.GetGroupsWithLessOrEqualStudentsFailure;
 }

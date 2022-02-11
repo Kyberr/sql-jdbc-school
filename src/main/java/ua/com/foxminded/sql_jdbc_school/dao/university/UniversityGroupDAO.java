@@ -16,10 +16,42 @@ public class UniversityGroupDAO implements GroupDAO {
     private static final String SQL_INSERT = "insert into department.groups"
                                            + "(group_name) values (?)";
     private static final String SQL_SELECT_ALL = "select * from department.groups";
+    private static final String SQL_SELECT_LESS_EQUAL_STUDENTS = "select department.groups.group_id, "
+            + "department.groups.group_name, count(department.students.group_id) students_number "
+            + "from department.groups join department.students on groups.group_id = students.group_id "
+            + "group by groups.group_id "
+            + "having count(department.students.group_id) <= %d "
+            + "order by group_id";
     private static final String GROUP_ID = "group_id";
     private static final String GROUP_NAME = "group_name";
+    private static final String GROUP_STUDENTS_NUMBER = "students_number";
     private static final String ERROR_GET_ALL_GROUP = "The getting data from the "
                                                     + "\"groups\" table is failed.";
+    private static final String ERROR_GET_LESS_OR_EQUAL_STUD = "Getting the groups with a less or "
+                                                             + "equal number of students is failed.";
+
+    public List<GroupDTO> getGroupsWithLessOrEqualStudents (int students) 
+            throws DAOException.GetGroupsWithLessOrEqualStudentsFailure {
+        try (Connection con = UniversityDAOFactory.creatConnection();
+             PreparedStatement statement = con.prepareStatement(String
+                     .format(SQL_SELECT_LESS_EQUAL_STUDENTS, students));
+             ResultSet resultSet = statement.executeQuery();) {
+            
+            List<GroupDTO> result = new ArrayList<>();
+            
+            while (resultSet.next()) {
+                result.add(new GroupDTO((Integer) resultSet.getObject(GROUP_ID),
+                                        resultSet.getString(GROUP_NAME),
+                                        Integer.valueOf(resultSet.getString(GROUP_STUDENTS_NUMBER))));
+            }
+            return result;
+        } catch (DAOException.DatabaseConnectionFail 
+                | ClassCastException
+                | NumberFormatException
+                | SQLException e) {
+            throw new DAOException.GetGroupsWithLessOrEqualStudentsFailure (ERROR_GET_LESS_OR_EQUAL_STUD, e);
+        }
+    }
 
     public List<GroupDTO> getAllGroups() throws DAOException.GetAllGroupsFail {
         try (Connection con = UniversityDAOFactory.creatConnection();

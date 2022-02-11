@@ -1,6 +1,15 @@
 package ua.com.foxminded.sql_jdbc_school.dao;
 
 public class DAOException {
+    
+    public static class GetGroupsWithLessOrEqualStudentsFailure extends Exception {
+        private static final long serialVersionUID = 11L;
+
+        public GetGroupsWithLessOrEqualStudentsFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     public static class StudentCourseInsertionFailure extends Exception {
         private static final long serialVersionUID = 10L;
 

@@ -17,11 +17,11 @@ public class UniversityCourseDAO implements CourseDAO {
     public static final String SQL_SELECT_ALL = "select * from department.courses";
     public static final String SQL_COLUMN_NAME_COURSE_ID = "course_id";
     public static final String SQL_COLUMN_NAME_COURSE_NAME = "course_name";
-    public static final String SQL_COLUMN_NAME_COURSE_DESC = "course_name";
+    public static final String SQL_COLUMN_NAME_COURSE_DESC = "course_description";
     public static final String ERROR_INSERT = "The insertion of the courses to the database is failed.";
     public static final String ERROR_GET_ALL_COURSES = "The getting all data from the courses table is failed.";
     
-
+    @Override
     public List<CourseDTO> getAllCourses() throws DAOException.GetAllCoursesFail {
         try (Connection con = UniversityDAOFactory.creatConnection();
              Statement statement = con.createStatement();
@@ -40,7 +40,8 @@ public class UniversityCourseDAO implements CourseDAO {
             
         }
     }
-
+    
+    @Override
     public int insertCourse(List<String> courseNameList) throws DAOException.CourseInsertionFail {
         try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SQL_INSERT)) {

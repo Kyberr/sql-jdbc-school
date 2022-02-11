@@ -24,6 +24,7 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
             + "values (?, ?, ?, ?, ?, ?, ?)";
     private static final String ERROR_TABLE_CREATION = "The student course view creating is failed.";
     
+    @Override
     public int insertStudentCourse(List<StudentCourseDTO> studentsCourses) 
             throws DAOException.StudentCourseInsertionFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
@@ -61,6 +62,7 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
         }
     }
     
+    @Override
     public int createStudentCourseTable() throws DAOException.CreatingStudentCourseTableFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SQL_CREATE_TABLE)) {

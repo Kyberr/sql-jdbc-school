@@ -21,6 +21,7 @@ public class UniversityTableService implements TableService<Integer> {
         this.parser = parser;
     }
     
+    @Override
     public Integer creatTables() throws ServicesException.TableCreationFail {
         try {
             String fileName = ReaderServicesPropertiesCache.getInstance().getProperty(SQL_FILE_NAME_KEY);

@@ -29,7 +29,8 @@ public class UniversityGroupDAO implements GroupDAO {
                                                     + "\"groups\" table is failed.";
     private static final String ERROR_GET_LESS_OR_EQUAL_STUD = "Getting the groups with a less or "
                                                              + "equal number of students is failed.";
-
+    
+    @Override
     public List<GroupDTO> getGroupsWithLessOrEqualStudents (int students) 
             throws DAOException.GetGroupsWithLessOrEqualStudentsFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
@@ -52,7 +53,8 @@ public class UniversityGroupDAO implements GroupDAO {
             throw new DAOException.GetGroupsWithLessOrEqualStudentsFailure (ERROR_GET_LESS_OR_EQUAL_STUD, e);
         }
     }
-
+    
+    @Override
     public List<GroupDTO> getAllGroups() throws DAOException.GetAllGroupsFail {
         try (Connection con = UniversityDAOFactory.creatConnection();
              Statement statement = con.createStatement();
@@ -69,7 +71,8 @@ public class UniversityGroupDAO implements GroupDAO {
             throw new DAOException.GetAllGroupsFail(ERROR_GET_ALL_GROUP, e);
         }
     }
-
+    
+    @Override
     public int insertGroup(List<String> groupNameList) throws DAOException.GroupInsertionFail {
 
         try (Connection connection = UniversityDAOFactory.creatConnection();

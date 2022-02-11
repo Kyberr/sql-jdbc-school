@@ -41,20 +41,14 @@ public class Main {
         StudentCourseService<List<StudentDTO>, 
                 List<CourseDTO>, List<StudentCourseDTO>> studentCourseService = 
                 new UniversityStudentCourseService(generator);
-        View<List<GroupDTO>> universityView = new UniversityView();
+        View<List<GroupDTO>, List<CourseDTO>> universityView = new UniversityView();
         UniversityMenu menu = new UniversityMenu(tableService, studentService, courseService, 
                                                  groupService, studentCourseService, universityView);
         
         try {
             menu.load();
-            
-            
-            
-            
-            
         } catch (Exception e) {
             LOGGER.error("Error", e);
         }
-        
     }
 }

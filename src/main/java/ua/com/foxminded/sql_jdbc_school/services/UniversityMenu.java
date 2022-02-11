@@ -21,13 +21,13 @@ public class UniversityMenu {
     private StudentCourseService<List<StudentDTO>, 
                                  List<CourseDTO>, 
                                  List<StudentCourseDTO>> studentCourseService;
-    private View<List<GroupDTO>> universityView;
+    private View<List<GroupDTO>, List<CourseDTO>> universityView;
 
     public UniversityMenu(TableService<Integer> tableService,
             StudentService<List<StudentDTO>, List<GroupDTO>> studentService,
             CourseService<List<CourseDTO>> courseService, GroupService<List<GroupDTO>, Integer> groupService,
             StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>> studentCourseService,
-            View<List<GroupDTO>> universityView) {
+            View<List<GroupDTO>, List<CourseDTO>> universityView) {
         this.tableService = tableService;
         this.studentService = studentService;
         this.courseService = courseService;
@@ -45,11 +45,16 @@ public class UniversityMenu {
             
             switch (preventWrongInput(scanner)) {
             case 1:
-                universityView.showFirstItemMessage();
+                universityView.showMessageOfItemOne();
                 List<GroupDTO> groups = groupService.findGroupsWithLessOrEqualStudents(ensureIntInput(scanner));
                 universityView.showStudentsNumberOfGroups(groups);
                 break;
             case 2:
+                List<CourseDTO> courses = courseService.getAllCourses();
+                universityView.showCourses(courses);
+                universityView.showMessageOfItemTwo();
+                
+                
                 
                 
             }
@@ -57,7 +62,8 @@ public class UniversityMenu {
                 ServicesException.BootstrapFail 
                 | ServicesException.FindGroupsWithLessOrEqualStudentsFailure
                 | NoSuchElementException 
-                | IllegalStateException e) {
+                | IllegalStateException
+                | ServicesException.GetAllCoursesFailure e) {
             throw new ServicesException.LoadUniversityMenuFail(ERROR_LOAD, e);
         } finally {
             scanner.close();

@@ -27,6 +27,7 @@ public class UniversityStudentDAO implements StudentDAO {
     private static final String ERROR_INSERT = "The inserting of the students is failed.";
     private static final String ERROR_UDATE = "The updating of the students infurmation is failed.";
     
+    @Override
     public int insertStudent(List<StudentDTO> students) throws DAOException.StudentInsertionFail  {
         try(Connection con = UniversityDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(SQL_INSERT);) {
@@ -61,6 +62,7 @@ public class UniversityStudentDAO implements StudentDAO {
         } 
     }
     
+    @Override
     public List<StudentDTO> getAllStudents() throws DAOException.GetAllSutudentsFail {
         try(Connection con = UniversityDAOFactory.creatConnection();
             Statement statement = con.createStatement();
@@ -80,6 +82,7 @@ public class UniversityStudentDAO implements StudentDAO {
         }
     }
     
+    @Override
     public int updateStudent(List<StudentDTO> students) throws DAOException.StudentUptatingFail {
         try(Connection con = UniversityDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(SQL_UPDATE)) {

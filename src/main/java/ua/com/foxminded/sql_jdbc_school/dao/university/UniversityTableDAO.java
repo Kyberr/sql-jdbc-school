@@ -10,6 +10,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
 public class UniversityTableDAO implements TableDAO {
     private static final String ERROR_TABALES_CREATION = "The creation of the tables in the database is failed!";
     
+    @Override
     public int createTables(String sql) throws DAOException.TableCreationFail {
         try (Connection connection = UniversityDAOFactory.creatConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);) {

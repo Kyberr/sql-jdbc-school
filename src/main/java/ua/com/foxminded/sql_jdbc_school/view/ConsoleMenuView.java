@@ -11,7 +11,6 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>> {
     private static final String FORMAT_START = "%70s";
     private static final String FORMAT_MENU = "%-4s%4s";
-    private static final String FORMAT_ITEM_MESSAGE = "%s";
     private static final String FORMAT_GROUPS = "| %-8s| %-12s| %-18s|\n";
     private static final String FORMAT_GROUPS_LINE = "%41s\n";
     private static final String FORMAT_COURSES = "| %-9s| %-25s| %-20s|\n";
@@ -25,18 +24,18 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
     private static final String FIND_LESS_NUMBER = "1.";
     private static final String FIND_ALL = "Find all students related to a course with a given name.\n";
     private static final String FIND_ALL_NUMBER = "2.";
-    private static final String ADD_STUDENT = "Add a new student.\n";
+    private static final String ADD_STUDENT = "Add a new student to the database.\n";
     private static final String ADD_STUDENT_NUMBER = "3.";
-    private static final String DEL_STUDENT = "Delete a student.\n";
+    private static final String DEL_STUDENT = "Delete a student from the database.\n";
     private static final String DEL_STUDENT_NUMBER = "4.";
     private static final String COURSE = "Add a student to a course.\n";
     private static final String COURSE_NUMBER = "5.";
     private static final String REMOVE = "Remove a student from a course.\n";
     private static final String REMOVE_NUMBER = "6.";
-    private static final String ITEM_1_MESSAGE = "Enter the number of students:\n";
-    private static final String ITEM_1_MESSAGE_NO_GROUPS = "There are no groups with this number of students.\n";
-    private static final String ITEM_2_MESSAGE = "Enter the course ID from the list above:\n";
-    private static final String ITEM_2_MESSAGE_NO_STUDENTS = "No students are studying the specified course.\n";
+    private static final String STUDENTS_NUMBER_INPUT_MESSAGE = "Enter the number of students:\n";
+    private static final String NO_GROUPS_MESSAGE = "There are no groups with this number of students.\n";
+    private static final String COURSE_ID_INPUT_MESSAGE = "Enter the course ID from the list above:\n";
+    private static final String NO_STUDENTS_MESSAGE = "No students are studying the specified course.\n";
     private static final String ERROR_INPUT = "The input must be the number of the corresponding value.\n";
     private static final String GROUP_ID = "Group ID";
     private static final String GROUP_NAME = "Group's name";
@@ -47,21 +46,58 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
     private static final String STUDENT_ID = "Student ID";
     private static final String FIRST_NAME = "First name";
     private static final String LAST_NAME = "Last name";
-    private static final String FINAL_ITEM_MESSAGE = "Press the \"Enter\" key to return to the menu or "
+    private static final String FINAL_ITEM_MESSAGE = "Press the \"Enter\" key to return to the main menu or "
                                                    + "write \"exit\" and press the \"Enter\" key.";
     private static final String FINAL_PROGRAM_MESSAGE = "The program execution has been stopped.";
+    private static final String LAST_NAME_INPUT_MESSAGE = "Enter the last name of the student adding:";
+    private static final String FIRST_NAME_INPUT_MESSAGE = "Enter the first name of the student adding:";
+    private static final String CONFIRMING_MESSAGE = "To confirm the student adding, write \"yes\" or \"no\" "
+                                                   + "and press the \"Enter\" key:";
+    private static final String ADD_STUDENT_OR_RETURN_MESSAGE = "Press the \"Enter\" key to add another student or "
+            + "write \"exit\" and press the \"Enter\" key to return the main menu.";
+    private static final String ADD_STUDENT_CONFIRM_MESSAGE = "The new student has been added."; 
     private static final int GROUP_LINE = 45;
     private static final int COURSE_LINE = 61;
     private static final int STUDENT_COURSE_LINE = 99;
     private static final char NULL = '\0';
     private static final char HATCH = '-';
     
+    @Override
+    public void studentHasBeenAddedMessage() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(ADD_STUDENT_CONFIRM_MESSAGE);
+    }
+    
+    @Override
+    public void addStudentOrReturnMainMenuMessage() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(ADD_STUDENT_OR_RETURN_MESSAGE);
+    }
+    
+    @Override
+    public void confirmingMessage() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(CONFIRMING_MESSAGE);
+    }
+    
+    @Override 
+    public void showFirstNameInputMessage() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(FIRST_NAME_INPUT_MESSAGE);
+    }
+    
+    @Override
+    public void showLastNameInputMessage() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(LAST_NAME_INPUT_MESSAGE);
+    }
+    
     @Override 
     public void showStudentsOfCourse(List<StudentCourseDTO> studentCourseList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         
         if (studentCourseList.isEmpty()) {
-            printWriter.format(FORMAT_ITEM_MESSAGE, ITEM_2_MESSAGE_NO_STUDENTS);
+            printWriter.println(NO_STUDENTS_MESSAGE);
         } else {
             AtomicInteger atomicInteger = new AtomicInteger();
             studentCourseList.stream().parallel().forEachOrdered((line) -> {
@@ -121,9 +157,9 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
     }
     
     @Override 
-    public void showMessageOfItemTwo() {
+    public void showCourseIdInputMessage() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.format(FORMAT_ITEM_MESSAGE, ITEM_2_MESSAGE);
+        printWriter.println(COURSE_ID_INPUT_MESSAGE);
     }
     
     @Override
@@ -131,7 +167,7 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
         PrintWriter printWriter = new PrintWriter(System.out, true);
         
         if (groupsList.isEmpty()) {
-            printWriter.format(FORMAT_ITEM_MESSAGE, ITEM_1_MESSAGE_NO_GROUPS);
+            printWriter.println(NO_GROUPS_MESSAGE);
         } else {
             AtomicInteger atomicInteger = new AtomicInteger();
             groupsList.stream().parallel().forEachOrdered((line) -> {
@@ -152,9 +188,9 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
     }
     
     @Override
-    public void showMessageOfItemOne() {
+    public void showStudentsNumberInputMessage() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.format(FORMAT_ITEM_MESSAGE, ITEM_1_MESSAGE);
+        printWriter.println(STUDENTS_NUMBER_INPUT_MESSAGE);
     }
     
     @Override

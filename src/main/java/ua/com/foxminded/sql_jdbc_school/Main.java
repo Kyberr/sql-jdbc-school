@@ -34,7 +34,9 @@ public class Main {
         Generator generator = new Generator();
         TableService<Integer> tableService = new UniversityTableService(reader, parser);
         StudentService<List<StudentDTO>, 
-                       List<GroupDTO>> studentService = new UniversityStudentService(reader, generator);
+                       List<GroupDTO>, 
+                       String,
+                       Integer> studentService = new UniversityStudentService(reader, generator);
         CourseService<List<CourseDTO>> courseService = new UniversityCourseService(reader);
         GroupService<List<GroupDTO>, Integer> groupService = new UniversityGroupService(generator);
         StudentCourseService<List<StudentDTO>, 

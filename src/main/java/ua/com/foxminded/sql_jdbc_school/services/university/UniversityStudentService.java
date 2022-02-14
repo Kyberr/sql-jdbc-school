@@ -1,5 +1,6 @@
 package ua.com.foxminded.sql_jdbc_school.services.university;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -14,11 +15,15 @@ import ua.com.foxminded.sql_jdbc_school.services.StudentService;
 import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 
-public class UniversityStudentService implements StudentService<List<StudentDTO>, List<GroupDTO>> {
+public class UniversityStudentService implements StudentService<List<StudentDTO>, 
+                                                                List<GroupDTO>, 
+                                                                String, 
+                                                                Integer> {
     private static final String FIST_NAME_FILENAME_KEY = "FirstNameFilename";
     private static final String LAST_NAME_FILENAME_KEY = "LastNameFilename";
     private static final String ERROR_INSERT = "The student addition service to the database fails.";
     private static final String ERROR_ASSIGN_GROUP = "The assining group to students is failed.";
+    private static final String ERROR_ADD_STUDENT = "The student adding to the database is failed.";
     
     private Reader reader;
     private Generator generator;
@@ -26,6 +31,20 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
     public UniversityStudentService(Reader reader, Generator generator) {
         this.reader = reader;
         this.generator = generator;
+    }
+    
+    @Override
+    public Integer addStudent(String lastName, String firstName) 
+            throws ServicesException.AddNewStudentFailure {
+       try {
+           List<StudentDTO> student = new ArrayList<>();
+           student.add(new StudentDTO(firstName, lastName));
+           DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+           StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+           return studentDAO.insertStudent(student);
+       } catch (DAOException.StudentInsertionFail e) {
+           throw new ServicesException.AddNewStudentFailure(ERROR_ADD_STUDENT, e);
+       }
     }
     
     @Override

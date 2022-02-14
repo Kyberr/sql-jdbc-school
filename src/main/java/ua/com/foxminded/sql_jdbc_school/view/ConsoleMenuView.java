@@ -6,15 +6,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 
-public class UniversityView implements View<List<GroupDTO>, List<CourseDTO>> {
-    private static final String FORMAT_START = "%85s";
+public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>> {
+    private static final String FORMAT_START = "%70s";
     private static final String FORMAT_MENU = "%-4s%4s";
     private static final String FORMAT_ITEM_MESSAGE = "%s";
-    private static final String FORMAT_GROUPS = "|%-8s |%-12s |%-18s |\n";
+    private static final String FORMAT_GROUPS = "| %-8s| %-12s| %-18s|\n";
     private static final String FORMAT_GROUPS_LINE = "%41s\n";
-    private static final String FORMAT_COURSES = "|%-9s |%-25s |%-20s |\n";
+    private static final String FORMAT_COURSES = "| %-9s| %-25s| %-20s|\n";
     private static final String FORMAT_COURSES_LINE = "%50s\n";
+    private static final String FORMAT_STUDENT_COURSES = "| %-10s| %-9s| %-10s| %-10s| %-9s| %-18s| %-18s|\n";
+    private static final String FORMAT_STUDENT_COURSES_LINE = "%99s\n";
     private static final String FORMAT_WARNING = "%48s";
     
     private static final String START = "Enter the corresponding number and press the \"Enter\" key.\n\n";
@@ -32,7 +35,8 @@ public class UniversityView implements View<List<GroupDTO>, List<CourseDTO>> {
     private static final String REMOVE_NUMBER = "6.";
     private static final String ITEM_1_MESSAGE = "Enter the number of students:\n";
     private static final String ITEM_1_MESSAGE_NO_GROUPS = "There are no groups with this number of students.\n";
-    private static final String ITEM_2_MESSAGE = "Enter the course ID from the above list:\n";
+    private static final String ITEM_2_MESSAGE = "Enter the course ID from the list above:\n";
+    private static final String ITEM_2_MESSAGE_NO_STUDENTS = "No students are studying the specified course.\n";
     private static final String ERROR_INPUT = "The input must be the number of the corresponding value.\n";
     private static final String GROUP_ID = "Group ID";
     private static final String GROUP_NAME = "Group's name";
@@ -40,10 +44,61 @@ public class UniversityView implements View<List<GroupDTO>, List<CourseDTO>> {
     private static final String COURSE_ID = "Course ID";
     private static final String COURSE_NAME = "Course name";
     private static final String COURSE_DESCRIPTION = "Course description";
+    private static final String STUDENT_ID = "Student ID";
+    private static final String FIRST_NAME = "First name";
+    private static final String LAST_NAME = "Last name";
+    private static final String FINAL_ITEM_MESSAGE = "Press the \"Enter\" key to return to the menu or "
+                                                   + "write \"exit\" and press the \"Enter\" key.";
+    private static final String FINAL_PROGRAM_MESSAGE = "The program execution has been stopped.";
     private static final int GROUP_LINE = 45;
     private static final int COURSE_LINE = 61;
+    private static final int STUDENT_COURSE_LINE = 99;
     private static final char NULL = '\0';
     private static final char HATCH = '-';
+    
+    @Override 
+    public void showStudentsOfCourse(List<StudentCourseDTO> studentCourseList) {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        
+        if (studentCourseList.isEmpty()) {
+            printWriter.format(FORMAT_ITEM_MESSAGE, ITEM_2_MESSAGE_NO_STUDENTS);
+        } else {
+            AtomicInteger atomicInteger = new AtomicInteger();
+            studentCourseList.stream().parallel().forEachOrdered((line) -> {
+                if (atomicInteger.getAndIncrement() == 0) {
+                    printWriter.format(FORMAT_STUDENT_COURSES_LINE, new String(new char[STUDENT_COURSE_LINE])
+                                                                    .replace(NULL, HATCH));
+                    printWriter.format(FORMAT_STUDENT_COURSES, STUDENT_ID, GROUP_ID, FIRST_NAME, LAST_NAME, 
+                                       COURSE_ID, COURSE_NAME, COURSE_DESCRIPTION);
+                    printWriter.format(FORMAT_STUDENT_COURSES_LINE, new String(new char[STUDENT_COURSE_LINE])
+                            .replace(NULL, HATCH));
+                    printWriter.format(FORMAT_STUDENT_COURSES, line.getStudentId(), line.getGroupId(),  
+                                       line.getFirstName(), line.getLastName(), line.getCourseId(), 
+                                       line.getCourseName(), line.getCourseDescription());
+                    printWriter.format(FORMAT_STUDENT_COURSES_LINE, new String(new char[STUDENT_COURSE_LINE])
+                            .replace(NULL, HATCH));
+                } else {
+                    printWriter.format(FORMAT_STUDENT_COURSES, line.getStudentId(), line.getGroupId(),  
+                            line.getFirstName(), line.getLastName(), line.getCourseId(), 
+                            line.getCourseName(), line.getCourseDescription());
+                    printWriter.format(FORMAT_STUDENT_COURSES_LINE, new String(new char[STUDENT_COURSE_LINE])
+                            .replace(NULL, HATCH));
+                }
+            });
+        }
+    }
+    
+    @Override
+    public void showFinalProgramMessage() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(FINAL_PROGRAM_MESSAGE);
+    }
+    
+    @Override
+    public void showFinalItemMessage() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(FINAL_ITEM_MESSAGE);
+    }
     
     @Override
     public void showCourses(List<CourseDTO> coursesList) {

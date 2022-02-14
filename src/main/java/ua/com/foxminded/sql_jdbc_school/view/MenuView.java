@@ -1,7 +1,10 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface View<T, E> {
+public interface MenuView<T, E, S> {
     
+    public void showStudentsOfCourse(S studentCourseList);
+    public void showFinalProgramMessage();
+    public void showFinalItemMessage();
     public void showCourses(E coursesList);
     public void showStudentsNumberOfGroups(T groupsList);
     public void showMessageOfItemOne();

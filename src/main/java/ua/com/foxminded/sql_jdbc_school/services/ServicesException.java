@@ -2,6 +2,14 @@ package ua.com.foxminded.sql_jdbc_school.services;
 
 
 public class ServicesException {
+    
+    public static class GetStudentsRelatedToCourseFaluer extends Exception {
+        private static final long serialVersionUID = 13L;
+
+        public GetStudentsRelatedToCourseFaluer(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
     public static class GetAllCoursesFailure extends Exception {
         private static final long serialVersionUID = 12L;
 

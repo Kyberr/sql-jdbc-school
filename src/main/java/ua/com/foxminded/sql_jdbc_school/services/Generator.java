@@ -13,6 +13,8 @@ public class Generator {
     private static final String HYPHEN = "-";
     private static final int MIN_STUDENTS = 10; 
     private static final int MAX_STUDENTS = 30; 
+    private static final int MAX_COURSE_INDEX = 9; 
+    private static final int MAX_COURSES_NUMBER = 9; 
     private static final int AMPLITUDE = 20; 
     private static final double ONE_HALF = 0.5; 
     private static final double DOUBLE_PROBABILITY_VALUE = 4.0;
@@ -21,11 +23,12 @@ public class Generator {
     private static final int ZERO_OF_STUDENTS = 0;
     private static final double DOUBLE_AMPL_PROBABILITY = 10.0;
     private static final int INT_AMPL_PROBABILITY = 10;
-    private static final int MAX_NO_GROUP_STUDENTS = 10;
-    private static final int CROURSE_AMPLITUDE = 2;
-    private static final int MIN_NUMBER_OF_CROURSES = 2;
+    private static final int MAX_NO_GROUP_STUDENTS = 11;
+    private static final int CROURSE_AMPLITUDE = 3;
+    private static final int MIN_NUMBER_OF_CROURSES = 1;
+    private static final int ONE = 1;
     
-    public List<List<Integer>> generateCoursePerStudent(int studentsNumber, int coursesNumber) {
+    public List<List<Integer>> getCoursePerStudent(int studentsNumber, int coursesNumber) {
         Map<Integer, Integer> studentsAndNumberOfCourses = new HashMap<>();
         
         for (int i = 0; i < studentsNumber; i++) {
@@ -39,7 +42,7 @@ public class Generator {
             List<Integer> cache = new ArrayList<>();
             
             for (int j = 0; j < studentsAndNumberOfCourses.get(i); j++) {
-                int courseIndex = new Random().nextInt(coursesNumber - 1);
+                int courseIndex = new Random().nextInt(coursesNumber);
                 List<Integer> studentAndCourseIndex = new ArrayList<>();
                 
                 if (!cache.contains(courseIndex)) {
@@ -48,14 +51,14 @@ public class Generator {
                     studentAndCourseIndex.add(courseIndex);
                     courseIndexPerStudent.add(studentAndCourseIndex);
                 } else {
-                    j -= 1;
+                    j -= ONE;
                 }
             }
         }
         return courseIndexPerStudent;
     }
             
-    public List<Integer> generateStudentNumber(int studentsNumber, int groupsNumber) {
+    public List<Integer> getNumberOfStudentsInGroup(int studentsNumber, int groupsNumber) {
         List<Integer> result = new ArrayList<>();
         int noGroupStudents = new Random().nextInt(MAX_NO_GROUP_STUDENTS); 
         int remainder = studentsNumber - noGroupStudents;
@@ -66,10 +69,10 @@ public class Generator {
             double amplitudeProbability = new Random().nextInt(INT_AMPL_PROBABILITY) / DOUBLE_AMPL_PROBABILITY;
             int studentsInGroup = (int) (zeroProbability * (MIN_STUDENTS + AMPLITUDE * amplitudeProbability));
 
-            if (studentsInGroup <= remainder || studentsInGroup == 0 && remainder != 0) {
+            if (studentsInGroup <= remainder && remainder != 0 || studentsInGroup == 0) {
                 result.add(studentsInGroup);
                 remainder -= studentsInGroup;
-            } else if (studentsInGroup > remainder && remainder > MIN_STUDENTS) {
+            } else if (studentsInGroup > remainder && remainder >= MIN_STUDENTS) {
                 result.add(remainder);
                 remainder = 0;
             } else if (remainder != 0) {
@@ -80,7 +83,7 @@ public class Generator {
                         result.set(j, result.get(j) + ONE_STUDENT);
                         remainder -= ONE_STUDENT;
 
-                        if (j == (result.size() - 1) && remainder > 0) {
+                        if (j == (result.size() - ONE) && remainder > 0) {
                             j = 0;
                         } else if (remainder == 0) {
                             result.add(ZERO_OF_STUDENTS);
@@ -95,18 +98,18 @@ public class Generator {
         return result;
     }
 
-    public List<StudentDTO> generateStudents(List<String> firstNames, List<String> lastNames) {
+    public List<StudentDTO> getStudentData(List<String> firstNames, List<String> lastNames) {
         return Stream.generate(() -> new StudentDTO(firstNames.get(new Random().nextInt(firstNames.size())),
                                                     lastNames.get(new Random().nextInt(lastNames.size()))))
                      .limit(200).collect(Collectors.toList());
     }
 
-    public List<String> generateGroups() {
+    public List<String> getGroupData() {
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         return Stream.generate(() -> new StringBuilder()
                 .append(alphabet.charAt(new Random().nextInt(alphabet.length())))
                 .append(alphabet.charAt(new Random().nextInt(alphabet.length()))).append(HYPHEN)
-                .append(new Random().nextInt(9)).append(new Random().nextInt(9)).toString())
-            .limit(10).collect(Collectors.toList());
+                .append(new Random().nextInt(MAX_COURSE_INDEX)).append(new Random().nextInt(MAX_COURSE_INDEX)).toString())
+            .limit(MAX_COURSES_NUMBER).collect(Collectors.toList());
     }
 }

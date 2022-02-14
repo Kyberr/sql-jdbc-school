@@ -2,7 +2,9 @@ package ua.com.foxminded.sql_jdbc_school.services.university;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.services.Generator;
@@ -14,8 +16,10 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 
 public class UniversityStudentCourseService implements StudentCourseService<List<StudentDTO>, 
                                                                             List<CourseDTO>,
-                                                                            List<StudentCourseDTO>> {
+                                                                            List<StudentCourseDTO>,
+                                                                            Integer> {
     private static final String ERROR_CREATE_RELATION = "The relation creation is failed.";
+    private static final String ERROR_GET_STUDENTS_OF_COURSE = "The getting students of specified course is failed.";
     private static final int STUDENT_INDEX = 0;
     private static final int COURSE_INDEX = 1;
     private Generator generator;
@@ -25,10 +29,22 @@ public class UniversityStudentCourseService implements StudentCourseService<List
     }
     
     @Override
+    public List<StudentCourseDTO> getStudentsOfCourse(Integer courseID) 
+            throws ServicesException.GetStudentsRelatedToCourseFaluer {
+        try {
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentCourseDAO studentDAO = universityDAOFactory.getStudentCourseDAO();
+            return studentDAO.getStudentsOfCourse(courseID);
+        } catch (DAOException.GetStudentRelatedToCourseFailure e) {
+            throw new ServicesException.GetStudentsRelatedToCourseFaluer(ERROR_GET_STUDENTS_OF_COURSE, e);
+        }
+    }
+    
+    @Override
     public List<StudentCourseDTO> createStudentCourseRelation(List<StudentDTO> students, 
                                                               List<CourseDTO> courses)
             throws ServicesException.StudentsCoursesRelationFailure {
-        List<StudentCourseDTO> studentCourseList = getStudentCourseRelation(students, courses);
+        List<StudentCourseDTO> studentCourseList = getOrdedStudentCourseRelation(students, courses);
         
         try {
             DAOFactory universityDAOFacotry = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
@@ -39,6 +55,14 @@ public class UniversityStudentCourseService implements StudentCourseService<List
         } catch (Exception e) {
             throw new ServicesException.StudentsCoursesRelationFailure(ERROR_CREATE_RELATION, e);
         }
+    }
+    
+    private List<StudentCourseDTO> getOrdedStudentCourseRelation (List<StudentDTO> students, 
+                                                                  List<CourseDTO> courses) {
+        List<StudentCourseDTO> studentCourseHasGroupId = getStudentCourseHasGroupId(students, courses);
+        List<StudentCourseDTO> studentsNoGroupId = getStudentCourseNoGroupId(students);
+        studentCourseHasGroupId.addAll(studentsNoGroupId);
+        return studentCourseHasGroupId;
     }
     
     private List<StudentCourseDTO> getStudentCourseNoGroupId(List<StudentDTO> students) {
@@ -53,18 +77,11 @@ public class UniversityStudentCourseService implements StudentCourseService<List
         }
     }
     
-    private List<StudentCourseDTO> getStudentCourseRelation (List<StudentDTO> students, List<CourseDTO> courses) {
-        List<StudentCourseDTO> studentCourseHasGroupId = getStudentCourseHasGroupId(students, courses);
-        List<StudentCourseDTO> studentsNoGroupId = getStudentCourseNoGroupId(students);
-        studentCourseHasGroupId.addAll(studentsNoGroupId);
-        return studentCourseHasGroupId;
-    }
-    
     private List<StudentCourseDTO> getStudentCourseHasGroupId(List<StudentDTO> students, 
                                                               List<CourseDTO> courses) {
         List<StudentDTO> studentHasGroupId = getStudentHasGroupId(students);
-        List<List<Integer>> coursePerStudent = generator.generateCoursePerStudent(
-                studentHasGroupId.size(), courses.size());
+        List<List<Integer>> coursePerStudent = generator.getCoursePerStudent(studentHasGroupId.size(), 
+                                                                             courses.size());
         
         try (Stream<List<Integer>> coursePerStudentStream = coursePerStudent.parallelStream()) {
             return coursePerStudentStream.map((index) ->

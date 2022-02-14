@@ -2,8 +2,10 @@ package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
@@ -19,10 +21,45 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
             + "course_name varchar collate pg_catalog.\"default\","
             + "course_description varchar collate pg_catalog.\"default\")"
             + "tablespace pg_default";
+    private static final String SQL_STUDENTS_OF_COURSE = "select * from department"
+            + ".student_course where course_id = %s";
     private static final String SQL_INSERT = "insert into department.student_course("
             + "student_id, group_id, first_name, last_name, course_id, course_name, course_description) "
             + "values (?, ?, ?, ?, ?, ?, ?)";
     private static final String ERROR_TABLE_CREATION = "The student course view creating is failed.";
+    private static final String ERROR_GET_STUDENTS_OF_COURSE = "The getting of students related to the "
+            + "specified course are failed.";
+    private static final String COLUMN_NAME_STUDENT_ID = "student_id";
+    private static final String COLUMN_NAME_GROUP_ID = "group_id";
+    private static final String COLUMN_NAME_FIRST_NAME = "first_name";
+    private static final String COLUMN_NAME_LAST_NAME = "last_name";
+    private static final String COLUMN_NAME_COURSE_ID = "course_id";
+    private static final String COLUMN_NAME_COURSE_NAME = "course_name";
+    private static final String COLUMN_NAME_COURSE_DESC = "course_description";
+    
+    @Override
+    public List<StudentCourseDTO> getStudentsOfCourse(int courseID) 
+            throws DAOException.GetStudentRelatedToCourseFailure {
+        try (Connection con = UniversityDAOFactory.creatConnection();
+             PreparedStatement statement = con.prepareStatement(String.format(SQL_STUDENTS_OF_COURSE, courseID));
+             ResultSet resultSet = statement.executeQuery();) {
+            List<StudentCourseDTO> studentCourse = new ArrayList<>();
+            
+            while (resultSet.next()) {
+                studentCourse.add(new StudentCourseDTO((Integer) resultSet.getObject(COLUMN_NAME_STUDENT_ID),
+                                                       (Integer) resultSet.getObject(COLUMN_NAME_GROUP_ID),
+                                                       resultSet.getString(COLUMN_NAME_FIRST_NAME), 
+                                                       resultSet.getString(COLUMN_NAME_LAST_NAME),
+                                                       (Integer) resultSet.getObject(COLUMN_NAME_COURSE_ID),
+                                                       resultSet.getString(COLUMN_NAME_COURSE_NAME),
+                                                       resultSet.getString(COLUMN_NAME_COURSE_DESC)));
+            }
+            return studentCourse;
+        } catch (DAOException.DatabaseConnectionFail 
+                | SQLException e) {
+            throw new DAOException.GetStudentRelatedToCourseFailure(ERROR_GET_STUDENTS_OF_COURSE, e);
+        }
+    }
     
     @Override
     public int insertStudentCourse(List<StudentCourseDTO> studentsCourses) 

@@ -1,10 +1,10 @@
-biology
-math
-physics
-geometry
-chemistry
-english
-strength of materials
-combinatorics
-electrodynamics
-mechanics
+Biology
+Math
+Physics
+Geometry
+Chemistry
+English
+Strength of materials
+Combinatorics
+Electrodynamics
+Mechanics

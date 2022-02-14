@@ -34,7 +34,7 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentDTO> students = studentDAO.getAllStudents();
-            List<Integer> studentsNumberInGroup = generator.generateStudentNumber(students.size(), 
+            List<Integer> studentsNumberInGroup = generator.getNumberOfStudentsInGroup(students.size(), 
                                                                                   groups.size());
             AtomicInteger atomicInteger = new AtomicInteger();
             IntStream.range(0, groups.size())
@@ -63,7 +63,7 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
                                                                    .getProperty(LAST_NAME_FILENAME_KEY);
             List<String> firstNames = reader.toList(fistNameFilename);
             List<String> lastNames = reader.toList(lastNameFilename);
-            List<StudentDTO> students = generator.generateStudents(firstNames, lastNames);
+            List<StudentDTO> students = generator.getStudentData(firstNames, lastNames);
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             studentDAO.insertStudent(students);

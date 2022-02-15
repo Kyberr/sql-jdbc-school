@@ -2,7 +2,7 @@ package ua.com.foxminded.sql_jdbc_school.services;
 
 public interface StudentService<T, S, E, F> {
     
-    public F deletStudent(F studentId) throws ServicesException.DeleteStudentFailure;
+    public F deleteStudent(F studentId) throws ServicesException.DeleteStudentFailure;
     public T getAllStudents() throws ServicesException.GetAllStudentsFailure;
     public F addStudent(E lastName, E firstName) throws ServicesException.AddNewStudentFailure;
     public T createStudents() throws ServicesException.StudentCreationFail;

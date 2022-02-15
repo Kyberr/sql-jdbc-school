@@ -20,7 +20,7 @@ create sequence department.students_student_id_seq as integer;
 create table department.students
 (
 student_id integer not null default nextval('department.students_student_id_seq'::regclass) primary key,
-group_id integer references department.groups (group_id),
+group_id integer references department.groups (group_id) on delete set null,
 first_name varchar collate pg_catalog."default" not null,
 last_name varchar collate pg_catalog."default" not null
 )

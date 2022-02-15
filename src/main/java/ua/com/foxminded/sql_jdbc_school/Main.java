@@ -33,24 +33,20 @@ public class Main {
         Parser parser = new Parser();
         Generator generator = new Generator();
         TableService<Integer> tableService = new UniversityTableService(reader, parser);
-        StudentService<List<StudentDTO>, 
-                       List<GroupDTO>, 
-                       String,
+        StudentService<List<StudentDTO>, List<GroupDTO>, String, 
                        Integer> studentService = new UniversityStudentService(reader, generator);
         CourseService<List<CourseDTO>> courseService = new UniversityCourseService(reader);
         GroupService<List<GroupDTO>, Integer> groupService = new UniversityGroupService(generator);
-        StudentCourseService<List<StudentDTO>, 
-                             List<CourseDTO>, 
-                             List<StudentCourseDTO>, Integer> studentCourseService = 
-                                     new UniversityStudentCourseService(generator);
-        MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
-                 List<StudentDTO>> menuView = new ConsoleMenuView();
-        Menu menu = new Menu(tableService, studentService, courseService, 
-                             groupService, studentCourseService, menuView);
+        StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
+                             Integer> studentCourseService = new UniversityStudentCourseService(generator);
+        MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+                 Integer> menuView = new ConsoleMenuView();
+        Menu menu = new Menu(tableService, studentService, courseService, groupService, 
+                             studentCourseService, menuView);
         
         try {
             menu.bootstrap();
-            menu.load();
+            menu.execute();
         } catch (Exception e) {
             LOGGER.error("Error", e);
         }

@@ -5,7 +5,7 @@ public class ServicesException {
     public static class DeleteStudentFailure extends Exception {
         private static final long serialVersionUID = 16L;
 
-        public GetAllStudentsFailure(String message, Throwable cause) {
+        public DeleteStudentFailure(String message, Throwable cause) {
             super(message, cause);
         }
     }
@@ -57,10 +57,10 @@ public class ServicesException {
         }
     }
     
-    public static class LoadUniversityMenuFail extends Exception {
+    public static class ExecuteUniversityMenuFailure extends Exception {
         private static final long serialVersionUID = 9L;
 
-        public LoadUniversityMenuFail(String message, Throwable cause) {
+        public ExecuteUniversityMenuFailure(String message, Throwable cause) {
             super(message, cause);
         }
     }

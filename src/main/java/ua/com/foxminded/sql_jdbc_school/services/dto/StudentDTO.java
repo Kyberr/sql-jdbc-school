@@ -7,7 +7,7 @@ public class StudentDTO {
     private Integer groupId;
     private String firstName;
     private String lastName;
-    
+
     public StudentDTO(Integer studentId, Integer groupId, String firstName, String lastName) {
         this.studentId = studentId;
         this.groupId = groupId;
@@ -76,4 +76,3 @@ public class StudentDTO {
                 + ", lastName=" + lastName + "]";
     }
 }
-   

@@ -13,11 +13,11 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 
 public class UniversityStudentCourseDAO implements StudentCourseDAO {
     private static final String SQL_CREATE_TABLE = "create table department.student_course ("
-            + "student_id integer references department.students(student_id),"
-            + "group_id integer references department.groups(group_id),"
-            + "first_name varchar collate pg_catalog.\"default\" not null,"
-            + "last_name varchar collate pg_catalog.\"default\" not null,"
-            + "course_id integer references department.courses(course_id),"
+            + "student_id integer references department.students(student_id) on delete cascade,"
+            + "group_id integer references department.groups(group_id) on delete set null,"
+            + "first_name varchar collate pg_catalog.\"default\","
+            + "last_name varchar collate pg_catalog.\"default\","
+            + "course_id integer references department.courses(course_id) on delete set null,"
             + "course_name varchar collate pg_catalog.\"default\","
             + "course_description varchar collate pg_catalog.\"default\")"
             + "tablespace pg_default";

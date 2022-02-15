@@ -19,6 +19,7 @@ public class UniversityStudentDAO implements StudentDAO {
     private static final String SQL_SELECT_ALL = "select * from department.students";
     private static final String SQL_UPDATE = "update department.students set group_id=?, "
                                            + "first_name=?, last_name=? where student_id=?";
+    private static final String SQL_DELETE_STUDENT = "delete from department.students where student_id = ?";
     private static final String COLUMN_NAME_STUDENT_ID = "student_id";
     private static final String COLUMN_NAME_GROUP_ID = "group_id";
     private static final String COLUMN_NAME_FIRST_NAME = "first_name";
@@ -31,9 +32,10 @@ public class UniversityStudentDAO implements StudentDAO {
     @Override
     public int deleteStudent(int studentId) throws DAOException.DeleteStudentFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(null)) {
+             PreparedStatement statement = con.prepareStatement(SQL_DELETE_STUDENT)) {
             
-            
+            statement.setInt(1, studentId);
+            return statement.executeUpdate();
         } catch (DAOException.DatabaseConnectionFail
                 | SQLException e) {
             throw new DAOException.DeleteStudentFailure(ERROR_DELETE, e);

@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.AddNewStudentFailure;
+import ua.com.foxminded.sql_jdbc_school.services.ServicesException.DeleteStudentFailure;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.FindGroupsWithLessOrEqualStudentsFailure;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetAllCoursesFailure;
+import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetAllStudentsFailure;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetStudentsRelatedToCourseFaluer;
 import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
@@ -15,7 +17,7 @@ import ua.com.foxminded.sql_jdbc_school.view.MenuView;
 
 public class Menu {
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
-    private static final String ERROR_LOAD = "The menu loading is failed.";
+    private static final String ERROR_EXECUTE = "The menu execution is failed.";
     private static final String WORD_EXIT = "exit";
     private static final String EMPTY_STRING = "";
     private static final String KEY_WORLD_NO = "no";
@@ -24,28 +26,23 @@ public class Menu {
     private static final int NORMAL_STATUS = 0;
     private static final int NUMBER_OF_ITEMS = 6;
     private static final int ADDED_STUDENT_STATUS = 1;
-    
    
     private TableService<Integer> tableService;
     private StudentService<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService;
     private CourseService<List<CourseDTO>> courseService;
     private GroupService<List<GroupDTO>, Integer> groupService;
-    private StudentCourseService<List<StudentDTO>, 
-                                 List<CourseDTO>, 
-                                 List<StudentCourseDTO>,
+    private StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>,
                                  Integer> studentCourseService;
-    private MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>> menuView;
-
-    public Menu(TableService<Integer> tableService, StudentService<List<StudentDTO>, 
-                                                                   List<GroupDTO>, 
-                                                                   String, 
-                                                                   Integer> studentService,
-                CourseService<List<CourseDTO>> courseService, GroupService<List<GroupDTO>, Integer> groupService,
-                StudentCourseService<List<StudentDTO>, 
-                                     List<CourseDTO>, 
-                                     List<StudentCourseDTO>, 
+    private MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+                     Integer> menuView;
+    public Menu(TableService<Integer> tableService, StudentService<List<StudentDTO>, List<GroupDTO>, 
+                                                                   String, Integer> studentService,
+                CourseService<List<CourseDTO>> courseService, GroupService<List<GroupDTO>, 
+                                                                           Integer> groupService,
+                StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
                                      Integer> studentCourseService,
-                MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>> menuView) {
+                MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+                             Integer> menuView) {
         this.tableService = tableService;
         this.studentService = studentService;
         this.courseService = courseService;
@@ -54,7 +51,7 @@ public class Menu {
         this.menuView = menuView;
     }
 
-    public void load() throws ServicesException.LoadUniversityMenuFail {
+    public void execute() throws ServicesException.ExecuteUniversityMenuFailure {
         Scanner scanner = new Scanner(System.in);
         
         try {
@@ -72,9 +69,10 @@ public class Menu {
                     addNewStudent(scanner);
                     break;
                 case 4:
-                    List<StudentDTO> students = studentService.getAllStudents();
-                    menuView.showStudents(students);
+                    deleteStudent(scanner);
                     break;
+                case 5:
+                    
                 }
             }
         } catch (ServicesException.FindGroupsWithLessOrEqualStudentsFailure
@@ -83,8 +81,9 @@ public class Menu {
                 | ServicesException.GetAllCoursesFailure 
                 | ServicesException.GetStudentsRelatedToCourseFaluer
                 | ServicesException.AddNewStudentFailure
-                | ServicesException.GetAllStudentsFailure e) {
-            throw new ServicesException.LoadUniversityMenuFail(ERROR_LOAD, e);
+                | ServicesException.GetAllStudentsFailure 
+                | ServicesException.DeleteStudentFailure e) {
+            throw new ServicesException.ExecuteUniversityMenuFailure(ERROR_EXECUTE, e);
         } finally {
             scanner.close();
         }
@@ -105,6 +104,34 @@ public class Menu {
                 | ServicesException.AssignGgoupToStudentsFail 
                 | ServicesException.StudentsCoursesRelationFailure e) {
             throw new ServicesException.BootstrapFail(ERROR_BOOTSTRAP, e);
+        }
+    }
+    
+    private void deleteStudent(Scanner scanner) throws DeleteStudentFailure, 
+                                                       GetAllStudentsFailure {
+        first: for ( ; ; ) {
+            List<StudentDTO> students = studentService.getAllStudents();
+            menuView.showStudents(students);
+            menuView.showStudentIdInputMessage();
+            int studentId = ensureIntInput(scanner);
+            int status = studentService.deleteStudent(studentId);
+            
+            if (status == 1) {
+                menuView.showStudentHasBeenDeletedMessage(studentId);
+            } else {
+                menuView.showStudentHasNotBeenDeletedMessage(studentId);
+            }
+            
+            for ( ; ; ) {
+                menuView.showDeleteStudentOrReturnToMenu();
+                String input = scanner.nextLine();
+                
+                if (input.equals(WORD_EXIT)) {
+                    break first;
+                } else if (input.equals(EMPTY_STRING)) {
+                    continue first;
+                }
+            }
         }
     }
     
@@ -181,7 +208,6 @@ public class Menu {
         menuView.showFinalItemMessage();
         
         while(scanner.hasNextLine()) {
-            scanner.nextLine();
             String input = scanner.nextLine();
             
             if (input.equals(WORD_EXIT)) {
@@ -200,7 +226,9 @@ public class Menu {
             scanner.nextLine();
             menuView.showWrongInputWarning();
         }
-        return scanner.nextInt();
+        int input = scanner.nextInt();
+        scanner.nextLine(); // it is used to clean the buffer from the empty string       
+        return input;
     }
     
     private int preventWrongInputOrExit(Scanner scanner) {

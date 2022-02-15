@@ -1,7 +1,10 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface MenuView<T, E, S, F> {
+public interface MenuView<T, E, S, F, M> {
     
+    public void showDeleteStudentOrReturnToMenu();
+    public void showStudentHasNotBeenDeletedMessage(M studentID);
+    public void showStudentHasBeenDeletedMessage(M studentId);
     public void showStudentIdInputMessage();
     public void showStudents(F students);
     public void studentHasBeenAddedMessage();

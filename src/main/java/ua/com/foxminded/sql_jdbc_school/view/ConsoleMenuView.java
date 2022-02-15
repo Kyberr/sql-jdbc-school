@@ -12,7 +12,8 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 public class ConsoleMenuView implements MenuView<List<GroupDTO>, 
                                                  List<CourseDTO>, 
                                                  List<StudentCourseDTO>, 
-                                                 List<StudentDTO>> {
+                                                 List<StudentDTO>, 
+                                                 Integer> {
     
     private static final String FORMAT_START = "%85s";
     private static final String FORMAT_MENU = "%-4s%4s";
@@ -24,6 +25,8 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>,
     private static final String FORMAT_STUDENT_COURSES_LINE = "%99s\n";
     private static final String FORMAT_WARNING = "%48s";
     private static final String FORMAT_STUDENTS = "| %-10s| %-11s| %-11s| %-8s|\n";
+    private static final String FORMAT_DELETED_STUDENT = "The student with ID %s has been deleted.\n"; 
+    private static final String FORMAT_STUDENT_IS_NOT_DELETED = "There is not a student with ID %s in the database.\n"; 
     
     private static final String START = "Enter the corresponding number or write "
                                       + "\"exit\" and press the \"Enter\" key.\n\n";
@@ -64,13 +67,34 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>,
             + "write \"exit\" and press the \"Enter\" key to return the main menu.";
     private static final String ADD_STUDENT_CONFIRM_MESSAGE = "The new student has been added to the databse."; 
     private static final String DATABASE_HAS_NO_STUDENTS = "The database has no students."; 
-    private static final String STUDENT_ID_INPUT = "Select the student Id from the list above:"; 
+    private static final String STUDENT_ID_INPUT = "Input a student ID from the list above and press the \"Enter\" key:"; 
+    private static final String DELETE_STUDENT_OR_RETURN = "Press the \"Enter\" key to delete another student or"
+            + " write \"exit\" and press the \"Enter\" key to return the main menu."; 
+    
     private static final int GROUP_LINE = 45;
     private static final int COURSE_LINE = 61;
     private static final int STUDENT_COURSE_LINE = 99;
     private static final int STUDENT_LINE = 49;
     private static final char NULL = '\0';
     private static final char HATCH = '-';
+    
+    @Override
+    public void showDeleteStudentOrReturnToMenu() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(DELETE_STUDENT_OR_RETURN);
+    }
+    
+    @Override
+    public void showStudentHasNotBeenDeletedMessage(Integer studentID) {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.format(FORMAT_STUDENT_IS_NOT_DELETED, studentID);
+    }
+    
+    @Override
+    public void showStudentHasBeenDeletedMessage(Integer studentId) {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.format(FORMAT_DELETED_STUDENT, studentId);
+    }
     
     @Override
     public void showStudentIdInputMessage() {

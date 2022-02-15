@@ -1,7 +1,9 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface MenuView<T, E, S> {
+public interface MenuView<T, E, S, F> {
     
+    public void showStudentIdInputMessage();
+    public void showStudents(F students);
     public void studentHasBeenAddedMessage();
     public void addStudentOrReturnMainMenuMessage();
     public void confirmingMessage();

@@ -3,7 +3,6 @@ package ua.com.foxminded.sql_jdbc_school.services;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.AddNewStudentFailure;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.FindGroupsWithLessOrEqualStudentsFailure;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetAllCoursesFailure;
@@ -17,7 +16,7 @@ import ua.com.foxminded.sql_jdbc_school.view.MenuView;
 public class Menu {
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
     private static final String ERROR_LOAD = "The menu loading is failed.";
-    private static final String EXIT = "exit";
+    private static final String WORD_EXIT = "exit";
     private static final String EMPTY_STRING = "";
     private static final String KEY_WORLD_NO = "no";
     private static final String KEY_WORLD_YES = "yes";
@@ -35,7 +34,7 @@ public class Menu {
                                  List<CourseDTO>, 
                                  List<StudentCourseDTO>,
                                  Integer> studentCourseService;
-    private MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>> menuView;
+    private MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>> menuView;
 
     public Menu(TableService<Integer> tableService, StudentService<List<StudentDTO>, 
                                                                    List<GroupDTO>, 
@@ -46,7 +45,7 @@ public class Menu {
                                      List<CourseDTO>, 
                                      List<StudentCourseDTO>, 
                                      Integer> studentCourseService,
-                MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>> menuView) {
+                MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>> menuView) {
         this.tableService = tableService;
         this.studentService = studentService;
         this.courseService = courseService;
@@ -62,7 +61,7 @@ public class Menu {
             for ( ; ; ) {
                 menuView.showMenuItems();
                 
-                switch (preventWrongInput(scanner)) {
+                switch (preventWrongInputOrExit(scanner)) {
                 case 1:
                     findGroupsWithLessOrEqualStudents(scanner);
                     break;
@@ -73,6 +72,9 @@ public class Menu {
                     addNewStudent(scanner);
                     break;
                 case 4:
+                    List<StudentDTO> students = studentService.getAllStudents();
+                    menuView.showStudents(students);
+                    break;
                 }
             }
         } catch (ServicesException.FindGroupsWithLessOrEqualStudentsFailure
@@ -80,7 +82,8 @@ public class Menu {
                 | IllegalStateException
                 | ServicesException.GetAllCoursesFailure 
                 | ServicesException.GetStudentsRelatedToCourseFaluer
-                | ServicesException.AddNewStudentFailure e) {
+                | ServicesException.AddNewStudentFailure
+                | ServicesException.GetAllStudentsFailure e) {
             throw new ServicesException.LoadUniversityMenuFail(ERROR_LOAD, e);
         } finally {
             scanner.close();
@@ -181,7 +184,7 @@ public class Menu {
             scanner.nextLine();
             String input = scanner.nextLine();
             
-            if (input.equals(EXIT)) {
+            if (input.equals(WORD_EXIT)) {
                 menuView.showFinalProgramMessage();
                 System.exit(NORMAL_STATUS);
             } else if (input.equals(EMPTY_STRING)) {
@@ -200,13 +203,16 @@ public class Menu {
         return scanner.nextInt();
     }
     
-    private int preventWrongInput(Scanner scanner) {
+    private int preventWrongInputOrExit(Scanner scanner) {
         int output = 0;
         
         for ( ; ; ) {
             if (!scanner.hasNextInt()) {
-                scanner.nextLine();
-                menuView.showWrongInputWarning();
+                if (scanner.nextLine().equals(WORD_EXIT)) {
+                    System.exit(NORMAL_STATUS);
+                } else {
+                    menuView.showWrongInputWarning(); 
+                }
             } else {
                 output = scanner.nextInt();
                 scanner.nextLine();

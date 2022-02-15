@@ -24,6 +24,7 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
     private static final String ERROR_INSERT = "The student addition service to the database fails.";
     private static final String ERROR_ASSIGN_GROUP = "The assining group to students is failed.";
     private static final String ERROR_ADD_STUDENT = "The student adding to the database is failed.";
+    private static final String ERROR_GET_ALL_STUDENT = "Getting students from the database is failed.";
     
     private Reader reader;
     private Generator generator;
@@ -31,6 +32,18 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
     public UniversityStudentService(Reader reader, Generator generator) {
         this.reader = reader;
         this.generator = generator;
+    }
+    
+    @Override 
+    public List<StudentDTO> getAllStudents() throws ServicesException.GetAllStudentsFailure {
+        try {
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+            return studentDAO.getAllStudents();
+        } catch (DAOException.GetAllSutudentsFail e) {
+            throw new ServicesException.GetAllStudentsFailure(ERROR_GET_ALL_STUDENT, e);
+        }
+        
     }
     
     @Override

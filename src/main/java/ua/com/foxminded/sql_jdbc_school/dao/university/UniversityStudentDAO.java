@@ -26,6 +26,19 @@ public class UniversityStudentDAO implements StudentDAO {
     private static final String ERROR_GET_ALL = "The getting of all the students is failed.";
     private static final String ERROR_INSERT = "The inserting of the students is failed.";
     private static final String ERROR_UDATE = "The updating of the students infurmation is failed.";
+    private static final String ERROR_DELETE = "The deletion of the student data is failed.";
+    
+    @Override
+    public int deleteStudent(int studentId) throws DAOException.DeleteStudentFailure {
+        try (Connection con = UniversityDAOFactory.creatConnection();
+             PreparedStatement statement = con.prepareStatement(null)) {
+            
+            
+        } catch (DAOException.DatabaseConnectionFail
+                | SQLException e) {
+            throw new DAOException.DeleteStudentFailure(ERROR_DELETE, e);
+        }
+    }
     
     @Override
     public int insertStudent(List<StudentDTO> students) throws DAOException.StudentInsertionFail  {

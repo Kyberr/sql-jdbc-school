@@ -2,6 +2,21 @@ package ua.com.foxminded.sql_jdbc_school.services;
 
 
 public class ServicesException {
+    public static class DeleteStudentFailure extends Exception {
+        private static final long serialVersionUID = 16L;
+
+        public GetAllStudentsFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    public static class GetAllStudentsFailure extends Exception {
+        private static final long serialVersionUID = 15L;
+
+        public GetAllStudentsFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
     
     public static class AddNewStudentFailure extends Exception {
         private static final long serialVersionUID = 14L;

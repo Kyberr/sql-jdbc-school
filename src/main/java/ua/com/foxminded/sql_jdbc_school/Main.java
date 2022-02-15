@@ -43,7 +43,8 @@ public class Main {
                              List<CourseDTO>, 
                              List<StudentCourseDTO>, Integer> studentCourseService = 
                                      new UniversityStudentCourseService(generator);
-        MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>> menuView = new ConsoleMenuView();
+        MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
+                 List<StudentDTO>> menuView = new ConsoleMenuView();
         Menu menu = new Menu(tableService, studentService, courseService, 
                              groupService, studentCourseService, menuView);
         

@@ -2,23 +2,26 @@ package ua.com.foxminded.sql_jdbc_school.view;
 
 public interface MenuView<T, E, S, F, M> {
     
-    public void showDeleteStudentOrReturnToMenu();
-    public void showStudentHasNotBeenDeletedMessage(M studentID);
-    public void showStudentHasBeenDeletedMessage(M studentId);
-    public void showStudentIdInputMessage();
+    public void addStudentToCourseOrReturnMenu();
+    public void studentHasNotBeenAddedToCourse();
+    public void studentHasBeenAddedToCourse();
+    public void deleteStudentOrReturnMenu();
+    public void studentHasNotBeenDeleted(M studentID);
+    public void studentHasBeenDeleted(M studentId);
+    public void enterStudentId();
     public void showStudents(F students);
-    public void studentHasBeenAddedMessage();
-    public void addStudentOrReturnMainMenuMessage();
-    public void confirmingMessage();
-    public void showFirstNameInputMessage();
-    public void showLastNameInputMessage();
+    public void studentHasBeenAddedToDatabase();
+    public void addStudentToDatabaseOrReturnMenu();
+    public void addStudentYesOrNo();
+    public void enterFirstName();
+    public void enterLastName();
     public void showStudentsOfCourse(S studentCourseList);
-    public void showFinalProgramMessage();
-    public void showFinalItemMessage();
+    public void executionHasBeenStopped();
+    public void returnMenuOrExit();
     public void showCourses(E coursesList);
-    public void showStudentsNumberOfGroups(T groupsList);
-    public void showStudentsNumberInputMessage();
-    public void showCourseIdInputMessage();
+    public void showNumberOfStudentsInGroups(T groupsList);
+    public void enterNumberOfStudents();
+    public void enterCourseId();
     public void showMenuItems();
-    public void showWrongInputWarning();
+    public void showIncorrectInputWarning();
 }

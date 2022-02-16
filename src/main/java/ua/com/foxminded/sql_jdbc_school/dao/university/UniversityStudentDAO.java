@@ -14,25 +14,50 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException.DatabaseConnectionFail;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 
 public class UniversityStudentDAO implements StudentDAO {
-    private static final String SQL_INSERT = "insert into department.students (group_id, "
-                                           + "first_name, last_name) values (?, ?, ?)";
-    private static final String SQL_SELECT_ALL = "select * from department.students";
-    private static final String SQL_UPDATE = "update department.students set group_id=?, "
-                                           + "first_name=?, last_name=? where student_id=?";
-    private static final String SQL_DELETE_STUDENT = "delete from department.students where student_id = ?";
-    private static final String COLUMN_NAME_STUDENT_ID = "student_id";
-    private static final String COLUMN_NAME_GROUP_ID = "group_id";
-    private static final String COLUMN_NAME_FIRST_NAME = "first_name";
-    private static final String COLUMN_NAME_LAST_NAME = "last_name";
+    
+    private static final String SELECT_STUDENT = "select * from department.students where student_id = ?";
+    private static final String INSERT_STUDENTS = "insert into department.students (group_id, "
+                                                + "first_name, last_name) values (?, ?, ?)";
+    private static final String SELECT_ALL = "select * from department.students";
+    private static final String UPDATE = "update department.students set group_id=?, "
+                                       + "first_name=?, last_name=? where student_id=?";
+    private static final String DELETE_STUDENT = "delete from department.students where student_id = ?";
+    private static final String STUDENT_ID = "student_id";
+    private static final String GROUP_ID = "group_id";
+    private static final String FIRST_NAME = "first_name";
+    private static final String LAST_NAME = "last_name";
     private static final String ERROR_GET_ALL = "The getting of all the students is failed.";
     private static final String ERROR_INSERT = "The inserting of the students is failed.";
     private static final String ERROR_UDATE = "The updating of the students infurmation is failed.";
     private static final String ERROR_DELETE = "The deletion of the student data is failed.";
+    private static final String ERROR_GET_STUDENT = "Getting the student data is failed.";
+    
+    @Override
+    public StudentDTO getStudent(int studentId) throws DAOException.GetStudentFailure {
+        try (Connection con = UniversityDAOFactory.creatConnection();
+             PreparedStatement statement = con.prepareStatement(SELECT_STUDENT);) {
+
+            StudentDTO student = null;
+            statement.setInt(1, studentId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                student = new StudentDTO(resultSet.getInt(STUDENT_ID), 
+                                         (Integer) resultSet.getObject(GROUP_ID),
+                                         resultSet.getString(FIRST_NAME), 
+                                         resultSet.getString(LAST_NAME));
+            }
+            resultSet.close();
+            return student;
+        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
+            throw new DAOException.GetStudentFailure(ERROR_GET_STUDENT, e);
+        }
+    }
     
     @Override
     public int deleteStudent(int studentId) throws DAOException.DeleteStudentFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(SQL_DELETE_STUDENT)) {
+             PreparedStatement statement = con.prepareStatement(DELETE_STUDENT)) {
             
             statement.setInt(1, studentId);
             return statement.executeUpdate();
@@ -45,7 +70,7 @@ public class UniversityStudentDAO implements StudentDAO {
     @Override
     public int insertStudent(List<StudentDTO> students) throws DAOException.StudentInsertionFail  {
         try(Connection con = UniversityDAOFactory.creatConnection();
-            PreparedStatement statement = con.prepareStatement(SQL_INSERT);) {
+            PreparedStatement statement = con.prepareStatement(INSERT_STUDENTS);) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
             
@@ -61,16 +86,16 @@ public class UniversityStudentDAO implements StudentDAO {
                 
                 con.commit();
                 return status;
-            } catch (SQLException e) {
+            } catch (SQLException ex) {
                 if (con != null) {
                     try {
                         con.rollback(save1);
-                    } catch (SQLException exc) {
-                        throw new SQLException(exc);
+                    } catch (SQLException exp) {
+                        throw new SQLException(exp);
                     }
                 }
                 
-                throw new SQLException(e);
+                throw new SQLException(ex);
             }
         } catch (DatabaseConnectionFail | SQLException e) {
             throw new DAOException.StudentInsertionFail(ERROR_INSERT, e);
@@ -81,14 +106,14 @@ public class UniversityStudentDAO implements StudentDAO {
     public List<StudentDTO> getAllStudents() throws DAOException.GetAllSutudentsFail {
         try(Connection con = UniversityDAOFactory.creatConnection();
             Statement statement = con.createStatement();
-            ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL);) {
+            ResultSet resultSet = statement.executeQuery(SELECT_ALL);) {
             List<StudentDTO> students = new ArrayList<>();
             
             while(resultSet.next()) {
-                students.add(new StudentDTO((Integer) resultSet.getObject(COLUMN_NAME_STUDENT_ID),
-                                            (Integer) resultSet.getObject(COLUMN_NAME_GROUP_ID),
-                                            resultSet.getString(COLUMN_NAME_FIRST_NAME),
-                                            resultSet.getString(COLUMN_NAME_LAST_NAME)));
+                students.add(new StudentDTO((Integer) resultSet.getObject(STUDENT_ID),
+                                            (Integer) resultSet.getObject(GROUP_ID),
+                                            resultSet.getString(FIRST_NAME),
+                                            resultSet.getString(LAST_NAME)));
             }
             
             return students;
@@ -100,7 +125,7 @@ public class UniversityStudentDAO implements StudentDAO {
     @Override
     public int updateStudent(List<StudentDTO> students) throws DAOException.StudentUptatingFail {
         try(Connection con = UniversityDAOFactory.creatConnection();
-            PreparedStatement statement = con.prepareStatement(SQL_UPDATE)) {
+            PreparedStatement statement = con.prepareStatement(UPDATE)) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
             int status = 0;
@@ -116,16 +141,16 @@ public class UniversityStudentDAO implements StudentDAO {
                 
                 con.commit();
                 return status;
-            } catch (SQLException e) {
+            } catch (SQLException ex) {
                 if (con != null) {
                     try {
                         con.rollback(save1);
-                    } catch (SQLException exc) {
-                        throw new SQLException(exc);
+                    } catch (SQLException exp) {
+                        throw new SQLException(exp);
                     }
                 }
                 
-                throw new SQLException(e);
+                throw new SQLException(ex);
             }
         } catch (DAOException.DatabaseConnectionFail | SQLException e) {
             throw new DAOException.StudentUptatingFail(ERROR_UDATE, e);

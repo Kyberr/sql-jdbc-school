@@ -23,9 +23,9 @@ public class Menu {
     private static final String KEY_WORLD_NO = "no";
     private static final String KEY_WORLD_YES = "yes";
     private static final String KEY_WORLD_EXIT = "exit";
-    private static final int NORMAL_STATUS = 0;
+    private static final int NORMAL_DEL_STATUS = 0;
     private static final int NUMBER_OF_ITEMS = 6;
-    private static final int ADDED_STUDENT_STATUS = 1;
+    private static final int NORMAL_ADD_STATUS = 1;
    
     private TableService<Integer> tableService;
     private StudentService<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService;
@@ -72,7 +72,9 @@ public class Menu {
                     deleteStudent(scanner);
                     break;
                 case 5:
-                    
+                    addStudentToCourse(scanner);
+                    break;
+                case 6:
                 }
             }
         } catch (ServicesException.FindGroupsWithLessOrEqualStudentsFailure
@@ -107,23 +109,77 @@ public class Menu {
         }
     }
     
+    private void addStudentToCourse(Scanner scanner) throws AddNewStudentFailure, 
+                                                            GetAllStudentsFailure, 
+                                                            GetAllCoursesFailure {
+        first: for (;;) {
+            List<StudentDTO> allStudents = studentService.getAllStudents();
+            menuView.showStudents(allStudents);
+            List<CourseDTO> allCourses = courseService.getAllCourses();
+            menuView.showCourses(allCourses);
+            menuView.enterStudentId();
+            int studentId = scanOnlyIntInput(scanner);
+            menuView.enterCourseId();
+            int courseId = scanOnlyIntInput(scanner);
+            menuView.addStudentYesOrNo();
+            String confirm = scanOnlyYesOrNo(scanner);
+            int status = 0;
+
+            if (confirm.equals(KEY_WORLD_YES)) {
+                status = studentCourseService.addStudentToCourse(studentId, courseId);
+                if (status == NORMAL_ADD_STATUS) {
+                    menuView.studentHasBeenAddedToCourse();
+                } else {
+                    menuView.studentHasNotBeenAddedToCourse();
+                }
+            } else if (confirm.equals(KEY_WORLD_NO)) {
+                break first;
+            }
+
+            for ( ; ; ) {
+                menuView.addStudentToCourseOrReturnMenu();
+                String input = scanner.nextLine();
+                
+                if (input.equals(EMPTY_STRING)) {
+                    continue first;
+                } else if (input.equals(WORD_EXIT)) {
+                    break first;
+                }
+            }
+        }
+    }
+    
+    private String scanOnlyYesOrNo(Scanner scanner) {
+        String confirm = "";
+        
+        for (;;) {
+            confirm = scanner.nextLine();
+
+            if (confirm.equals(KEY_WORLD_YES)) {
+                return confirm;
+            } else if (confirm.equals(KEY_WORLD_NO)) {
+                return confirm;
+            }
+        }
+    }
+    
     private void deleteStudent(Scanner scanner) throws DeleteStudentFailure, 
                                                        GetAllStudentsFailure {
         first: for ( ; ; ) {
             List<StudentDTO> students = studentService.getAllStudents();
             menuView.showStudents(students);
-            menuView.showStudentIdInputMessage();
-            int studentId = ensureIntInput(scanner);
+            menuView.enterStudentId();
+            int studentId = scanOnlyIntInput(scanner);
             int status = studentService.deleteStudent(studentId);
             
             if (status == 1) {
-                menuView.showStudentHasBeenDeletedMessage(studentId);
+                menuView.studentHasBeenDeleted(studentId);
             } else {
-                menuView.showStudentHasNotBeenDeletedMessage(studentId);
+                menuView.studentHasNotBeenDeleted(studentId);
             }
             
             for ( ; ; ) {
-                menuView.showDeleteStudentOrReturnToMenu();
+                menuView.deleteStudentOrReturnMenu();
                 String input = scanner.nextLine();
                 
                 if (input.equals(WORD_EXIT)) {
@@ -137,9 +193,9 @@ public class Menu {
     
     private void addNewStudent(Scanner scanner) throws AddNewStudentFailure {
         for ( ; ; ) {
-            menuView.showLastNameInputMessage();
+            menuView.enterLastName();
             String lastName = scanner.nextLine();
-            menuView.showFirstNameInputMessage();
+            menuView.enterFirstName();
             String firstName = scanner.nextLine();
             enterStudentNameAndAddToDatabase(lastName, firstName, scanner);
             String keyWord = "";
@@ -153,7 +209,7 @@ public class Menu {
     
     private String selectNextAction(Scanner scanner, String keyWord) {
         for ( ; ; ) {
-            menuView.addStudentOrReturnMainMenuMessage();
+            menuView.addStudentToDatabaseOrReturnMenu();
             String input = scanner.nextLine();
             
             if (input.equals(EMPTY_STRING)) {
@@ -170,12 +226,12 @@ public class Menu {
                                                   String firstName, 
                                                   Scanner scanner) throws AddNewStudentFailure {
         for (;;) {
-            menuView.confirmingMessage();
+            menuView.addStudentYesOrNo();
             String input = scanner.nextLine();
             
             if (input.equals(KEY_WORLD_YES)) {
-                if (studentService.addStudent(lastName, firstName) == ADDED_STUDENT_STATUS) {
-                    menuView.studentHasBeenAddedMessage();
+                if (studentService.addStudent(lastName, firstName) == NORMAL_ADD_STATUS) {
+                    menuView.studentHasBeenAddedToDatabase();
                     break;
                 }
             } else if (input.equals(KEY_WORLD_NO)) {
@@ -188,8 +244,8 @@ public class Menu {
                                                                      GetStudentsRelatedToCourseFaluer {
         List<CourseDTO> courses = courseService.getAllCourses();
         menuView.showCourses(courses);
-        menuView.showCourseIdInputMessage();
-        Integer courseID = ensureIntInput(CouseIdScanner);
+        menuView.enterCourseId();
+        Integer courseID = scanOnlyIntInput(CouseIdScanner);
         List<StudentCourseDTO> studentCourse = studentCourseService.getStudentsOfCourse(courseID);
         menuView.showStudentsOfCourse(studentCourse);
         exitOrReturnToBegin(CouseIdScanner);
@@ -197,34 +253,34 @@ public class Menu {
     
     private void findGroupsWithLessOrEqualStudents(Scanner StudentsNumberScanner) 
             throws FindGroupsWithLessOrEqualStudentsFailure {
-        menuView.showStudentsNumberInputMessage();
+        menuView.enterNumberOfStudents();
         List<GroupDTO> groups = groupService
-                .findGroupsWithLessOrEqualStudents(ensureIntInput(StudentsNumberScanner));
-        menuView.showStudentsNumberOfGroups(groups);
+                .findGroupsWithLessOrEqualStudents(scanOnlyIntInput(StudentsNumberScanner));
+        menuView.showNumberOfStudentsInGroups(groups);
         exitOrReturnToBegin(StudentsNumberScanner);
     }
     
     private void exitOrReturnToBegin(Scanner scanner) {
-        menuView.showFinalItemMessage();
+        menuView.returnMenuOrExit();
         
         while(scanner.hasNextLine()) {
             String input = scanner.nextLine();
             
             if (input.equals(WORD_EXIT)) {
-                menuView.showFinalProgramMessage();
-                System.exit(NORMAL_STATUS);
+                menuView.executionHasBeenStopped();
+                System.exit(NORMAL_DEL_STATUS);
             } else if (input.equals(EMPTY_STRING)) {
                 break;
             } else {
-                menuView.showFinalItemMessage();
+                menuView.returnMenuOrExit();
             }
         }
     }
     
-    private int ensureIntInput(Scanner scanner) {
+    private int scanOnlyIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            menuView.showWrongInputWarning();
+            menuView.showIncorrectInputWarning();
         }
         int input = scanner.nextInt();
         scanner.nextLine(); // it is used to clean the buffer from the empty string       
@@ -237,16 +293,16 @@ public class Menu {
         for ( ; ; ) {
             if (!scanner.hasNextInt()) {
                 if (scanner.nextLine().equals(WORD_EXIT)) {
-                    System.exit(NORMAL_STATUS);
+                    System.exit(NORMAL_DEL_STATUS);
                 } else {
-                    menuView.showWrongInputWarning(); 
+                    menuView.showIncorrectInputWarning(); 
                 }
             } else {
                 output = scanner.nextInt();
                 scanner.nextLine();
                 
                 if (output == 0 || output > NUMBER_OF_ITEMS) {
-                    menuView.showWrongInputWarning();
+                    menuView.showIncorrectInputWarning();
                 } else {
                     break;
                 }

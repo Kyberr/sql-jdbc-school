@@ -15,89 +15,111 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>,
                                                  List<StudentDTO>, 
                                                  Integer> {
     
-    private static final String FORMAT_START = "%85s";
-    private static final String FORMAT_MENU = "%-4s%4s";
-    private static final String FORMAT_GROUPS = "| %-8s| %-12s| %-18s|\n";
-    private static final String FORMAT_GROUPS_LINE = "%41s\n";
-    private static final String FORMAT_COURSES = "| %-9s| %-25s| %-20s|\n";
-    private static final String FORMAT_COURSES_LINE = "%50s\n";
-    private static final String FORMAT_STUDENT_COURSES = "| %-10s| %-9s| %-10s| %-10s| %-9s| %-18s| %-18s|\n";
-    private static final String FORMAT_STUDENT_COURSES_LINE = "%99s\n";
-    private static final String FORMAT_WARNING = "%48s";
-    private static final String FORMAT_STUDENTS = "| %-10s| %-11s| %-11s| %-8s|\n";
-    private static final String FORMAT_DELETED_STUDENT = "The student with ID %s has been deleted.\n"; 
-    private static final String FORMAT_STUDENT_IS_NOT_DELETED = "There is not a student with ID %s in the database.\n"; 
+    private static final String START_MESSAGE_FORMAT = "%85s";
+    private static final String MENU_FORMAT = "%-4s%4s";
+    private static final String GROUPS_FORMAT = "| %-8s| %-12s| %-18s|\n";
+    private static final String GROUPS_LINE_FORMAT = "%41s\n";
+    private static final String COURSES_FORMAT = "| %-9s| %-25s| %-20s|\n";
+    private static final String COURSES_LINE_FORMAT = "%50s\n";
+    private static final String STUDENT_COURSES_FORMAT = "| %-10s| %-9s| %-10s| %-10s| %-9s| %-18s| %-18s|\n";
+    private static final String STUDENT_COURSES_LINE_FORMAT = "%99s\n";
+    private static final String STUDENTS_FORMAT = "| %-10s| %-11s| %-11s| %-8s|\n";
+    private static final String STUDENT_HAS_BEEN_DELETED_FORMAT = "The student with ID %s has been deleted.\n"; 
+    private static final String STUDENT_HAS_NOT_BEEN_DELETED_FORMAT = "There is not a student with "
+                                                                    + "ID %s in the database.\n"; 
     
-    private static final String START = "Enter the corresponding number or write "
-                                      + "\"exit\" and press the \"Enter\" key.\n\n";
-    private static final String FIND_LESS = "Find all groups with a less or equal student count.\n";
-    private static final String FIND_LESS_NUMBER = "1.";
-    private static final String FIND_ALL = "Find all students related to a course with a given name.\n";
-    private static final String FIND_ALL_NUMBER = "2.";
+    private static final String ADD_STUDENT_TO_COURSE_OR_RETURN = "Press the \"Enter\" key to add another student or "
+            + "write \"exit\" and press the \"Enter\" key to return to the main menu.";
+    private static final String STUDENT_HAS_NOT_BEEN_ADDED_TO_COURSE = "The student has not been added to the course.";
+    private static final String STUDENT_HAS_BEEN_ADDED_TO_COURSE = "The student has been added to the course.";
+    private static final String START_MESSAGE = "Enter the corresponding number or write "
+                                              + "\"exit\" and press the \"Enter\" key.\n\n";
+    private static final String FIND_GROUPS_WITH_NUMBER_OF_STUDENTS = "Find all groups with a less or equal "
+                                                                    + "student count.\n";
+    private static final String ONE = "1.";
+    private static final String FIND_STUDENTS_OF_COURSE = "Find all students related to a course with a given name.\n";
+    private static final String TWO = "2.";
     private static final String ADD_STUDENT = "Add a new student to the database.\n";
-    private static final String ADD_STUDENT_NUMBER = "3.";
-    private static final String DEL_STUDENT = "Delete a student from the database.\n";
-    private static final String DEL_STUDENT_NUMBER = "4.";
-    private static final String COURSE = "Add a student to a course.\n";
-    private static final String COURSE_NUMBER = "5.";
-    private static final String REMOVE = "Remove a student from a course.\n";
-    private static final String REMOVE_NUMBER = "6.";
-    private static final String STUDENTS_NUMBER_INPUT_MESSAGE = "Enter the number of students:\n";
-    private static final String NO_GROUPS_MESSAGE = "There are no groups with this number of students.\n";
-    private static final String COURSE_ID_INPUT_MESSAGE = "Enter the course ID from the list above:";
-    private static final String NO_STUDENTS_MESSAGE = "No students are studying the specified course.\n";
-    private static final String ERROR_INPUT = "The input must be the number of the corresponding value.\n";
+    private static final String THREE = "3.";
+    private static final String DELETE_STUDENT = "Delete a student from the database.\n";
+    private static final String FOUR = "4.";
+    private static final String ADD_STUDENT_TO_COURSE = "Add a student to a course.\n";
+    private static final String FIVE = "5.";
+    private static final String REMOVE_STUDENT_FROM_COURSE = "Remove a student from a course.\n";
+    private static final String SIX = "6.";
+    private static final String ENTER_NUMBER_OF_STUDENTS = "Enter the number of students:\n";
+    private static final String NO_GROUPS = "There are no groups with this number of students.\n";
+    private static final String ENTER_COURSE_ID = "Enter the course ID from the list above:";
+    private static final String NO_STUDENTS_OF_COURSE = "No students are studying the specified course.\n";
+    private static final String INCORRECT_INPUT = "The input must be the number of the corresponding value.\n";
     private static final String GROUP_ID = "Group ID";
     private static final String GROUP_NAME = "Group's name";
-    private static final String GROUP_STUDENTS_NUMBER = "Number of students";
+    private static final String NUMBER_OF_STUDENTS_IN_GROUP = "Number of students";
     private static final String COURSE_ID = "Course ID";
     private static final String COURSE_NAME = "Course name";
     private static final String COURSE_DESCRIPTION = "Course description";
     private static final String STUDENT_ID = "Student ID";
-    private static final String FIRST_NAME = "First name";
-    private static final String LAST_NAME = "Last name";
-    private static final String FINAL_ITEM_MESSAGE = "Press the \"Enter\" key to return to the main menu or "
-                                                   + "write \"exit\" and press the \"Enter\" key.";
-    private static final String FINAL_PROGRAM_MESSAGE = "The program execution has been stopped.";
-    private static final String LAST_NAME_INPUT_MESSAGE = "Enter the last name of the student adding:";
-    private static final String FIRST_NAME_INPUT_MESSAGE = "Enter the first name of the student adding:";
-    private static final String CONFIRMING_MESSAGE = "To confirm the student adding, write \"yes\" or \"no\" "
-                                                   + "and press the \"Enter\" key:";
-    private static final String ADD_STUDENT_OR_RETURN_MESSAGE = "Press the \"Enter\" key to add another student or "
+    private static final String STUDENT_FIRST_NAME = "First name";
+    private static final String STUDENT_LAST_NAME = "Last name";
+    private static final String RETURN_MENU_OR_EXIT = "Press the \"Enter\" key to return to the main menu or "
+                                                    + "write \"exit\" and press the \"Enter\" key.";
+    private static final String EXECUTION_HAS_BEEN_STOPPED = "The program execution has been stopped.";
+    private static final String ENTER_LAST_NAME = "Enter the last name of the student adding:";
+    private static final String ENTER_FIRST_NAME = "Enter the first name of the student adding:";
+    private static final String ADD_STUDENT_YES_OR_NO = "To confirm the student adding, write \"yes\" or \"no\" "
+                                                      + "and press the \"Enter\" key:";
+    private static final String ADD_STUDENT_OR_RETURN_MENU = "Press the \"Enter\" key to add another student or "
             + "write \"exit\" and press the \"Enter\" key to return the main menu.";
-    private static final String ADD_STUDENT_CONFIRM_MESSAGE = "The new student has been added to the databse."; 
+    private static final String STUDENT_HAS_BEEN_ADDED = "The new student has been added to the databse."; 
     private static final String DATABASE_HAS_NO_STUDENTS = "The database has no students."; 
     private static final String STUDENT_ID_INPUT = "Input a student ID from the list above and press the \"Enter\" key:"; 
-    private static final String DELETE_STUDENT_OR_RETURN = "Press the \"Enter\" key to delete another student or"
+    private static final String DELETE_STUDENT_OR_RETURN_MENU = "Press the \"Enter\" key to delete another student or"
             + " write \"exit\" and press the \"Enter\" key to return the main menu."; 
-    
-    private static final int GROUP_LINE = 45;
-    private static final int COURSE_LINE = 61;
-    private static final int STUDENT_COURSE_LINE = 99;
-    private static final int STUDENT_LINE = 49;
+    private static final int GROUP_LINE_LENGTH = 45;
+    private static final int COURSE_LINE_LENGTH = 61;
+    private static final int STUDENT_COURSES_LINE_LENGTH = 99;
+    private static final int STUDENTS_LINE_LENGTH = 49;
     private static final char NULL = '\0';
     private static final char HATCH = '-';
     
     @Override
-    public void showDeleteStudentOrReturnToMenu() {
+    public void addStudentToCourseOrReturnMenu() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(DELETE_STUDENT_OR_RETURN);
+        printWriter.println(ADD_STUDENT_TO_COURSE_OR_RETURN);
     }
     
     @Override
-    public void showStudentHasNotBeenDeletedMessage(Integer studentID) {
+    public void studentHasNotBeenAddedToCourse() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.format(FORMAT_STUDENT_IS_NOT_DELETED, studentID);
+        printWriter.println(STUDENT_HAS_NOT_BEEN_ADDED_TO_COURSE);
+    }
+    
+    @Override 
+    public void studentHasBeenAddedToCourse() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(STUDENT_HAS_BEEN_ADDED_TO_COURSE);
     }
     
     @Override
-    public void showStudentHasBeenDeletedMessage(Integer studentId) {
+    public void deleteStudentOrReturnMenu() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.format(FORMAT_DELETED_STUDENT, studentId);
+        printWriter.println(DELETE_STUDENT_OR_RETURN_MENU);
     }
     
     @Override
-    public void showStudentIdInputMessage() {
+    public void studentHasNotBeenDeleted(Integer studentID) {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.format(STUDENT_HAS_NOT_BEEN_DELETED_FORMAT, studentID);
+    }
+    
+    @Override
+    public void studentHasBeenDeleted(Integer studentId) {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.format(STUDENT_HAS_BEEN_DELETED_FORMAT, studentId);
+    }
+    
+    @Override
+    public void enterStudentId() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         printWriter.println(STUDENT_ID_INPUT);
     }
@@ -112,49 +134,49 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>,
             AtomicInteger atomicInteger = new AtomicInteger();
             students.stream().parallel().forEachOrdered((student) -> {
                 if (atomicInteger.getAndIncrement() == 0) {
-                    printWriter.println(new String(new char[STUDENT_LINE]).replace(NULL, HATCH));
-                    printWriter.format(FORMAT_STUDENTS, STUDENT_ID, FIRST_NAME, LAST_NAME, GROUP_ID);
-                    printWriter.println(new String(new char[STUDENT_LINE]).replace(NULL, HATCH));
-                    printWriter.format(FORMAT_STUDENTS, student.getStudentId(), student.getFirstName(), 
+                    printWriter.println(new String(new char[STUDENTS_LINE_LENGTH]).replace(NULL, HATCH));
+                    printWriter.format(STUDENTS_FORMAT, STUDENT_ID, STUDENT_FIRST_NAME, STUDENT_LAST_NAME, GROUP_ID);
+                    printWriter.println(new String(new char[STUDENTS_LINE_LENGTH]).replace(NULL, HATCH));
+                    printWriter.format(STUDENTS_FORMAT, student.getStudentId(), student.getFirstName(), 
                                        student.getLastName(), student.getGroupId());
-                    printWriter.println(new String(new char[STUDENT_LINE]).replace(NULL, HATCH));
+                    printWriter.println(new String(new char[STUDENTS_LINE_LENGTH]).replace(NULL, HATCH));
                 } else {
-                    printWriter.format(FORMAT_STUDENTS, student.getStudentId(), student.getFirstName(), 
+                    printWriter.format(STUDENTS_FORMAT, student.getStudentId(), student.getFirstName(), 
                             student.getLastName(), student.getGroupId());
-                    printWriter.println(new String(new char[STUDENT_LINE]).replace(NULL, HATCH));
+                    printWriter.println(new String(new char[STUDENTS_LINE_LENGTH]).replace(NULL, HATCH));
                 }
             });
         }
     }
     
     @Override
-    public void studentHasBeenAddedMessage() {
+    public void studentHasBeenAddedToDatabase() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(ADD_STUDENT_CONFIRM_MESSAGE);
+        printWriter.println(STUDENT_HAS_BEEN_ADDED);
     }
     
     @Override
-    public void addStudentOrReturnMainMenuMessage() {
+    public void addStudentToDatabaseOrReturnMenu() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(ADD_STUDENT_OR_RETURN_MESSAGE);
+        printWriter.println(ADD_STUDENT_OR_RETURN_MENU);
     }
     
     @Override
-    public void confirmingMessage() {
+    public void addStudentYesOrNo() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(CONFIRMING_MESSAGE);
+        printWriter.println(ADD_STUDENT_YES_OR_NO);
     }
     
     @Override 
-    public void showFirstNameInputMessage() {
+    public void enterFirstName() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(FIRST_NAME_INPUT_MESSAGE);
+        printWriter.println(ENTER_FIRST_NAME);
     }
     
     @Override
-    public void showLastNameInputMessage() {
+    public void enterLastName() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(LAST_NAME_INPUT_MESSAGE);
+        printWriter.println(ENTER_LAST_NAME);
     }
     
     @Override 
@@ -162,43 +184,43 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>,
         PrintWriter printWriter = new PrintWriter(System.out, true);
         
         if (studentCourseList.isEmpty()) {
-            printWriter.println(NO_STUDENTS_MESSAGE);
+            printWriter.println(NO_STUDENTS_OF_COURSE);
         } else {
             AtomicInteger atomicInteger = new AtomicInteger();
             studentCourseList.stream().parallel().forEachOrdered((line) -> {
                 if (atomicInteger.getAndIncrement() == 0) {
-                    printWriter.format(FORMAT_STUDENT_COURSES_LINE, new String(new char[STUDENT_COURSE_LINE])
-                                                                    .replace(NULL, HATCH));
-                    printWriter.format(FORMAT_STUDENT_COURSES, STUDENT_ID, GROUP_ID, FIRST_NAME, LAST_NAME, 
-                                       COURSE_ID, COURSE_NAME, COURSE_DESCRIPTION);
-                    printWriter.format(FORMAT_STUDENT_COURSES_LINE, new String(new char[STUDENT_COURSE_LINE])
-                            .replace(NULL, HATCH));
-                    printWriter.format(FORMAT_STUDENT_COURSES, line.getStudentId(), line.getGroupId(),  
+                    printWriter.format(STUDENT_COURSES_LINE_FORMAT, 
+                                       new String(new char[STUDENT_COURSES_LINE_LENGTH]).replace(NULL, HATCH));
+                    printWriter.format(STUDENT_COURSES_FORMAT, STUDENT_ID, GROUP_ID, STUDENT_FIRST_NAME, 
+                                       STUDENT_LAST_NAME, COURSE_ID, COURSE_NAME, COURSE_DESCRIPTION);
+                    printWriter.format(STUDENT_COURSES_LINE_FORMAT, 
+                                       new String(new char[STUDENT_COURSES_LINE_LENGTH]).replace(NULL, HATCH));
+                    printWriter.format(STUDENT_COURSES_FORMAT, line.getStudentId(), line.getGroupId(),  
                                        line.getFirstName(), line.getLastName(), line.getCourseId(), 
                                        line.getCourseName(), line.getCourseDescription());
-                    printWriter.format(FORMAT_STUDENT_COURSES_LINE, new String(new char[STUDENT_COURSE_LINE])
-                            .replace(NULL, HATCH));
+                    printWriter.format(STUDENT_COURSES_LINE_FORMAT, 
+                                       new String(new char[STUDENT_COURSES_LINE_LENGTH]).replace(NULL, HATCH));
                 } else {
-                    printWriter.format(FORMAT_STUDENT_COURSES, line.getStudentId(), line.getGroupId(),  
+                    printWriter.format(STUDENT_COURSES_FORMAT, line.getStudentId(), line.getGroupId(),  
                             line.getFirstName(), line.getLastName(), line.getCourseId(), 
                             line.getCourseName(), line.getCourseDescription());
-                    printWriter.format(FORMAT_STUDENT_COURSES_LINE, new String(new char[STUDENT_COURSE_LINE])
-                            .replace(NULL, HATCH));
+                    printWriter.format(STUDENT_COURSES_LINE_FORMAT, 
+                                       new String(new char[STUDENT_COURSES_LINE_LENGTH]).replace(NULL, HATCH));
                 }
             });
         }
     }
     
     @Override
-    public void showFinalProgramMessage() {
+    public void executionHasBeenStopped() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(FINAL_PROGRAM_MESSAGE);
+        printWriter.println(EXECUTION_HAS_BEEN_STOPPED);
     }
     
     @Override
-    public void showFinalItemMessage() {
+    public void returnMenuOrExit() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(FINAL_ITEM_MESSAGE);
+        printWriter.println(RETURN_MENU_OR_EXIT);
     }
     
     @Override
@@ -207,72 +229,75 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>,
         AtomicInteger atomicInteger = new AtomicInteger();
         coursesList.stream().parallel().forEachOrdered((line) -> {
             if (atomicInteger.getAndIncrement() == 0) {
-                printWriter.format(FORMAT_COURSES_LINE, new String(new char[COURSE_LINE]).replace(NULL, HATCH));
-                printWriter.format(FORMAT_COURSES, COURSE_ID, COURSE_NAME, COURSE_DESCRIPTION);
-                printWriter.format(FORMAT_COURSES_LINE, new String(new char[COURSE_LINE]).replace(NULL, HATCH));
-                printWriter.format(FORMAT_COURSES, line.getCourseId(), line.getCourseName(),
+                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH]).replace(NULL, HATCH));
+                printWriter.format(COURSES_FORMAT, COURSE_ID, COURSE_NAME, COURSE_DESCRIPTION);
+                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH]).replace(NULL, HATCH));
+                printWriter.format(COURSES_FORMAT, line.getCourseId(), line.getCourseName(), 
                                    line.getCourseDescription());
-                printWriter.format(FORMAT_COURSES_LINE, new String(new char[COURSE_LINE]).replace(NULL, HATCH));
+                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH]).replace(NULL, HATCH));
             } else {
-                printWriter.format(FORMAT_COURSES, line.getCourseId(), line.getCourseName(),
+                printWriter.format(COURSES_FORMAT, line.getCourseId(), line.getCourseName(),
                                    line.getCourseDescription());
-                printWriter.format(FORMAT_COURSES_LINE, new String(new char[COURSE_LINE]).replace(NULL, HATCH));
+                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH]).replace(NULL, HATCH));
             }
         });
     }
     
     @Override 
-    public void showCourseIdInputMessage() {
+    public void enterCourseId() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(COURSE_ID_INPUT_MESSAGE);
+        printWriter.println(ENTER_COURSE_ID);
     }
     
     @Override
-    public void showStudentsNumberOfGroups(List<GroupDTO> groupsList) {
+    public void showNumberOfStudentsInGroups(List<GroupDTO> groupsList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         
         if (groupsList.isEmpty()) {
-            printWriter.println(NO_GROUPS_MESSAGE);
+            printWriter.println(NO_GROUPS);
         } else {
             AtomicInteger atomicInteger = new AtomicInteger();
             groupsList.stream().parallel().forEachOrdered((line) -> {
                 if (atomicInteger.getAndIncrement() == 0) {
-                    printWriter.format(FORMAT_GROUPS_LINE, new String(new char[GROUP_LINE]).replace(NULL, HATCH));
-                    printWriter.format(FORMAT_GROUPS, GROUP_ID, GROUP_NAME, GROUP_STUDENTS_NUMBER);
-                    printWriter.format(FORMAT_GROUPS_LINE, new String(new char[GROUP_LINE]).replace(NULL, HATCH));
-                    printWriter.format(FORMAT_GROUPS, line.getGroupId(), 
-                                       line.getGroupName(), line.getStudentsNumber());
-                    printWriter.format(FORMAT_GROUPS_LINE, new String(new char[GROUP_LINE]).replace(NULL, HATCH));
+                    printWriter.format(GROUPS_LINE_FORMAT, new String(new char[GROUP_LINE_LENGTH])
+                                                                     .replace(NULL, HATCH));
+                    printWriter.format(GROUPS_FORMAT, GROUP_ID, GROUP_NAME, NUMBER_OF_STUDENTS_IN_GROUP);
+                    printWriter.format(GROUPS_LINE_FORMAT, new String(new char[GROUP_LINE_LENGTH])
+                                                                     .replace(NULL, HATCH));
+                    printWriter.format(GROUPS_FORMAT, line.getGroupId(), line.getGroupName(), 
+                                       line.getStudentsNumber());
+                    printWriter.format(GROUPS_LINE_FORMAT, new String(new char[GROUP_LINE_LENGTH])
+                                                                     .replace(NULL, HATCH));
                 } else {
-                    printWriter.format(FORMAT_GROUPS, line.getGroupId(), 
-                                       line.getGroupName(), line.getStudentsNumber());
-                    printWriter.format(FORMAT_GROUPS_LINE, new String(new char[GROUP_LINE]).replace(NULL, HATCH));
+                    printWriter.format(GROUPS_FORMAT, line.getGroupId(), line.getGroupName(),line.getStudentsNumber());
+                    printWriter.format(GROUPS_LINE_FORMAT, new String(new char[GROUP_LINE_LENGTH])
+                                                                     .replace(NULL, HATCH));
                 }
             });
         }
     }
     
     @Override
-    public void showStudentsNumberInputMessage() {
+    public void enterNumberOfStudents() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.println(STUDENTS_NUMBER_INPUT_MESSAGE);
+        printWriter.println(ENTER_NUMBER_OF_STUDENTS);
     }
     
     @Override
-    public void showWrongInputWarning() {
+    public void showIncorrectInputWarning() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.format(FORMAT_WARNING, ERROR_INPUT);
+        printWriter.println(INCORRECT_INPUT);
     }
     
     @Override
     public void showMenuItems() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
-        printWriter.format(FORMAT_START, START);
-        printWriter.format(FORMAT_MENU, FIND_LESS_NUMBER, FIND_LESS);
-        printWriter.format(FORMAT_MENU, FIND_ALL_NUMBER, FIND_ALL);
-        printWriter.format(FORMAT_MENU, ADD_STUDENT_NUMBER, ADD_STUDENT);
-        printWriter.format(FORMAT_MENU, DEL_STUDENT_NUMBER, DEL_STUDENT);
-        printWriter.format(FORMAT_MENU, COURSE_NUMBER, COURSE);
-        printWriter.format(FORMAT_MENU, REMOVE_NUMBER, REMOVE);
+        printWriter.format(START_MESSAGE_FORMAT, START_MESSAGE);
+        printWriter.format(MENU_FORMAT, ONE, FIND_GROUPS_WITH_NUMBER_OF_STUDENTS);
+        printWriter.format(MENU_FORMAT, TWO, FIND_STUDENTS_OF_COURSE);
+        printWriter.format(MENU_FORMAT, THREE, ADD_STUDENT);
+        printWriter.format(MENU_FORMAT, FOUR, DELETE_STUDENT);
+        printWriter.format(MENU_FORMAT, FIVE, ADD_STUDENT_TO_COURSE);
+        printWriter.format(MENU_FORMAT, SIX, REMOVE_STUDENT_FROM_COURSE);
     }
 }

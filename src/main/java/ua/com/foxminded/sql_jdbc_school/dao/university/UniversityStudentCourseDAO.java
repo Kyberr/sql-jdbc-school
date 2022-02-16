@@ -13,14 +13,19 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 
 public class UniversityStudentCourseDAO implements StudentCourseDAO {
     private static final String SQL_CREATE_TABLE = "create table department.student_course ("
-            + "student_id integer references department.students(student_id) on delete cascade,"
+            + "student_id integer,"
             + "group_id integer references department.groups(group_id) on delete set null,"
             + "first_name varchar collate pg_catalog.\"default\","
             + "last_name varchar collate pg_catalog.\"default\","
-            + "course_id integer references department.courses(course_id) on delete set null,"
+            + "course_id integer,"
             + "course_name varchar collate pg_catalog.\"default\","
-            + "course_description varchar collate pg_catalog.\"default\")"
-            + "tablespace pg_default";
+            + "course_description varchar collate pg_catalog.\"default\","
+            + "foreign key (student_id) references department.students on delete cascade,"
+            + "constraint course_id_foreign "
+            + "    foreign key (course_id) "
+            + "    references department.courses(course_id) on delete cascade)"
+        //    + "primary key (student_id, course_id))"
+            + "tablespace pg_default;";
     private static final String SQL_STUDENTS_OF_COURSE = "select * from department"
             + ".student_course where course_id = %s";
     private static final String SQL_INSERT = "insert into department.student_course("
@@ -38,10 +43,10 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
     private static final String COLUMN_NAME_COURSE_DESC = "course_description";
     
     @Override
-    public List<StudentCourseDTO> getStudentsOfCourse(int courseID) 
+    public List<StudentCourseDTO> getStudentsOfCourse(int courseId) 
             throws DAOException.GetStudentRelatedToCourseFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(String.format(SQL_STUDENTS_OF_COURSE, courseID));
+             PreparedStatement statement = con.prepareStatement(String.format(SQL_STUDENTS_OF_COURSE, courseId));
              ResultSet resultSet = statement.executeQuery();) {
             List<StudentCourseDTO> studentCourse = new ArrayList<>();
             

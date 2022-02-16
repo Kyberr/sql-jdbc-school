@@ -6,7 +6,7 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
 
 public interface CourseDAO {
     
+    public CourseDTO getCourse(int courseId) throws DAOException.GetCourseFailure;
     public int insertCourse(List<String> courseNameList) throws DAOException.CourseInsertionFail;
-    
     public List<CourseDTO> getAllCourses() throws DAOException.GetAllCoursesFail;
 }

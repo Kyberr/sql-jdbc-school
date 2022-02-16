@@ -2,6 +2,22 @@ package ua.com.foxminded.sql_jdbc_school.dao;
 
 public class DAOException {
     
+    public static class GetCourseFailure extends Exception {
+        private static final long serialVersionUID = 15L;
+
+        public GetCourseFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    public static class GetStudentFailure extends Exception {
+        private static final long serialVersionUID = 14L;
+
+        public GetStudentFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     public static class DeleteStudentFailure extends Exception {
         private static final long serialVersionUID = 13L;
 

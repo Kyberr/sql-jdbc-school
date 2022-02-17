@@ -1,10 +1,4 @@
--- DROP TABLE IF EXISTS books.one;
--- CREATE TABLE IF NOT EXISTS books.one()
--- create role school with login password '4321';
--- create database school from tamplate0 owner school;
-
 drop schema if exists department cascade;
-
 create schema department authorization university;
 
 create sequence department.groups_group_id_seq as integer;

@@ -12,7 +12,9 @@ import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 
 public class UniversityStudentCourseDAO implements StudentCourseDAO {
-    private static final String SQL_CREATE_TABLE = "create table department.student_course ("
+    private static final String SQL_CREATE_TABLE = 
+            "drop table if exists department.student_course;"
+            + "create table department.student_course ("
             + "student_id integer,"
             + "group_id integer references department.groups(group_id) on delete set null,"
             + "first_name varchar collate pg_catalog.\"default\","
@@ -21,10 +23,8 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
             + "course_name varchar collate pg_catalog.\"default\","
             + "course_description varchar collate pg_catalog.\"default\","
             + "foreign key (student_id) references department.students on delete cascade,"
-            + "constraint course_id_foreign "
-            + "    foreign key (course_id) "
-            + "    references department.courses(course_id) on delete cascade)"
-        //    + "primary key (student_id, course_id))"
+            + "foreign key (course_id) references department.courses on delete cascade,"
+            + "primary key (student_id, course_id))"
             + "tablespace pg_default;";
     private static final String SQL_STUDENTS_OF_COURSE = "select * from department"
             + ".student_course where course_id = %s";

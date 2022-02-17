@@ -3,6 +3,14 @@ package ua.com.foxminded.sql_jdbc_school.services;
 
 public class ServicesException {
     
+    public static class GetStudentsWithGroupIdFailure extends Exception {
+        private static final long serialVersionUID = 18L;
+
+        public GetStudentsWithGroupIdFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     public static class AddStudentToCourseFailure extends Exception {
         private static final long serialVersionUID = 17L;
 

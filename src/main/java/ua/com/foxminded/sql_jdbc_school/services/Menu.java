@@ -9,6 +9,7 @@ import ua.com.foxminded.sql_jdbc_school.services.ServicesException.FindGroupsWit
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetAllCoursesFailure;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetAllStudentsFailure;
 import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetStudentsRelatedToCourseFaluer;
+import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetStudentsWithGroupIdFailure;
 import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
@@ -84,7 +85,8 @@ public class Menu {
                 | ServicesException.GetStudentsRelatedToCourseFaluer
                 | ServicesException.AddNewStudentFailure
                 | ServicesException.GetAllStudentsFailure 
-                | ServicesException.DeleteStudentFailure e) {
+                | ServicesException.DeleteStudentFailure 
+                | GetStudentsWithGroupIdFailure e) {
             throw new ServicesException.ExecuteUniversityMenuFailure(ERROR_EXECUTE, e);
         } finally {
             scanner.close();
@@ -97,8 +99,8 @@ public class Menu {
             List<CourseDTO> courses = courseService.createCourses();
             studentService.createStudents();
             List<GroupDTO> groups = groupService.createGroups();
-            List<StudentDTO> students = studentService.assignGroup(groups);
-            studentCourseService.createStudentCourseRelation(students, courses);
+            List<StudentDTO> studentsHaveGroupID = studentService.assignGroup(groups);
+            studentCourseService.createStudentCourseRelation(studentsHaveGroupID, courses);
         } catch (ServicesException.TableCreationFail 
                 | ServicesException.CoursesCreationServiceFail 
                 | ServicesException.GroupCreationFail 
@@ -111,10 +113,11 @@ public class Menu {
     
     private void addStudentToCourse(Scanner scanner) throws AddNewStudentFailure, 
                                                             GetAllStudentsFailure, 
-                                                            GetAllCoursesFailure {
+                                                            GetAllCoursesFailure, 
+                                                            GetStudentsWithGroupIdFailure {
         first: for (;;) {
-            List<StudentDTO> allStudents = studentService.getAllStudents();
-            menuView.showStudents(allStudents);
+            List<StudentDTO> studentsHaveGroupId = studentService.getStudentsWithGroupId();
+            menuView.showStudents(studentsHaveGroupId);
             List<CourseDTO> allCourses = courseService.getAllCourses();
             menuView.showCourses(allCourses);
             menuView.enterStudentId();

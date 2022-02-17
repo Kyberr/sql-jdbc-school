@@ -3,7 +3,6 @@ package ua.com.foxminded.sql_jdbc_school.services.university;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
@@ -72,10 +71,10 @@ public class UniversityStudentCourseService implements StudentCourseService<List
     }
     
     @Override
-    public List<StudentCourseDTO> createStudentCourseRelation(List<StudentDTO> students, 
+    public List<StudentCourseDTO> createStudentCourseRelation(List<StudentDTO> studentsHaveGroupId, 
                                                               List<CourseDTO> courses)
             throws ServicesException.StudentsCoursesRelationFailure {
-        List<StudentCourseDTO> studentCourseList = getOrdedStudentCourseRelation(students, courses);
+        List<StudentCourseDTO> studentCourseList = assignCrourseToStudent(studentsHaveGroupId, courses);
         
         try {
             DAOFactory universityDAOFacotry = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
@@ -88,56 +87,21 @@ public class UniversityStudentCourseService implements StudentCourseService<List
         }
     }
     
-    private List<StudentCourseDTO> getOrdedStudentCourseRelation (List<StudentDTO> students, 
-                                                                  List<CourseDTO> courses) {
-        List<StudentCourseDTO> studentCourseHasGroupId = getStudentCourseHasGroupId(students, courses);
-        List<StudentCourseDTO> studentsNoGroupId = getStudentCourseNoGroupId(students);
-        studentCourseHasGroupId.addAll(studentsNoGroupId);
-        return studentCourseHasGroupId;
-    }
-    
-    private List<StudentCourseDTO> getStudentCourseNoGroupId(List<StudentDTO> students) {
-        List<StudentDTO> studentNoGroupId = getStudentsNoGroupId(students);
-        
-        try (Stream<StudentDTO> studentNoGropuIdStream = studentNoGroupId.parallelStream()) {
-            return studentNoGropuIdStream.map((student) -> new StudentCourseDTO(student.getStudentId(),
-                                                                                student.getGroupId(),
-                                                                                student.getFirstName(),
-                                                                                student.getLastName()))
+    private List<StudentCourseDTO> assignCrourseToStudent(List<StudentDTO> studentsHaveGroupId, 
+                                                          List<CourseDTO> courses) {
+
+        List<List<Integer>> studentCourseIndexRelation = generator.getCoursePerStudent(studentsHaveGroupId.size(), 
+                                                                                       courses.size());
+        try (Stream<List<Integer>> indexesRelationStream = studentCourseIndexRelation.parallelStream()) {
+            return indexesRelationStream.map((indexRelation) ->
+                    new StudentCourseDTO(studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
+                                         studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
+                                         studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),
+                                         studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getLastName(),
+                                         courses.get(indexRelation.get(COURSE_INDEX)).getCourseId(),
+                                         courses.get(indexRelation.get(COURSE_INDEX)).getCourseName(),
+                                         courses.get(indexRelation.get(COURSE_INDEX)).getCourseDescription()))
                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        }
-    }
-    
-    private List<StudentCourseDTO> getStudentCourseHasGroupId(List<StudentDTO> students, 
-                                                              List<CourseDTO> courses) {
-        List<StudentDTO> studentHasGroupId = getStudentHasGroupId(students);
-        List<List<Integer>> coursePerStudent = generator.getCoursePerStudent(studentHasGroupId.size(), 
-                                                                             courses.size());
-        
-        try (Stream<List<Integer>> coursePerStudentStream = coursePerStudent.parallelStream()) {
-            return coursePerStudentStream.map((index) ->
-            new StudentCourseDTO(studentHasGroupId.get(index.get(STUDENT_INDEX)).getStudentId(),
-                                 studentHasGroupId.get(index.get(STUDENT_INDEX)).getGroupId(),
-                                 studentHasGroupId.get(index.get(STUDENT_INDEX)).getFirstName(),
-                                 studentHasGroupId.get(index.get(STUDENT_INDEX)).getLastName(),
-                                 courses.get(index.get(COURSE_INDEX)).getCourseId(),
-                                 courses.get(index.get(COURSE_INDEX)).getCourseName(),
-                                 courses.get(index.get(COURSE_INDEX)).getCourseDescription()))
-            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        }
-    }
-    
-    private List<StudentDTO> getStudentHasGroupId(List<StudentDTO> studentList) {
-        try (Stream<StudentDTO> students = studentList.parallelStream()) {
-            return students.filter((student) -> student.getGroupId() != null)
-                           .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        }
-    }
-    
-    private List<StudentDTO> getStudentsNoGroupId(List<StudentDTO> studentList) {
-        try (Stream<StudentDTO> students = studentList.parallelStream()) {
-            return students.filter((student) -> student.getGroupId() == null)
-                           .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         }
     }
 }

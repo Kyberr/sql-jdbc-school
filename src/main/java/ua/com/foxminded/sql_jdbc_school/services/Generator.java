@@ -13,36 +13,36 @@ public class Generator {
     private static final String HYPHEN = "-";
     private static final int MIN_STUDENTS = 10; 
     private static final int MAX_STUDENTS = 30; 
-    private static final int MAX_COURSE_INDEX = 9; 
-    private static final int MAX_COURSES_NUMBER = 9; 
+    private static final int SINGLE_DIDGIT_OF_MAX_VALUE = 9; 
+    private static final int MAX_NUMBER_OF_GROUPS = 10; 
     private static final int AMPLITUDE = 20; 
     private static final double ONE_HALF = 0.5; 
     private static final double DOUBLE_PROBABILITY_VALUE = 4.0;
     private static final int INT_PROBABILITY_VALUE = 3;
     private static final int ONE_STUDENT = 1;
-    private static final int ZERO_OF_STUDENTS = 0;
+    private static final int ZERO_STUDENTS = 0;
     private static final double DOUBLE_AMPL_PROBABILITY = 10.0;
     private static final int INT_AMPL_PROBABILITY = 10;
-    private static final int MAX_NO_GROUP_STUDENTS = 11;
+    private static final int STUDENTS_WITHOUT_GROUP = 21;
     private static final int CROURSE_AMPLITUDE = 3;
     private static final int MIN_NUMBER_OF_CROURSES = 1;
     private static final int ONE = 1;
     
-    public List<List<Integer>> getCoursePerStudent(int studentsNumber, int coursesNumber) {
+    public List<List<Integer>> getCoursePerStudent(int numberOfStudents, int numberOfCourses) {
         Map<Integer, Integer> studentsAndNumberOfCourses = new HashMap<>();
         
-        for (int i = 0; i < studentsNumber; i++) {
+        for (int i = 0; i < numberOfStudents; i++) {
             int numberOfCoursesPerStudent = MIN_NUMBER_OF_CROURSES + new Random().nextInt(CROURSE_AMPLITUDE);
             studentsAndNumberOfCourses.put(i, numberOfCoursesPerStudent);
         }
         
         List<List<Integer>> courseIndexPerStudent = new ArrayList<>();
         
-        for (int i = 0; i < studentsNumber; i++) {
+        for (int i = 0; i < numberOfStudents; i++) {
             List<Integer> cache = new ArrayList<>();
             
             for (int j = 0; j < studentsAndNumberOfCourses.get(i); j++) {
-                int courseIndex = new Random().nextInt(coursesNumber);
+                int courseIndex = new Random().nextInt(numberOfCourses);
                 List<Integer> studentAndCourseIndex = new ArrayList<>();
                 
                 if (!cache.contains(courseIndex)) {
@@ -60,7 +60,7 @@ public class Generator {
             
     public List<Integer> getNumberOfStudentsInGroup(int studentsNumber, int groupsNumber) {
         List<Integer> result = new ArrayList<>();
-        int noGroupStudents = new Random().nextInt(MAX_NO_GROUP_STUDENTS); 
+        int noGroupStudents = new Random().nextInt(STUDENTS_WITHOUT_GROUP); 
         int remainder = studentsNumber - noGroupStudents;
 
         for (int i = 0; i < groupsNumber; i++) {
@@ -86,13 +86,13 @@ public class Generator {
                         if (j == (result.size() - ONE) && remainder > 0) {
                             j = 0;
                         } else if (remainder == 0) {
-                            result.add(ZERO_OF_STUDENTS);
+                            result.add(ZERO_STUDENTS);
                             break;
                         }
                     } 
                 }
             } else {
-                result.add(ZERO_OF_STUDENTS);
+                result.add(ZERO_STUDENTS);
             }
         }
         return result;
@@ -104,12 +104,15 @@ public class Generator {
                      .limit(200).collect(Collectors.toList());
     }
 
-    public List<String> getGroupData() {
+    public List<String> getGroupName() {
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         return Stream.generate(() -> new StringBuilder()
                 .append(alphabet.charAt(new Random().nextInt(alphabet.length())))
-                .append(alphabet.charAt(new Random().nextInt(alphabet.length()))).append(HYPHEN)
-                .append(new Random().nextInt(MAX_COURSE_INDEX)).append(new Random().nextInt(MAX_COURSE_INDEX)).toString())
-            .limit(MAX_COURSES_NUMBER).collect(Collectors.toList());
+                .append(alphabet.charAt(new Random().nextInt(alphabet.length())))
+                .append(HYPHEN)
+                .append(new Random().nextInt(SINGLE_DIDGIT_OF_MAX_VALUE))
+                .append(new Random().nextInt(SINGLE_DIDGIT_OF_MAX_VALUE))
+                .toString())
+            .limit(MAX_NUMBER_OF_GROUPS).collect(Collectors.toList());
     }
 }

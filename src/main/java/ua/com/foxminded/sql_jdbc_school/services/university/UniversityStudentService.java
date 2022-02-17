@@ -26,6 +26,7 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
     private static final String ERROR_ADD_STUDENT = "The student adding to the database is failed.";
     private static final String ERROR_GET_ALL_STUDENT = "Getting students from the database is failed.";
     private static final String ERROR_DELETE_STUDENT = "The deletion of the student from the database is failed.";
+    private static final String ERROR_GET_STUDENTS_WITH_GROUP = "Getting students that have group ID is failed.";
     
     private Reader reader;
     private Generator generator;
@@ -33,6 +34,18 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
     public UniversityStudentService(Reader reader, Generator generator) {
         this.reader = reader;
         this.generator = generator;
+    }
+    
+    @Override 
+    public List<StudentDTO> getStudentsWithGroupId() throws ServicesException.GetStudentsWithGroupIdFailure {
+        
+        try {
+        DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+        StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+        return studentDAO.getStudentsWithGroupId();
+        } catch (DAOException.GetStudentsWithGroupIdFailure e) {
+            throw new ServicesException.GetStudentsWithGroupIdFailure(ERROR_GET_STUDENTS_WITH_GROUP, e);
+        }
     }
     
     @Override 
@@ -73,25 +86,30 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
     }
     
     @Override
-    public List<StudentDTO> assignGroup(List<GroupDTO> groups) throws ServicesException.AssignGgoupToStudentsFail {
+    public List<StudentDTO> assignGroup(List<GroupDTO> groups) 
+            throws ServicesException.AssignGgoupToStudentsFail {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentDTO> students = studentDAO.getAllStudents();
-            List<Integer> studentsNumberInGroup = generator.getNumberOfStudentsInGroup(students.size(), 
-                                                                                  groups.size());
+            List<Integer> groupSize = generator.getNumberOfStudentsInGroup(students.size(), 
+                                                                           groups.size());
+            List<StudentDTO> studentsHaveGroupId = new ArrayList<>(); 
             AtomicInteger atomicInteger = new AtomicInteger();
-            IntStream.range(0, groups.size())
+            IntStream.range(0, groupSize.size())
                      .parallel()
-                     .forEach((groupIndex) -> IntStream.range(0, studentsNumberInGroup.get(groupIndex))
-                                                       .parallel()
-                                                       .forEach((studentsNumber) -> {
-                                                               students.get(atomicInteger.getAndIncrement())
-                                                                       .setGroupId(groups.get(groupIndex)
-                                                                                         .getGroupId());
-                                                           }));
-            studentDAO.updateStudent(students);
-            return students;
+                     .forEach((groupIndex) -> IntStream.range(0, groupSize.get(groupIndex))
+                             .parallel()
+                             .forEach((index) -> {
+                                 studentsHaveGroupId.add(new StudentDTO(
+                                         students.get(atomicInteger.get()).getStudentId(),
+                                                      groups.get(groupIndex).getGroupId(),
+                                                      students.get(atomicInteger.get()).getFirstName(),
+                                                      students.get(atomicInteger.getAndIncrement())
+                                                                                .getLastName()));
+                             }));
+            studentDAO.updateStudent(studentsHaveGroupId);
+            return studentsHaveGroupId;
         } catch (DAOException.GetAllSutudentsFail
                 | DAOException.StudentUptatingFail e) {
             throw new ServicesException.AssignGgoupToStudentsFail(ERROR_ASSIGN_GROUP, e); 

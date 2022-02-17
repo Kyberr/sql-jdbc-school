@@ -34,7 +34,7 @@ public class UniversityGroupService implements GroupService<List<GroupDTO>, Inte
     @Override
     public List<GroupDTO> createGroups() throws ServicesException.GroupCreationFail {
         try {
-            List<String> groupList = generator.getGroupData();
+            List<String> groupList = generator.getGroupName();
             DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
             groupDAO.insertGroup(groupList);

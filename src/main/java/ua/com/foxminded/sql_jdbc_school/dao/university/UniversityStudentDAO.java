@@ -15,6 +15,8 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 
 public class UniversityStudentDAO implements StudentDAO {
     
+    private static final String SELECT_STUDENTS_WITH_GROUP_ID = "select * from department.students "
+                                                             + "where group_id is not null";
     private static final String SELECT_STUDENT = "select * from department.students where student_id = ?";
     private static final String INSERT_STUDENTS = "insert into department.students (group_id, "
                                                 + "first_name, last_name) values (?, ?, ?)";
@@ -31,6 +33,29 @@ public class UniversityStudentDAO implements StudentDAO {
     private static final String ERROR_UDATE = "The updating of the students infurmation is failed.";
     private static final String ERROR_DELETE = "The deletion of the student data is failed.";
     private static final String ERROR_GET_STUDENT = "Getting the student data is failed.";
+    private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
+                                                                + "group ID is failed.";
+    
+    @Override
+    public List<StudentDTO> getStudentsWithGroupId() throws DAOException.GetStudentsWithGroupIdFailure {
+        try (Connection con = UniversityDAOFactory.creatConnection();
+             PreparedStatement statement = con.prepareStatement(SELECT_STUDENTS_WITH_GROUP_ID);
+             ResultSet resultSet = statement.executeQuery();) {
+            
+            List<StudentDTO> studentsHaveGroupId = new ArrayList<>();
+            
+            while (resultSet.next()) {
+                studentsHaveGroupId.add(new StudentDTO(resultSet.getInt(STUDENT_ID),
+                                                       resultSet.getInt(GROUP_ID),
+                                                       resultSet.getString(FIRST_NAME),
+                                                       resultSet.getString(LAST_NAME)));
+            }
+            return studentsHaveGroupId;
+        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
+            throw new DAOException.GetStudentsWithGroupIdFailure(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);
+        }
+        
+    }
     
     @Override
     public StudentDTO getStudent(int studentId) throws DAOException.GetStudentFailure {
@@ -115,7 +140,6 @@ public class UniversityStudentDAO implements StudentDAO {
                                             resultSet.getString(FIRST_NAME),
                                             resultSet.getString(LAST_NAME)));
             }
-            
             return students;
         } catch (DAOException.DatabaseConnectionFail | SQLException e) {
             throw new DAOException.GetAllSutudentsFail(ERROR_GET_ALL, e);

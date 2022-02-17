@@ -5,6 +5,8 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 
 public interface StudentCourseDAO {
     
+    public List<StudentCourseDTO> getStudentCourse(int studentId, int courseId) 
+            throws DAOException.GetCourseFailure;
     public List<StudentCourseDTO> getStudentsOfCourse(int courseID) 
             throws DAOException.GetStudentRelatedToCourseFailure;
     public int createStudentCourseTable() throws DAOException.CreatingStudentCourseTableFailure; 

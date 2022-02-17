@@ -2,6 +2,8 @@ package ua.com.foxminded.sql_jdbc_school.services.university;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
@@ -25,6 +27,8 @@ public class UniversityStudentCourseService implements StudentCourseService<List
     private static final String ERROR_GET_STUDENTS_OF_COURSE = "The getting students of specified course is failed.";
     private static final int STUDENT_INDEX = 0;
     private static final int COURSE_INDEX = 1;
+    private static final int BAD_STATUS = 0;
+    private static final int NORMAL_STATUS = 1;
     private Generator generator;
     
     public UniversityStudentCourseService(Generator generator) {
@@ -36,21 +40,26 @@ public class UniversityStudentCourseService implements StudentCourseService<List
             throws ServicesException.AddNewStudentFailure {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-            CourseDAO courseDAO = universityDAOFactory.getCourseDAO();
             StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
-            StudentDTO student = studentDAO.getStudent(studentId);
-            CourseDTO course = courseDAO.getCourse(courseId);
+            List<StudentCourseDTO> studentCourse = studentCourseDAO.getStudentCourse(studentId, courseId);
             
-            List<StudentCourseDTO> studentCourse = new ArrayList<>();
-            studentCourse.add(new StudentCourseDTO(student.getStudentId(), 
-                                                   student.getGroupId(), 
-                                                   student.getFirstName(),
-                                                   student.getLastName(),
-                                                   course.getCourseId(), 
-                                                   course.getCourseName(), 
-                                                   course.getCourseDescription()));
-            return studentCourseDAO.insertStudentCourse(studentCourse);
+            if (!studentCourse.isEmpty()) {
+                return BAD_STATUS;
+            } else {
+                StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+                CourseDAO courseDAO = universityDAOFactory.getCourseDAO();
+                StudentDTO student = studentDAO.getStudent(studentId);
+                CourseDTO course = courseDAO.getCourse(courseId);
+                studentCourse.add(new StudentCourseDTO(student.getStudentId(), 
+                                                       student.getGroupId(), 
+                                                       student.getFirstName(),
+                                                       student.getLastName(),
+                                                       course.getCourseId(), 
+                                                       course.getCourseName(), 
+                                                       course.getCourseDescription()));
+                studentCourseDAO.insertStudentCourse(studentCourse);
+                return NORMAL_STATUS;
+            }
         } catch (DAOException.GetStudentFailure 
                 | DAOException.GetCourseFailure
                 | DAOException.StudentCourseInsertionFailure e) {
@@ -74,30 +83,31 @@ public class UniversityStudentCourseService implements StudentCourseService<List
     public List<StudentCourseDTO> createStudentCourseRelation(List<StudentDTO> studentsHaveGroupId, 
                                                               List<CourseDTO> courses)
             throws ServicesException.StudentsCoursesRelationFailure {
-        List<StudentCourseDTO> studentCourseList = assignCrourseToStudent(studentsHaveGroupId, courses);
+        List<StudentCourseDTO> studentCourse = assignCrourseToStudent(studentsHaveGroupId, courses);
         
         try {
             DAOFactory universityDAOFacotry = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = universityDAOFacotry.getStudentCourseDAO();
             studentCourseDAO.createStudentCourseTable();
-            studentCourseDAO.insertStudentCourse(studentCourseList);
-            return studentCourseList;
+            studentCourseDAO.insertStudentCourse(studentCourse);
+            return studentCourse;
         } catch (Exception e) {
             throw new ServicesException.StudentsCoursesRelationFailure(ERROR_CREATE_RELATION, e);
         }
     }
     
-    private List<StudentCourseDTO> assignCrourseToStudent(List<StudentDTO> studentsHaveGroupId, 
+    public List<StudentCourseDTO> assignCrourseToStudent(List<StudentDTO> studentsHaveGroupId, 
                                                           List<CourseDTO> courses) {
-
-        List<List<Integer>> studentCourseIndexRelation = generator.getCoursePerStudent(studentsHaveGroupId.size(), 
-                                                                                       courses.size());
-        try (Stream<List<Integer>> indexesRelationStream = studentCourseIndexRelation.parallelStream()) {
-            return indexesRelationStream.map((indexRelation) ->
-                    new StudentCourseDTO(studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
-                                         studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
-                                         studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),
-                                         studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getLastName(),
+        List<StudentDTO> students = studentsHaveGroupId;
+        List<List<Integer>> studentCourseIndexRelation = generator
+                .getStudentCourseIndexRelation(students.size(),courses.size());
+        
+        try (Stream<List<Integer>> indexRelationStream = studentCourseIndexRelation.parallelStream()) {
+             return indexRelationStream.map((indexRelation) ->
+                    new StudentCourseDTO(students.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
+                                         students.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
+                                         students.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),
+                                         students.get(indexRelation.get(STUDENT_INDEX)).getLastName(),
                                          courses.get(indexRelation.get(COURSE_INDEX)).getCourseId(),
                                          courses.get(indexRelation.get(COURSE_INDEX)).getCourseName(),
                                          courses.get(indexRelation.get(COURSE_INDEX)).getCourseDescription()))

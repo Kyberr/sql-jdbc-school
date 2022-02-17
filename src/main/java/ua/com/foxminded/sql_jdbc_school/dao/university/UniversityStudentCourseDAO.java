@@ -7,12 +7,17 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 
 public class UniversityStudentCourseDAO implements StudentCourseDAO {
-    private static final String SQL_CREATE_TABLE = 
+    
+    private static final String SELECT_STUDENT_ID_COURSE_ID = "select * from department.student_course "
+                                                            + "where student_id = ? and course_id = ?"; 
+    private static final String CREATE_TABLE = 
             "drop table if exists department.student_course;"
             + "create table department.student_course ("
             + "student_id integer,"
@@ -26,38 +31,67 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
             + "foreign key (course_id) references department.courses on delete cascade,"
             + "primary key (student_id, course_id))"
             + "tablespace pg_default;";
-    private static final String SQL_STUDENTS_OF_COURSE = "select * from department"
-            + ".student_course where course_id = %s";
-    private static final String SQL_INSERT = "insert into department.student_course("
+    private static final String SELECT_STUDENTS_OF_COURSE = "select * from department"
+                                                          + ".student_course where course_id = %s";
+    private static final String INSERT = "insert into department.student_course("
             + "student_id, group_id, first_name, last_name, course_id, course_name, course_description) "
             + "values (?, ?, ?, ?, ?, ?, ?)";
-    private static final String ERROR_TABLE_CREATION = "The student course view creating is failed.";
+    private static final String ERROR_SELECT_STUDENT_ID_COURSE_ID = "Receiving the student-course "
+                                                                  + "relation is failed.";
+    private static final String ERROR_TABLE_CREATION = "The student_course table creating is failed.";
     private static final String ERROR_GET_STUDENTS_OF_COURSE = "The getting of students related to the "
-            + "specified course are failed.";
-    private static final String COLUMN_NAME_STUDENT_ID = "student_id";
-    private static final String COLUMN_NAME_GROUP_ID = "group_id";
-    private static final String COLUMN_NAME_FIRST_NAME = "first_name";
-    private static final String COLUMN_NAME_LAST_NAME = "last_name";
-    private static final String COLUMN_NAME_COURSE_ID = "course_id";
-    private static final String COLUMN_NAME_COURSE_NAME = "course_name";
-    private static final String COLUMN_NAME_COURSE_DESC = "course_description";
+                                                             + "specified course are failed.";
+    private static final String STUDENT_ID = "student_id";
+    private static final String GROUP_ID = "group_id";
+    private static final String FIRST_NAME = "first_name";
+    private static final String LAST_NAME = "last_name";
+    private static final String COURSE_ID = "course_id";
+    private static final String COURSE_NAME = "course_name";
+    private static final String COURSE_DESC = "course_description";
+    
+    @Override
+    public List<StudentCourseDTO> getStudentCourse(int studentId, int courseId) 
+            throws DAOException.GetCourseFailure {
+        try (Connection con = UniversityDAOFactory.creatConnection();
+             PreparedStatement statement = con.prepareStatement(SELECT_STUDENT_ID_COURSE_ID)) {
+            
+            List<StudentCourseDTO> studentCourse = new ArrayList<>();
+            statement.setInt(1, studentId);
+            statement.setInt(1, courseId);
+            ResultSet resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+                studentCourse.add(new StudentCourseDTO((Integer) resultSet.getObject(STUDENT_ID),
+                                                       (Integer) resultSet.getObject(GROUP_ID),
+                                                       resultSet.getString(FIRST_NAME),
+                                                       resultSet.getString(LAST_NAME),
+                                                       (Integer) resultSet.getObject(COURSE_ID),
+                                                       resultSet.getString(COURSE_NAME),
+                                                       resultSet.getString(COURSE_DESC)));
+            }
+            resultSet.close();
+            return studentCourse;
+        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
+            throw new DAOException.GetCourseFailure(ERROR_SELECT_STUDENT_ID_COURSE_ID, e);
+        }
+    }
     
     @Override
     public List<StudentCourseDTO> getStudentsOfCourse(int courseId) 
             throws DAOException.GetStudentRelatedToCourseFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(String.format(SQL_STUDENTS_OF_COURSE, courseId));
+             PreparedStatement statement = con.prepareStatement(String.format(SELECT_STUDENTS_OF_COURSE, courseId));
              ResultSet resultSet = statement.executeQuery();) {
             List<StudentCourseDTO> studentCourse = new ArrayList<>();
             
             while (resultSet.next()) {
-                studentCourse.add(new StudentCourseDTO((Integer) resultSet.getObject(COLUMN_NAME_STUDENT_ID),
-                                                       (Integer) resultSet.getObject(COLUMN_NAME_GROUP_ID),
-                                                       resultSet.getString(COLUMN_NAME_FIRST_NAME), 
-                                                       resultSet.getString(COLUMN_NAME_LAST_NAME),
-                                                       (Integer) resultSet.getObject(COLUMN_NAME_COURSE_ID),
-                                                       resultSet.getString(COLUMN_NAME_COURSE_NAME),
-                                                       resultSet.getString(COLUMN_NAME_COURSE_DESC)));
+                studentCourse.add(new StudentCourseDTO((Integer) resultSet.getObject(STUDENT_ID),
+                                                       (Integer) resultSet.getObject(GROUP_ID),
+                                                       resultSet.getString(FIRST_NAME), 
+                                                       resultSet.getString(LAST_NAME),
+                                                       (Integer) resultSet.getObject(COURSE_ID),
+                                                       resultSet.getString(COURSE_NAME),
+                                                       resultSet.getString(COURSE_DESC)));
             }
             return studentCourse;
         } catch (DAOException.DatabaseConnectionFail 
@@ -70,7 +104,7 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
     public int insertStudentCourse(List<StudentCourseDTO> studentsCourses) 
             throws DAOException.StudentCourseInsertionFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(SQL_INSERT)) {
+             PreparedStatement statement = con.prepareStatement(INSERT)) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
             int status = 0;
@@ -96,7 +130,6 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
                         throw new SQLException(ex);
                     }
                 }
-                
                 throw new SQLException (e);
             }
         } catch (DAOException.DatabaseConnectionFail | SQLException e) {
@@ -107,7 +140,7 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
     @Override
     public int createStudentCourseTable() throws DAOException.CreatingStudentCourseTableFailure {
         try (Connection con = UniversityDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(SQL_CREATE_TABLE)) {
+             PreparedStatement statement = con.prepareStatement(CREATE_TABLE)) {
             return statement.executeUpdate();
         } catch (DAOException.DatabaseConnectionFail 
                 | SQLException e) {

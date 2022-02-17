@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
 
@@ -26,22 +27,22 @@ public class Generator {
     private static final int STUDENTS_WITHOUT_GROUP = 21;
     private static final int CROURSE_AMPLITUDE = 3;
     private static final int MIN_NUMBER_OF_CROURSES = 1;
-    private static final int ONE = 1;
+    private static final int ONE_STEP = 1;
     
-    public List<List<Integer>> getCoursePerStudent(int numberOfStudents, int numberOfCourses) {
-        Map<Integer, Integer> studentsAndNumberOfCourses = new HashMap<>();
+    public List<List<Integer>> getStudentCourseIndexRelation(int numberOfStudents, int numberOfCourses) {
+        Map<Integer, Integer> numberOfCoursesOfEachStudent = new HashMap<>();
         
         for (int i = 0; i < numberOfStudents; i++) {
             int numberOfCoursesPerStudent = MIN_NUMBER_OF_CROURSES + new Random().nextInt(CROURSE_AMPLITUDE);
-            studentsAndNumberOfCourses.put(i, numberOfCoursesPerStudent);
+            numberOfCoursesOfEachStudent.put(i, numberOfCoursesPerStudent);
         }
         
-        List<List<Integer>> courseIndexPerStudent = new ArrayList<>();
+        List<List<Integer>> studentCourseIndexRelation = new ArrayList<>();
         
         for (int i = 0; i < numberOfStudents; i++) {
             List<Integer> cache = new ArrayList<>();
             
-            for (int j = 0; j < studentsAndNumberOfCourses.get(i); j++) {
+            for (int j = 0; j < numberOfCoursesOfEachStudent.get(i); j++) {
                 int courseIndex = new Random().nextInt(numberOfCourses);
                 List<Integer> studentAndCourseIndex = new ArrayList<>();
                 
@@ -49,15 +50,15 @@ public class Generator {
                     cache.add(courseIndex);
                     studentAndCourseIndex.add(i);
                     studentAndCourseIndex.add(courseIndex);
-                    courseIndexPerStudent.add(studentAndCourseIndex);
+                    studentCourseIndexRelation.add(studentAndCourseIndex);
                 } else {
-                    j -= ONE;
+                    j -= ONE_STEP;
                 }
             }
         }
-        return courseIndexPerStudent;
+        return studentCourseIndexRelation;
     }
-            
+    
     public List<Integer> getNumberOfStudentsInGroup(int studentsNumber, int groupsNumber) {
         List<Integer> result = new ArrayList<>();
         int noGroupStudents = new Random().nextInt(STUDENTS_WITHOUT_GROUP); 
@@ -83,7 +84,7 @@ public class Generator {
                         result.set(j, result.get(j) + ONE_STUDENT);
                         remainder -= ONE_STUDENT;
 
-                        if (j == (result.size() - ONE) && remainder > 0) {
+                        if (j == (result.size() - ONE_STEP) && remainder > 0) {
                             j = 0;
                         } else if (remainder == 0) {
                             result.add(ZERO_STUDENTS);

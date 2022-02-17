@@ -100,6 +100,7 @@ public class Menu {
             studentService.createStudents();
             List<GroupDTO> groups = groupService.createGroups();
             List<StudentDTO> studentsHaveGroupID = studentService.assignGroup(groups);
+            
             studentCourseService.createStudentCourseRelation(studentsHaveGroupID, courses);
         } catch (ServicesException.TableCreationFail 
                 | ServicesException.CoursesCreationServiceFail 

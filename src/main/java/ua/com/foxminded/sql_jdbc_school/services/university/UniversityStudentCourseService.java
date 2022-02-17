@@ -102,7 +102,7 @@ public class UniversityStudentCourseService implements StudentCourseService<List
         List<List<Integer>> studentCourseIndexRelation = generator
                 .getStudentCourseIndexRelation(students.size(),courses.size());
         
-        try (Stream<List<Integer>> indexRelationStream = studentCourseIndexRelation.parallelStream()) {
+        try (Stream<List<Integer>> indexRelationStream = studentCourseIndexRelation.stream()) {
              return indexRelationStream.map((indexRelation) ->
                     new StudentCourseDTO(students.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
                                          students.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),

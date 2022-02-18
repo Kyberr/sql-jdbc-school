@@ -2,8 +2,6 @@ package ua.com.foxminded.sql_jdbc_school.services.university;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
@@ -22,9 +20,12 @@ public class UniversityStudentCourseService implements StudentCourseService<List
                                                                             List<StudentCourseDTO>,
                                                                             Integer> {
     
-    private static final String ERROR_ADD_STUDENT = "The addition of the student to the database is failed.";
-    private static final String ERROR_CREATE_RELATION = "The relation creation is failed.";
-    private static final String ERROR_GET_STUDENTS_OF_COURSE = "The getting students of specified course is failed.";
+    private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of deletion of a student "
+                                                                 + "from the course doesn't work.";
+    private static final String ERROR_GET_ALL = "Getting all of the students from the database failed.";
+    private static final String ERROR_CREATE_RELATION = "The relation creation failed.";
+    private static final String ERROR_GET_STUDENTS_OF_COURSE = "The getting students of specified course failed.";
+    private static final String ERROR_ADD_STUDENT = "Adding the student to the course failed.";
     private static final int STUDENT_INDEX = 0;
     private static final int COURSE_INDEX = 1;
     private static final int BAD_STATUS = 0;
@@ -33,6 +34,29 @@ public class UniversityStudentCourseService implements StudentCourseService<List
     
     public UniversityStudentCourseService(Generator generator) {
         this.generator = generator;
+    }
+    
+    @Override
+    public Integer deleteStudentFromCourse(Integer studentId, Integer courseId) 
+            throws ServicesException.DeleteStudentFormCourseFailure {
+        try {
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentCourseDAO studentCourse = universityDAOFactory.getStudentCourseDAO();
+            return studentCourse.deleteStudentFromCourse(studentId, courseId);
+        } catch (DAOException.DeleteStudentFromCourseFailure e) {
+            throw new ServicesException.DeleteStudentFormCourseFailure(ERROR_DELETE_STUDENT_FROM_COURSE, e);
+        }
+    }
+    
+    @Override 
+    public List<StudentCourseDTO> getAllStudentCourse() throws ServicesException.GetAllStudentCourseFailure {
+        try {
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentCourseDAO studentCourse = universityDAOFactory.getStudentCourseDAO();
+            return studentCourse.getAllStudentCourse();
+        } catch (Exception e) {
+            throw new ServicesException.GetAllStudentCourseFailure(ERROR_GET_ALL, e);
+        }
     }
     
     @Override 
@@ -97,20 +121,20 @@ public class UniversityStudentCourseService implements StudentCourseService<List
     }
     
     public List<StudentCourseDTO> assignCrourseToStudent(List<StudentDTO> studentsHaveGroupId, 
-                                                          List<CourseDTO> courses) {
-        List<StudentDTO> students = studentsHaveGroupId;
+                                                         List<CourseDTO> courses) {
         List<List<Integer>> studentCourseIndexRelation = generator
-                .getStudentCourseIndexRelation(students.size(),courses.size());
+                .getStudentCourseIndexRelation(studentsHaveGroupId.size(),courses.size());
         
         try (Stream<List<Integer>> indexRelationStream = studentCourseIndexRelation.stream()) {
-             return indexRelationStream.map((indexRelation) ->
-                    new StudentCourseDTO(students.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
-                                         students.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
-                                         students.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),
-                                         students.get(indexRelation.get(STUDENT_INDEX)).getLastName(),
-                                         courses.get(indexRelation.get(COURSE_INDEX)).getCourseId(),
-                                         courses.get(indexRelation.get(COURSE_INDEX)).getCourseName(),
-                                         courses.get(indexRelation.get(COURSE_INDEX)).getCourseDescription()))
+            return indexRelationStream.map((indexRelation) -> 
+                    new StudentCourseDTO(
+                            studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
+                            studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
+                            studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),
+                            studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getLastName(),
+                            courses.get(indexRelation.get(COURSE_INDEX)).getCourseId(),
+                            courses.get(indexRelation.get(COURSE_INDEX)).getCourseName(),
+                            courses.get(indexRelation.get(COURSE_INDEX)).getCourseDescription()))
                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         }
     }

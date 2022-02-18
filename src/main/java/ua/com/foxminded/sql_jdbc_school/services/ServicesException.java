@@ -3,8 +3,24 @@ package ua.com.foxminded.sql_jdbc_school.services;
 
 public class ServicesException {
     
+    public static class DeleteStudentFormCourseFailure extends Exception {
+        private static final long serialVersionUID = 17L;
+
+        public DeleteStudentFormCourseFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    public static class GetAllStudentCourseFailure extends Exception {
+        private static final long serialVersionUID = 16L;
+
+        public GetAllStudentCourseFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     public static class GetStudentsWithGroupIdFailure extends Exception {
-        private static final long serialVersionUID = 18L;
+        private static final long serialVersionUID = 15L;
 
         public GetStudentsWithGroupIdFailure(String message, Throwable cause) {
             super(message, cause);
@@ -12,7 +28,7 @@ public class ServicesException {
     }
     
     public static class AddStudentToCourseFailure extends Exception {
-        private static final long serialVersionUID = 17L;
+        private static final long serialVersionUID = 14L;
 
         public AddStudentToCourseFailure(String message, Throwable cause) {
             super(message, cause);
@@ -20,7 +36,7 @@ public class ServicesException {
     }
     
     public static class DeleteStudentFailure extends Exception {
-        private static final long serialVersionUID = 16L;
+        private static final long serialVersionUID = 13L;
 
         public DeleteStudentFailure(String message, Throwable cause) {
             super(message, cause);
@@ -28,7 +44,7 @@ public class ServicesException {
     }
     
     public static class GetAllStudentsFailure extends Exception {
-        private static final long serialVersionUID = 15L;
+        private static final long serialVersionUID = 12L;
 
         public GetAllStudentsFailure(String message, Throwable cause) {
             super(message, cause);
@@ -36,7 +52,7 @@ public class ServicesException {
     }
     
     public static class AddNewStudentFailure extends Exception {
-        private static final long serialVersionUID = 14L;
+        private static final long serialVersionUID = 11L;
 
         public AddNewStudentFailure(String message, Throwable cause) {
             super(message, cause);
@@ -44,14 +60,14 @@ public class ServicesException {
     }
     
     public static class GetStudentsRelatedToCourseFaluer extends Exception {
-        private static final long serialVersionUID = 13L;
+        private static final long serialVersionUID = 10L;
 
         public GetStudentsRelatedToCourseFaluer(String message, Throwable cause) {
             super(message, cause);
         }
     }
     public static class GetAllCoursesFailure extends Exception {
-        private static final long serialVersionUID = 12L;
+        private static final long serialVersionUID = 9L;
 
         public GetAllCoursesFailure(String message, Throwable cause) {
             super(message, cause);
@@ -59,7 +75,7 @@ public class ServicesException {
     }
     
     public static class FindGroupsWithLessOrEqualStudentsFailure extends Exception {
-        private static final long serialVersionUID = 11L;
+        private static final long serialVersionUID = 8L;
 
         public FindGroupsWithLessOrEqualStudentsFailure(String message, Throwable cause) {
             super(message, cause);
@@ -67,7 +83,7 @@ public class ServicesException {
     }
     
     public static class StudentsCoursesRelationFailure extends Exception {
-        private static final long serialVersionUID = 10L;
+        private static final long serialVersionUID = 7L;
 
         public StudentsCoursesRelationFailure(String message, Throwable cause) {
             super(message, cause);
@@ -75,7 +91,7 @@ public class ServicesException {
     }
     
     public static class ExecuteUniversityMenuFailure extends Exception {
-        private static final long serialVersionUID = 9L;
+        private static final long serialVersionUID = 6L;
 
         public ExecuteUniversityMenuFailure(String message, Throwable cause) {
             super(message, cause);
@@ -83,7 +99,7 @@ public class ServicesException {
     }
     
     public static class BootstrapFail extends Exception {
-        private static final long serialVersionUID = 8L;
+        private static final long serialVersionUID = 5L;
 
         public BootstrapFail(String message, Throwable cause) {
             super(message, cause);
@@ -91,7 +107,7 @@ public class ServicesException {
     }
     
     public static class AssignGgoupToStudentsFail extends Exception {
-        private static final long serialVersionUID = 7L;
+        private static final long serialVersionUID = 4L;
 
         public AssignGgoupToStudentsFail(String message, Throwable cause) {
             super(message, cause);
@@ -99,7 +115,7 @@ public class ServicesException {
     }
     
     public static class ReadFail extends Exception {
-        private static final long serialVersionUID = 1L; 
+        private static final long serialVersionUID = 3L; 
         
         public ReadFail(String message, Throwable cause) {
             super(message, cause);
@@ -115,7 +131,7 @@ public class ServicesException {
     }
     
     public static class StudentCreationFail extends Exception {
-        private static final long serialVersionUID = 3L;
+        private static final long serialVersionUID = 1L;
         
         public StudentCreationFail(String message, Throwable cause) {
             super(message, cause);

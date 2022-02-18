@@ -28,13 +28,13 @@ public class UniversityStudentDAO implements StudentDAO {
     private static final String GROUP_ID = "group_id";
     private static final String FIRST_NAME = "first_name";
     private static final String LAST_NAME = "last_name";
-    private static final String ERROR_GET_ALL = "The getting of all the students is failed.";
-    private static final String ERROR_INSERT = "The inserting of the students is failed.";
-    private static final String ERROR_UDATE = "The updating of the students infurmation is failed.";
-    private static final String ERROR_DELETE = "The deletion of the student data is failed.";
-    private static final String ERROR_GET_STUDENT = "Getting the student data is failed.";
+    private static final String ERROR_GET_ALL = "The getting of all the students failed.";
+    private static final String ERROR_INSERT = "The inserting of the students failed.";
+    private static final String ERROR_UDATE = "The updating of the students infurmation failed.";
+    private static final String ERROR_DELETE = "The deletion of the student data failed.";
+    private static final String ERROR_GET_STUDENT = "Getting the student data failed.";
     private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
-                                                                + "group ID is failed.";
+                                                                + "group ID failed.";
     
     @Override
     public List<StudentDTO> getStudentsWithGroupId() throws DAOException.GetStudentsWithGroupIdFailure {

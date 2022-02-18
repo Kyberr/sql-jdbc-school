@@ -97,16 +97,13 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
             List<StudentDTO> studentsHaveGroupId = new ArrayList<>(); 
             AtomicInteger atomicInteger = new AtomicInteger();
             IntStream.range(0, groupSize.size())
-                     .parallel()
                      .forEach((groupIndex) -> IntStream.range(0, groupSize.get(groupIndex))
-                             .parallel()
-                             .forEach((index) -> {
-                                 studentsHaveGroupId.add(new StudentDTO(
-                                         students.get(atomicInteger.get()).getStudentId(),
-                                                      groups.get(groupIndex).getGroupId(),
-                                                      students.get(atomicInteger.get()).getFirstName(),
-                                                      students.get(atomicInteger.getAndIncrement())
-                                                                                .getLastName()));
+                     .forEach((index) -> { 
+                         studentsHaveGroupId.add(new StudentDTO(students.get(atomicInteger.get()).getStudentId(),
+                                                                groups.get(groupIndex).getGroupId(),
+                                                                students.get(atomicInteger.get()).getFirstName(),
+                                                                students.get(atomicInteger.getAndIncrement())
+                                                                                          .getLastName()));
                              }));
             studentDAO.updateStudent(studentsHaveGroupId);
             return studentsHaveGroupId;

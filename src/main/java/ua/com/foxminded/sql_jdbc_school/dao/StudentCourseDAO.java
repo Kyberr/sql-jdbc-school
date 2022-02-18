@@ -5,6 +5,9 @@ import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
 
 public interface StudentCourseDAO {
     
+    public int deleteStudentFromCourse(int studentId, int courseId) 
+            throws DAOException.DeleteStudentFromCourseFailure;
+    public List<StudentCourseDTO> getAllStudentCourse() throws DAOException.GetAllStudentCourseFailure;
     public List<StudentCourseDTO> getStudentCourse(int studentId, int courseId) 
             throws DAOException.GetCourseFailure;
     public List<StudentCourseDTO> getStudentsOfCourse(int courseID) 

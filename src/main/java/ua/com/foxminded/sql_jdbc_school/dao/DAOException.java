@@ -2,8 +2,24 @@ package ua.com.foxminded.sql_jdbc_school.dao;
 
 public class DAOException {
     
+    public static class DeleteStudentFromCourseFailure extends Exception {
+        private static final long serialVersionUID = 21L;
+
+        public DeleteStudentFromCourseFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    public static class GetAllStudentCourseFailure extends Exception {
+        private static final long serialVersionUID = 20L;
+
+        public GetAllStudentCourseFailure(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     public static class GetStudentCourseFailure extends Exception {
-        private static final long serialVersionUID = 17L;
+        private static final long serialVersionUID = 19L;
 
         public GetStudentCourseFailure(String message, Throwable cause) {
             super(message, cause);
@@ -11,7 +27,7 @@ public class DAOException {
     }
     
     public static class GetStudentsWithGroupIdFailure extends Exception {
-        private static final long serialVersionUID = 16L;
+        private static final long serialVersionUID = 18L;
 
         public GetStudentsWithGroupIdFailure(String message, Throwable cause) {
             super(message, cause);
@@ -19,7 +35,7 @@ public class DAOException {
     }
     
     public static class GetCourseFailure extends Exception {
-        private static final long serialVersionUID = 15L;
+        private static final long serialVersionUID = 17L;
 
         public GetCourseFailure(String message, Throwable cause) {
             super(message, cause);
@@ -27,7 +43,7 @@ public class DAOException {
     }
     
     public static class GetStudentFailure extends Exception {
-        private static final long serialVersionUID = 14L;
+        private static final long serialVersionUID = 16L;
 
         public GetStudentFailure(String message, Throwable cause) {
             super(message, cause);
@@ -35,7 +51,7 @@ public class DAOException {
     }
     
     public static class DeleteStudentFailure extends Exception {
-        private static final long serialVersionUID = 13L;
+        private static final long serialVersionUID = 15L;
 
         public DeleteStudentFailure(String message, Throwable cause) {
             super(message, cause);
@@ -43,7 +59,7 @@ public class DAOException {
     }
     
     public static class GetStudentRelatedToCourseFailure extends Exception {
-        private static final long serialVersionUID = 12L;
+        private static final long serialVersionUID = 14L;
 
         public GetStudentRelatedToCourseFailure(String message, Throwable cause) {
             super(message, cause);
@@ -51,7 +67,7 @@ public class DAOException {
     }
     
     public static class GetGroupsWithLessOrEqualStudentsFailure extends Exception {
-        private static final long serialVersionUID = 11L;
+        private static final long serialVersionUID = 13L;
 
         public GetGroupsWithLessOrEqualStudentsFailure(String message, Throwable cause) {
             super(message, cause);
@@ -59,7 +75,7 @@ public class DAOException {
     }
     
     public static class StudentCourseInsertionFailure extends Exception {
-        private static final long serialVersionUID = 10L;
+        private static final long serialVersionUID = 12L;
 
         public StudentCourseInsertionFailure(String message, Throwable cause) {
             super(message, cause);
@@ -99,7 +115,7 @@ public class DAOException {
     }
     
     public static class DatabaseConnectionFail extends Exception {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 7L;
         
         public DatabaseConnectionFail(String message, Throwable cause) {
             super(message, cause);
@@ -107,7 +123,7 @@ public class DAOException {
     }
     
     public static class TableCreationFail extends Exception {
-        private static final long serialVersionUID = 2L;
+        private static final long serialVersionUID = 6L;
 
         public TableCreationFail(String message, Throwable cause) {
             super(message, cause);
@@ -115,7 +131,7 @@ public class DAOException {
     }
     
     public static class PropertyFileLoadingFail extends Exception {
-        private static final long serialVersionUID = 3L;
+        private static final long serialVersionUID = 5L;
         
         public PropertyFileLoadingFail (String message, Throwable cause) {
             super(message, cause);
@@ -140,7 +156,7 @@ public class DAOException {
     }
     
     public static class GroupInsertionFail extends Exception {
-        private static final long serialVersionUID = 5L;
+        private static final long serialVersionUID = 3L;
         
         public GroupInsertionFail(Throwable cause) {
             super(cause);
@@ -152,7 +168,7 @@ public class DAOException {
     }
     
     public static class CourseInsertionFail extends Exception {
-        private static final long serialVersionUID = 6L;
+        private static final long serialVersionUID = 2L;
 
         public CourseInsertionFail(Throwable cause) {
             super(cause);
@@ -164,7 +180,7 @@ public class DAOException {
     }
     
     public static class StudentUptatingFail extends Exception {
-        private static final long serialVersionUID = 7L;
+        private static final long serialVersionUID = 1L;
 
         public StudentUptatingFail(String message, Throwable cause) {
             super(message, cause);

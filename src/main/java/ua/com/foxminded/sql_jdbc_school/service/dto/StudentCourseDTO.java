@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.services.dto;
+package ua.com.foxminded.sql_jdbc_school.service.dto;
 
 import java.util.Objects;
 

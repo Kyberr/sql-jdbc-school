@@ -1,17 +1,13 @@
-package ua.com.foxminded.sql_jdbc_school.services;
+package ua.com.foxminded.sql_jdbc_school.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import ua.com.foxminded.sql_jdbc_school.services.ServicesException.DeleteStudentFormCourseFailure;
-import ua.com.foxminded.sql_jdbc_school.services.ServicesException.FindGroupsWithLessOrEqualStudentsFailure;
-import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetAllCoursesFailure;
-import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetStudentsRelatedToCourseFaluer;
-import ua.com.foxminded.sql_jdbc_school.services.ServicesException.GetStudentsWithGroupIdFailure;
-import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
+
+import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 import ua.com.foxminded.sql_jdbc_school.view.MenuView;
 
 public class Menu {
@@ -50,7 +46,7 @@ public class Menu {
         this.menuView = menuView;
     }
 
-    public void execute() throws ServicesException.ExecuteUniversityMenuFailure {
+    public void execute() throws ServiceException {
         Scanner scanner = new Scanner(System.in);
         
         try {
@@ -78,24 +74,14 @@ public class Menu {
                     break;
                 }
             }
-        } catch (ServicesException.FindGroupsWithLessOrEqualStudentsFailure
-                | NoSuchElementException 
-                | IllegalStateException
-                | ServicesException.GetAllCoursesFailure 
-                | ServicesException.GetStudentsRelatedToCourseFaluer
-                | ServicesException.AddNewStudentFailure
-                | ServicesException.GetAllStudentsFailure 
-                | ServicesException.DeleteStudentFailure 
-                | GetStudentsWithGroupIdFailure 
-                | ServicesException.GetAllStudentCourseFailure 
-                | DeleteStudentFormCourseFailure e) {
-            throw new ServicesException.ExecuteUniversityMenuFailure(ERROR_EXECUTE, e);
+        } catch (ServiceException | NoSuchElementException | IllegalStateException e) {
+            throw new ServiceException(ERROR_EXECUTE, e);
         } finally {
             scanner.close();
         }
     }
     
-    public void bootstrap() throws ServicesException.BootstrapFail {
+    public void bootstrap() throws ServiceException {
         try {
             tableService.creatTables();
             List<CourseDTO> courses = courseService.createCourses();
@@ -103,18 +89,12 @@ public class Menu {
             List<GroupDTO> groups = groupService.createGroups();
             List<StudentDTO> studentsHaveGroupID = studentService.assignGroup(groups);
             studentCourseService.createStudentCourseRelation(studentsHaveGroupID, courses);
-        } catch (ServicesException.TableCreationFail 
-                | ServicesException.CoursesCreationServiceFail 
-                | ServicesException.GroupCreationFail 
-                | ServicesException.StudentCreationFail
-                | ServicesException.AssignGgoupToStudentsFail 
-                | ServicesException.StudentsCoursesRelationFailure e) {
-            throw new ServicesException.BootstrapFail(ERROR_BOOTSTRAP, e);
+        } catch (ServiceException e) {
+            throw new ServiceException(ERROR_BOOTSTRAP, e);
         }
     }
     
-    public void removeStudentFromCourse(Scanner scanner) throws ServicesException.GetAllStudentCourseFailure,
-                                                                ServicesException.DeleteStudentFormCourseFailure {
+    public void removeStudentFromCourse(Scanner scanner) throws ServiceException {
         for (;;) {
             List<StudentCourseDTO> studnetCourse = studentCourseService.getAllStudentCourse();
             menuView.showStudentCourse(studnetCourse);
@@ -150,9 +130,7 @@ public class Menu {
         }
     }
     
-    private void addStudentToCourse(Scanner scanner) throws ServicesException.AddNewStudentFailure, 
-                                                            ServicesException.GetAllCoursesFailure, 
-                                                            ServicesException.GetStudentsWithGroupIdFailure {
+    private void addStudentToCourse(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentDTO> studentsHaveGroupId = studentService.getStudentsWithGroupId();
             menuView.showStudents(studentsHaveGroupId);
@@ -204,8 +182,7 @@ public class Menu {
         }
     }
     
-    private void deleteStudentFromDatabase(Scanner scanner) throws ServicesException.DeleteStudentFailure, 
-                                                                   ServicesException.GetAllStudentsFailure {
+    private void deleteStudentFromDatabase(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentDTO> students = studentService.getAllStudents();
             menuView.showStudents(students);
@@ -236,7 +213,7 @@ public class Menu {
         }
     }
     
-    private void addStudentToDatabase(Scanner scanner) throws ServicesException.AddNewStudentFailure {
+    private void addStudentToDatabase(Scanner scanner) throws ServiceException {
         for ( ; ; ) {
             menuView.enterLastName();
             String lastName = scanner.nextLine();
@@ -269,7 +246,7 @@ public class Menu {
     
     private void enterStudentNameAndAddToDatabase(String lastName, 
                                                   String firstName, 
-                                                  Scanner scanner) throws ServicesException.AddNewStudentFailure {
+                                                  Scanner scanner) throws ServiceException {
         for (;;) {
             menuView.addStudentYesOrNo();
             String input = scanner.nextLine();
@@ -285,8 +262,7 @@ public class Menu {
         }
     }
     
-    private void findStudentsRelatedToCourse(Scanner couseIdScanner) throws GetAllCoursesFailure, 
-                                                                     GetStudentsRelatedToCourseFaluer {
+    private void findStudentsRelatedToCourse(Scanner couseIdScanner) throws ServiceException {
         List<CourseDTO> courses = courseService.getAllCourses();
         menuView.showCourses(courses);
         menuView.enterCourseId();
@@ -297,7 +273,7 @@ public class Menu {
     }
     
     private void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) 
-            throws FindGroupsWithLessOrEqualStudentsFailure {
+            throws ServiceException {
         menuView.enterNumberOfStudents();
         List<GroupDTO> groups = groupService
                 .findGroupsWithLessOrEqualStudents(scanOnlyIntInput(studentsNumberScanner));

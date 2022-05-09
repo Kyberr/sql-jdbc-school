@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.services;
+package ua.com.foxminded.sql_jdbc_school.service;
 
 import java.util.List;
 import java.util.stream.Collectors;

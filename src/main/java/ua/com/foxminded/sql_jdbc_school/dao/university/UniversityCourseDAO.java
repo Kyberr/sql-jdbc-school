@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 
 public class UniversityCourseDAO implements CourseDAO {
     
@@ -25,7 +25,7 @@ public class UniversityCourseDAO implements CourseDAO {
     public static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     
     @Override
-    public CourseDTO getCourse(int courseId) throws DAOException.GetCourseFailure {
+    public CourseDTO getCourse(int courseId) throws DAOException {
         try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_COURSE);) {
             
@@ -40,14 +40,13 @@ public class UniversityCourseDAO implements CourseDAO {
             }
             resultSet.close();
             return course;
-        } catch (DAOException.DatabaseConnectionFail
-                | SQLException e) {
-            throw new DAOException.GetCourseFailure(ERROR_GET_COURSE, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_GET_COURSE, e);
         }
     }
     
     @Override
-    public List<CourseDTO> getAllCourses() throws DAOException.GetAllCoursesFail {
+    public List<CourseDTO> getAllCourses() throws DAOException {
         try (Connection con = UniversityDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(SELECT_ALL)) {
@@ -60,14 +59,14 @@ public class UniversityCourseDAO implements CourseDAO {
                                           resultSet.getString(COURSE_DESC)));
             }
             return courses;
-        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.GetAllCoursesFail(ERROR_GET_ALL_COURSES, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_GET_ALL_COURSES, e);
             
         }
     }
     
     @Override
-    public int insertCourse(List<String> courseNameList) throws DAOException.CourseInsertionFail {
+    public int insertCourse(List<String> courseNameList) throws DAOException {
         try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(INSERT)) {
            
@@ -94,8 +93,8 @@ public class UniversityCourseDAO implements CourseDAO {
 
                 throw new SQLException(e);
             }
-        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.CourseInsertionFail(ERROR_INSERT, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_INSERT, e);
         }
     }
 }

@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.services.university;
+package ua.com.foxminded.sql_jdbc_school.service.university;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,13 +7,13 @@ import java.util.stream.IntStream;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.services.Generator;
-import ua.com.foxminded.sql_jdbc_school.services.Reader;
-import ua.com.foxminded.sql_jdbc_school.services.ReaderServicesPropertiesCache;
-import ua.com.foxminded.sql_jdbc_school.services.ServicesException;
-import ua.com.foxminded.sql_jdbc_school.services.StudentService;
-import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
+import ua.com.foxminded.sql_jdbc_school.service.Generator;
+import ua.com.foxminded.sql_jdbc_school.service.Reader;
+import ua.com.foxminded.sql_jdbc_school.service.ReaderServicesPropertiesCache;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
+import ua.com.foxminded.sql_jdbc_school.service.StudentService;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
 public class UniversityStudentService implements StudentService<List<StudentDTO>, 
                                                                 List<GroupDTO>, 
@@ -37,43 +37,43 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
     }
     
     @Override 
-    public List<StudentDTO> getStudentsWithGroupId() throws ServicesException.GetStudentsWithGroupIdFailure {
+    public List<StudentDTO> getStudentsWithGroupId() throws ServiceException.GetStudentsWithGroupIdFailure {
         
         try {
         DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
         StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
         return studentDAO.getStudentsWithGroupId();
         } catch (DAOException.GetStudentsWithGroupIdFailure e) {
-            throw new ServicesException.GetStudentsWithGroupIdFailure(ERROR_GET_STUDENTS_WITH_GROUP, e);
+            throw new ServiceException.GetStudentsWithGroupIdFailure(ERROR_GET_STUDENTS_WITH_GROUP, e);
         }
     }
     
     @Override 
-    public Integer deleteStudent(Integer studentId) throws ServicesException.DeleteStudentFailure {
+    public Integer deleteStudent(Integer studentId) throws ServiceException.DeleteStudentFailure {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.deleteStudent(studentId);
         } catch (DAOException.DeleteStudentFailure e) {
-            throw new ServicesException.DeleteStudentFailure(ERROR_DELETE_STUDENT, e);
+            throw new ServiceException.DeleteStudentFailure(ERROR_DELETE_STUDENT, e);
         }
     }
     
     @Override 
-    public List<StudentDTO> getAllStudents() throws ServicesException.GetAllStudentsFailure {
+    public List<StudentDTO> getAllStudents() throws ServiceException.GetAllStudentsFailure {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.getAllStudents();
         } catch (DAOException.GetAllSutudentsFail e) {
-            throw new ServicesException.GetAllStudentsFailure(ERROR_GET_ALL_STUDENT, e);
+            throw new ServiceException.GetAllStudentsFailure(ERROR_GET_ALL_STUDENT, e);
         }
         
     }
     
     @Override
     public Integer addStudent(String lastName, String firstName) 
-            throws ServicesException.AddNewStudentFailure {
+            throws ServiceException.AddNewStudentFailure {
        try {
            List<StudentDTO> student = new ArrayList<>();
            student.add(new StudentDTO(firstName, lastName));
@@ -81,13 +81,13 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
            return studentDAO.insertStudent(student);
        } catch (DAOException.StudentInsertionFail e) {
-           throw new ServicesException.AddNewStudentFailure(ERROR_ADD_STUDENT, e);
+           throw new ServiceException.AddNewStudentFailure(ERROR_ADD_STUDENT, e);
        }
     }
     
     @Override
     public List<StudentDTO> assignGroup(List<GroupDTO> groups) 
-            throws ServicesException.AssignGgoupToStudentsFail {
+            throws ServiceException.AssignGgoupToStudentsFail {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
@@ -109,12 +109,12 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
             return studentsHaveGroupId;
         } catch (DAOException.GetAllSutudentsFail
                 | DAOException.StudentUptatingFail e) {
-            throw new ServicesException.AssignGgoupToStudentsFail(ERROR_ASSIGN_GROUP, e); 
+            throw new ServiceException.AssignGgoupToStudentsFail(ERROR_ASSIGN_GROUP, e); 
         }
     }
     
     @Override
-    public List<StudentDTO> createStudents() throws ServicesException.StudentCreationFail {
+    public List<StudentDTO> createStudents() throws ServiceException.StudentCreationFail {
         try {
             String fistNameFilename = ReaderServicesPropertiesCache.getInstance()
                                                                    .getProperty(FIST_NAME_FILENAME_KEY);
@@ -127,11 +127,11 @@ public class UniversityStudentService implements StudentService<List<StudentDTO>
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             studentDAO.insertStudent(students);
             return studentDAO.getAllStudents();
-        } catch (ServicesException.PropertyFileLoadingFail 
-                | ServicesException.ReadFail 
+        } catch (ServiceException.PropertyFileLoadingFail 
+                | ServiceException.ReadFail 
                 | DAOException.StudentInsertionFail 
                 | DAOException.GetAllSutudentsFail e) {
-            throw new ServicesException.StudentCreationFail(ERROR_INSERT, e);
+            throw new ServiceException.StudentCreationFail(ERROR_INSERT, e);
         }
     }
 }

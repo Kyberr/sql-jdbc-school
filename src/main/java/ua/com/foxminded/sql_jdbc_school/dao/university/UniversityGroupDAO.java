@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 
 public class UniversityGroupDAO implements GroupDAO {
     private static final String SQL_INSERT = "insert into department.groups"
@@ -31,8 +31,7 @@ public class UniversityGroupDAO implements GroupDAO {
                                                              + "equal number of students is failed.";
     
     @Override
-    public List<GroupDTO> getGroupsWithLessOrEqualStudents (int students) 
-            throws DAOException.GetGroupsWithLessOrEqualStudentsFailure {
+    public List<GroupDTO> getGroupsWithLessOrEqualStudents (int students) throws DAOException {
         try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(String
                      .format(SQL_SELECT_LESS_EQUAL_STUDENTS, students));
@@ -46,16 +45,13 @@ public class UniversityGroupDAO implements GroupDAO {
                                         Integer.valueOf(resultSet.getString(GROUP_STUDENTS_NUMBER))));
             }
             return result;
-        } catch (DAOException.DatabaseConnectionFail 
-                | ClassCastException
-                | NumberFormatException
-                | SQLException e) {
-            throw new DAOException.GetGroupsWithLessOrEqualStudentsFailure (ERROR_GET_LESS_OR_EQUAL_STUD, e);
+        } catch (DAOException | ClassCastException | NumberFormatException | SQLException e) {
+            throw new DAOException (ERROR_GET_LESS_OR_EQUAL_STUD, e);
         }
     }
     
     @Override
-    public List<GroupDTO> getAllGroups() throws DAOException.GetAllGroupsFail {
+    public List<GroupDTO> getAllGroups() throws DAOException {
         try (Connection con = UniversityDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL)) {
@@ -67,13 +63,13 @@ public class UniversityGroupDAO implements GroupDAO {
                                         resultSet.getString(GROUP_NAME)));
             }
             return result;
-        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.GetAllGroupsFail(ERROR_GET_ALL_GROUP, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_GET_ALL_GROUP, e);
         }
     }
     
     @Override
-    public int insertGroup(List<String> groupNameList) throws DAOException.GroupInsertionFail {
+    public int insertGroup(List<String> groupNameList) throws DAOException {
 
         try (Connection connection = UniversityDAOFactory.creatConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT)) {
@@ -93,8 +89,8 @@ public class UniversityGroupDAO implements GroupDAO {
                 connection.rollback(save1);
                 throw new SQLException(e);
             }
-        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.GroupInsertionFail(e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(e);
         }
     }
 }

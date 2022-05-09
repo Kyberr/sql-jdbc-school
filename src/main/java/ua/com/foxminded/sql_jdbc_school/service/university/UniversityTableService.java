@@ -1,14 +1,14 @@
-package ua.com.foxminded.sql_jdbc_school.services.university;
+package ua.com.foxminded.sql_jdbc_school.service.university;
 
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
-import ua.com.foxminded.sql_jdbc_school.services.Parser;
-import ua.com.foxminded.sql_jdbc_school.services.Reader;
-import ua.com.foxminded.sql_jdbc_school.services.ReaderServicesPropertiesCache;
-import ua.com.foxminded.sql_jdbc_school.services.ServicesException;
-import ua.com.foxminded.sql_jdbc_school.services.TableService;
+import ua.com.foxminded.sql_jdbc_school.service.Parser;
+import ua.com.foxminded.sql_jdbc_school.service.Reader;
+import ua.com.foxminded.sql_jdbc_school.service.ReaderServicesPropertiesCache;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
+import ua.com.foxminded.sql_jdbc_school.service.TableService;
 
 public class UniversityTableService implements TableService<Integer> {
     private static final String ERROR_TABLE_CREATION = "The table creation service dosn't work.";
@@ -22,7 +22,7 @@ public class UniversityTableService implements TableService<Integer> {
     }
     
     @Override
-    public Integer creatTables() throws ServicesException.TableCreationFail {
+    public Integer creatTables() throws ServiceException.TableCreationFail {
         try {
             String fileName = ReaderServicesPropertiesCache.getInstance().getProperty(SQL_FILE_NAME_KEY);
             List<String> sqlScriptList = reader.toList(fileName);
@@ -30,10 +30,10 @@ public class UniversityTableService implements TableService<Integer> {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             TableDAO universityTableDAO = universityDAOFactory.getTableDAO();
             return universityTableDAO.createTables(sqlScript);
-        } catch (ServicesException.PropertyFileLoadingFail |
-                 ServicesException.ReadFail |
+        } catch (ServiceException.PropertyFileLoadingFail |
+                 ServiceException.ReadFail |
                  DAOException.TableCreationFail e) {
-            throw new ServicesException.TableCreationFail(ERROR_TABLE_CREATION, e);
+            throw new ServiceException.TableCreationFail(ERROR_TABLE_CREATION, e);
         }
     }
 }

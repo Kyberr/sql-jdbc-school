@@ -11,7 +11,7 @@ import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException.DatabaseConnectionFail;
-import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
 public class UniversityStudentDAO implements StudentDAO {
     

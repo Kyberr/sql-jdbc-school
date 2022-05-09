@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
 
 public class UniversityStudentCourseDAO implements StudentCourseDAO {
     

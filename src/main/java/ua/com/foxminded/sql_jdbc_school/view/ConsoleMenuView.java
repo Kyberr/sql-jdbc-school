@@ -4,10 +4,10 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.StudentCourseDTO;
-import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
 public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
                                                  List<StudentDTO>, Integer> {

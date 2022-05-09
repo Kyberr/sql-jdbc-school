@@ -2,14 +2,11 @@ package ua.com.foxminded.sql_jdbc_school.dao;
 
 import java.util.List;
 
-import ua.com.foxminded.sql_jdbc_school.services.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 
 public interface GroupDAO {
     
-    public int insertGroup(List<String> groupNameList) throws DAOException.GroupInsertionFail;
-    
-    public List<GroupDTO> getAllGroups() throws DAOException.GetAllGroupsFail;
-    
-    public List<GroupDTO> getGroupsWithLessOrEqualStudents(int students) 
-            throws DAOException.GetGroupsWithLessOrEqualStudentsFailure;
+    public int insertGroup(List<String> groupNameList) throws DAOException;
+    public List<GroupDTO> getAllGroups() throws DAOException;
+    public List<GroupDTO> getGroupsWithLessOrEqualStudents(int students) throws DAOException;
 }

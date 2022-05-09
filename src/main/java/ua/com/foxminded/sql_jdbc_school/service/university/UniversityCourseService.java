@@ -1,15 +1,15 @@
-package ua.com.foxminded.sql_jdbc_school.services.university;
+package ua.com.foxminded.sql_jdbc_school.service.university;
 
 import java.util.List;
 
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
-import ua.com.foxminded.sql_jdbc_school.services.CourseService;
-import ua.com.foxminded.sql_jdbc_school.services.Reader;
-import ua.com.foxminded.sql_jdbc_school.services.ReaderServicesPropertiesCache;
-import ua.com.foxminded.sql_jdbc_school.services.ServicesException;
-import ua.com.foxminded.sql_jdbc_school.services.dto.CourseDTO;
+import ua.com.foxminded.sql_jdbc_school.service.CourseService;
+import ua.com.foxminded.sql_jdbc_school.service.Reader;
+import ua.com.foxminded.sql_jdbc_school.service.ReaderServicesPropertiesCache;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
+import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 
 public class UniversityCourseService implements CourseService<List<CourseDTO>> {
     private static final String COURSES_LIST_FILENAME_KEY = "CoursesListFilename";
@@ -22,7 +22,7 @@ public class UniversityCourseService implements CourseService<List<CourseDTO>> {
     }
     
     @Override
-    public List<CourseDTO> createCourses() throws ServicesException.CoursesCreationServiceFail {
+    public List<CourseDTO> createCourses() throws ServiceException {
         try {
             String coursesListFilename = ReaderServicesPropertiesCache.getInstance()
                                                                       .getProperty(COURSES_LIST_FILENAME_KEY);
@@ -31,22 +31,19 @@ public class UniversityCourseService implements CourseService<List<CourseDTO>> {
             CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
             universityCourseDAO.insertCourse(coursesList);
             return universityCourseDAO.getAllCourses();
-        } catch (ServicesException.PropertyFileLoadingFail | 
-                 ServicesException.ReadFail | 
-                 DAOException.CourseInsertionFail | 
-                 DAOException.GetAllCoursesFail e) {
-            throw new ServicesException.CoursesCreationServiceFail(ERROR_CREATE_COURSES, e);
+        } catch (ServiceException | DAOException e) {
+            throw new ServiceException(ERROR_CREATE_COURSES, e);
         }
     }
     
     @Override
-    public List<CourseDTO> getAllCourses() throws ServicesException.GetAllCoursesFailure {
+    public List<CourseDTO> getAllCourses() throws ServiceException.GetAllCoursesFailure {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
             return universityCourseDAO.getAllCourses();
         } catch (DAOException.GetAllCoursesFail e) {
-            throw new ServicesException.GetAllCoursesFailure (ERROR_GET_ALL_COURSES, e);
+            throw new ServiceException.GetAllCoursesFailure (ERROR_GET_ALL_COURSES, e);
         }
     }
 }

@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.services;
+package ua.com.foxminded.sql_jdbc_school.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,14 +14,14 @@ public class Reader {
     private static final String ERROR_TO_LIST = "The content converting of the "
             + "file to a list of strings is failed."; 
     
-    public List<String> toList(String fileName) throws ServicesException.ReadFail {
+    public List<String> toList(String fileName) throws ServiceException {
         URL fileURL = this.getClass().getClassLoader().getResource(fileName);
         String filePath = new File(fileURL.getFile()).getPath();
         
         try (Stream<String> data = Files.lines(Paths.get(filePath))) {
             return data.collect(Collectors.toList());
         } catch (InvalidPathException | IOException e) {
-            throw new ServicesException.ReadFail(ERROR_TO_LIST, e);
+            throw new ServiceException(ERROR_TO_LIST, e);
         }
     }
 }

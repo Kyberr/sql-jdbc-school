@@ -11,7 +11,6 @@ import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.UniversityDAOPropertiesCache;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOException.PropertyFileLoadingFail;
 
 public class UniversityDAOFactory extends DAOFactory {
     private static final String DB_URL_KEY = "UniversityDatabaseURL";
@@ -19,16 +18,16 @@ public class UniversityDAOFactory extends DAOFactory {
     private static final String USER_PASS_KEY = "UniversityPassword";
     private static final String CONNECT_ERROR = "The database connection is failure."; 
     
-    public static Connection creatConnection() throws DAOException.DatabaseConnectionFail {
+    public static Connection creatConnection() throws DAOException {
         try {
             return DriverManager.getConnection(UniversityDAOPropertiesCache.getInstance()
-                                                                       .getProperty(DB_URL_KEY), 
+                                                                       	   .getProperty(DB_URL_KEY), 
                                                UniversityDAOPropertiesCache.getInstance()
-                                                                       .getProperty(USER_NAME_KEY),
+                                                                       	   .getProperty(USER_NAME_KEY),
                                                UniversityDAOPropertiesCache.getInstance()
-                                                                       .getProperty(USER_PASS_KEY));
-        } catch (PropertyFileLoadingFail | SQLException e) {
-            throw new DAOException.DatabaseConnectionFail(CONNECT_ERROR, e);
+                                                                           .getProperty(USER_PASS_KEY));
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(CONNECT_ERROR, e);
         }
     }
     

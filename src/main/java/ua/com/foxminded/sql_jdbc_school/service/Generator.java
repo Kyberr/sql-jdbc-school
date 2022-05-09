@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.services;
+package ua.com.foxminded.sql_jdbc_school.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import ua.com.foxminded.sql_jdbc_school.services.dto.StudentDTO;
+
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
 public class Generator {
     private static final String HYPHEN = "-";

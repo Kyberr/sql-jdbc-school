@@ -37,13 +37,13 @@ public class UniversityCourseService implements CourseService<List<CourseDTO>> {
     }
     
     @Override
-    public List<CourseDTO> getAllCourses() throws ServiceException.GetAllCoursesFailure {
+    public List<CourseDTO> getAllCourses() throws ServiceException {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
             return universityCourseDAO.getAllCourses();
-        } catch (DAOException.GetAllCoursesFail e) {
-            throw new ServiceException.GetAllCoursesFailure (ERROR_GET_ALL_COURSES, e);
+        } catch (DAOException e) {
+            throw new ServiceException (ERROR_GET_ALL_COURSES, e);
         }
     }
 }

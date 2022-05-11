@@ -21,26 +21,26 @@ public class UniversityGroupService implements GroupService<List<GroupDTO>, Inte
     
     @Override
     public List<GroupDTO> findGroupsWithLessOrEqualStudents(Integer studentsNumber) 
-            throws ServiceException.FindGroupsWithLessOrEqualStudentsFailure {
+            throws ServiceException {
         try {
             DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
             return groupDAO.getGroupsWithLessOrEqualStudents(studentsNumber);
-        } catch (DAOException.GetGroupsWithLessOrEqualStudentsFailure e) {
-            throw new ServiceException.FindGroupsWithLessOrEqualStudentsFailure (ERROR_FIND_LESS_OR_EQUALS, e); 
+        } catch (DAOException e) {
+            throw new ServiceException (ERROR_FIND_LESS_OR_EQUALS, e); 
         }
     }
     
     @Override
-    public List<GroupDTO> createGroups() throws ServiceException.GroupCreationFail {
+    public List<GroupDTO> createGroups() throws ServiceException {
         try {
             List<String> groupList = generator.getGroupName();
             DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
             groupDAO.insertGroup(groupList);
             return groupDAO.getAllGroups();
-        } catch (DAOException.GroupInsertionFail | DAOException.GetAllGroupsFail e) {
-            throw new ServiceException.GroupCreationFail(ERROR_CREAT, e);
+        } catch (DAOException e) {
+            throw new ServiceException(ERROR_CREAT, e);
         }
     }
 }

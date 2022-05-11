@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOException.DatabaseConnectionFail;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
 public class UniversityStudentDAO implements StudentDAO {
@@ -37,7 +36,7 @@ public class UniversityStudentDAO implements StudentDAO {
                                                                 + "group ID failed.";
     
     @Override
-    public List<StudentDTO> getStudentsWithGroupId() throws DAOException.GetStudentsWithGroupIdFailure {
+    public List<StudentDTO> getStudentsWithGroupId() throws DAOException {
         try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_STUDENTS_WITH_GROUP_ID);
              ResultSet resultSet = statement.executeQuery();) {
@@ -51,14 +50,14 @@ public class UniversityStudentDAO implements StudentDAO {
                                                        resultSet.getString(LAST_NAME)));
             }
             return studentsHaveGroupId;
-        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.GetStudentsWithGroupIdFailure(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);
         }
         
     }
     
     @Override
-    public StudentDTO getStudent(int studentId) throws DAOException.GetStudentFailure {
+    public StudentDTO getStudent(int studentId) throws DAOException {
         try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_STUDENT);) {
 
@@ -74,26 +73,25 @@ public class UniversityStudentDAO implements StudentDAO {
             }
             resultSet.close();
             return student;
-        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.GetStudentFailure(ERROR_GET_STUDENT, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_GET_STUDENT, e);
         }
     }
     
     @Override
-    public int deleteStudent(int studentId) throws DAOException.DeleteStudentFailure {
+    public int deleteStudent(int studentId) throws DAOException {
         try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DELETE_STUDENT)) {
             
             statement.setInt(1, studentId);
             return statement.executeUpdate();
-        } catch (DAOException.DatabaseConnectionFail
-                | SQLException e) {
-            throw new DAOException.DeleteStudentFailure(ERROR_DELETE, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_DELETE, e);
         }
     }
     
     @Override
-    public int insertStudent(List<StudentDTO> students) throws DAOException.StudentInsertionFail  {
+    public int insertStudent(List<StudentDTO> students) throws DAOException {
         try(Connection con = UniversityDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(INSERT_STUDENTS);) {
             con.setAutoCommit(false);
@@ -122,13 +120,13 @@ public class UniversityStudentDAO implements StudentDAO {
                 
                 throw new SQLException(ex);
             }
-        } catch (DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.StudentInsertionFail(ERROR_INSERT, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_INSERT, e);
         } 
     }
     
     @Override
-    public List<StudentDTO> getAllStudents() throws DAOException.GetAllSutudentsFail {
+    public List<StudentDTO> getAllStudents() throws DAOException {
         try(Connection con = UniversityDAOFactory.creatConnection();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(SELECT_ALL);) {
@@ -141,13 +139,13 @@ public class UniversityStudentDAO implements StudentDAO {
                                             resultSet.getString(LAST_NAME)));
             }
             return students;
-        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.GetAllSutudentsFail(ERROR_GET_ALL, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_GET_ALL, e);
         }
     }
     
     @Override
-    public int updateStudent(List<StudentDTO> students) throws DAOException.StudentUptatingFail {
+    public int updateStudent(List<StudentDTO> students) throws DAOException {
         try(Connection con = UniversityDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(UPDATE)) {
             con.setAutoCommit(false);
@@ -176,8 +174,8 @@ public class UniversityStudentDAO implements StudentDAO {
                 
                 throw new SQLException(ex);
             }
-        } catch (DAOException.DatabaseConnectionFail | SQLException e) {
-            throw new DAOException.StudentUptatingFail(ERROR_UDATE, e);
+        } catch (DAOException | SQLException e) {
+            throw new DAOException(ERROR_UDATE, e);
         }
     }
 }

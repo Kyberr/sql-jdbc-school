@@ -37,31 +37,30 @@ public class UniversityStudentCourseService implements StudentCourseService<List
     }
     
     @Override
-    public Integer deleteStudentFromCourse(Integer studentId, Integer courseId) 
-            throws ServiceException.DeleteStudentFormCourseFailure {
+    public Integer deleteStudentFromCourse(Integer studentId, Integer courseId) throws ServiceException {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourse = universityDAOFactory.getStudentCourseDAO();
             return studentCourse.deleteStudentFromCourse(studentId, courseId);
-        } catch (DAOException.DeleteStudentFromCourseFailure e) {
-            throw new ServiceException.DeleteStudentFormCourseFailure(ERROR_DELETE_STUDENT_FROM_COURSE, e);
+        } catch (DAOException e) {
+            throw new ServiceException(ERROR_DELETE_STUDENT_FROM_COURSE, e);
         }
     }
     
     @Override 
-    public List<StudentCourseDTO> getAllStudentCourse() throws ServiceException.GetAllStudentCourseFailure {
+    public List<StudentCourseDTO> getAllStudentCourse() throws ServiceException {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourse = universityDAOFactory.getStudentCourseDAO();
             return studentCourse.getAllStudentCourse();
         } catch (Exception e) {
-            throw new ServiceException.GetAllStudentCourseFailure(ERROR_GET_ALL, e);
+            throw new ServiceException(ERROR_GET_ALL, e);
         }
     }
     
     @Override 
     public Integer addStudentToCourse(Integer studentId, Integer courseId) 
-            throws ServiceException.AddNewStudentFailure {
+            throws ServiceException {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
@@ -84,30 +83,28 @@ public class UniversityStudentCourseService implements StudentCourseService<List
                 studentCourseDAO.insertStudentCourse(studentCourse);
                 return NORMAL_STATUS;
             }
-        } catch (DAOException.GetStudentFailure 
-                | DAOException.GetCourseFailure
-                | DAOException.StudentCourseInsertionFailure e) {
-            throw new ServiceException.AddNewStudentFailure(ERROR_ADD_STUDENT, e);
+        } catch (DAOException e) {
+            throw new ServiceException (ERROR_ADD_STUDENT, e);
         }
     }
     
     @Override
-    public List<StudentCourseDTO> getStudentsOfCourse(Integer courseID) 
-            throws ServiceException.GetStudentsRelatedToCourseFaluer {
+    public List<StudentCourseDTO> getStudentsOfCourse(Integer courseID) throws ServiceException {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentDAO = universityDAOFactory.getStudentCourseDAO();
             return studentDAO.getStudentsOfCourse(courseID);
-        } catch (DAOException.GetStudentRelatedToCourseFailure e) {
-            throw new ServiceException.GetStudentsRelatedToCourseFaluer(ERROR_GET_STUDENTS_OF_COURSE, e);
+        } catch (DAOException e) {
+            throw new ServiceException(ERROR_GET_STUDENTS_OF_COURSE, e);
         }
     }
     
     @Override
     public List<StudentCourseDTO> createStudentCourseRelation(List<StudentDTO> studentsHaveGroupId, 
-                                                              List<CourseDTO> courses)
-            throws ServiceException.StudentsCoursesRelationFailure {
-        List<StudentCourseDTO> studentCourse = assignCrourseToStudent(studentsHaveGroupId, courses);
+                                                              List<CourseDTO> courses) 
+                                                            		  throws ServiceException {
+        List<StudentCourseDTO> studentCourse = assignCrourseToStudent(studentsHaveGroupId, 
+        															  courses);
         
         try {
             DAOFactory universityDAOFacotry = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
@@ -116,7 +113,7 @@ public class UniversityStudentCourseService implements StudentCourseService<List
             studentCourseDAO.insertStudentCourse(studentCourse);
             return studentCourse;
         } catch (Exception e) {
-            throw new ServiceException.StudentsCoursesRelationFailure(ERROR_CREATE_RELATION, e);
+            throw new ServiceException(ERROR_CREATE_RELATION, e);
         }
     }
     

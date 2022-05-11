@@ -22,18 +22,17 @@ public class UniversityTableService implements TableService<Integer> {
     }
     
     @Override
-    public Integer creatTables() throws ServiceException.TableCreationFail {
+    public Integer creatTables() throws ServiceException {
         try {
-            String fileName = ReaderServicesPropertiesCache.getInstance().getProperty(SQL_FILE_NAME_KEY);
+            String fileName = ReaderServicesPropertiesCache.getInstance()
+            											   .getProperty(SQL_FILE_NAME_KEY);
             List<String> sqlScriptList = reader.toList(fileName);
             String sqlScript = parser.toStringList(sqlScriptList); 
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             TableDAO universityTableDAO = universityDAOFactory.getTableDAO();
             return universityTableDAO.createTables(sqlScript);
-        } catch (ServiceException.PropertyFileLoadingFail |
-                 ServiceException.ReadFail |
-                 DAOException.TableCreationFail e) {
-            throw new ServiceException.TableCreationFail(ERROR_TABLE_CREATION, e);
+        } catch (ServiceException | DAOException e) {
+            throw new ServiceException(ERROR_TABLE_CREATION, e);
         }
     }
 }

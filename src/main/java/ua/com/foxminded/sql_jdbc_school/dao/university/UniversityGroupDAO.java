@@ -25,6 +25,7 @@ public class UniversityGroupDAO implements GroupDAO {
     private static final String GROUP_ID = "group_id";
     private static final String GROUP_NAME = "group_name";
     private static final String GROUP_STUDENTS_NUMBER = "students_number";
+    private static final String ERROR_INSERT_GROUP = "The group has not been iserted to the database.";
     private static final String ERROR_GET_ALL_GROUP = "The getting data from the "
                                                     + "\"groups\" table is failed.";
     private static final String ERROR_GET_LESS_OR_EQUAL_STUD = "Getting the groups with a less or "
@@ -90,7 +91,7 @@ public class UniversityGroupDAO implements GroupDAO {
                 throw new SQLException(e);
             }
         } catch (DAOException | SQLException e) {
-            throw new DAOException(e);
+            throw new DAOException(ERROR_INSERT_GROUP, e);
         }
     }
 }

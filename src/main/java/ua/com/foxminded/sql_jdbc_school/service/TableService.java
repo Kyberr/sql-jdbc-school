@@ -4,11 +4,6 @@ import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
-import ua.com.foxminded.sql_jdbc_school.service.Parser;
-import ua.com.foxminded.sql_jdbc_school.service.Reader;
-import ua.com.foxminded.sql_jdbc_school.service.ReaderServicesPropertiesCache;
-import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.service.Table;
 
 public class TableService implements Table<Integer> {
     private static final String ERROR_TABLE_CREATION = "The table creation service dosn't work.";

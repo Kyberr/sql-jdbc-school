@@ -4,9 +4,6 @@ import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
-import ua.com.foxminded.sql_jdbc_school.service.Generator;
-import ua.com.foxminded.sql_jdbc_school.service.Group;
-import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 
 public class GroupService implements Group<List<GroupDTO>, Integer> {

@@ -7,11 +7,6 @@ import java.util.stream.IntStream;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.service.Generator;
-import ua.com.foxminded.sql_jdbc_school.service.Reader;
-import ua.com.foxminded.sql_jdbc_school.service.ReaderServicesPropertiesCache;
-import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.service.Student;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 

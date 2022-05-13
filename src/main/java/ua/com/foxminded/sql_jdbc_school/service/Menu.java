@@ -22,19 +22,19 @@ public class Menu {
     private static final int NUMBER_OF_ITEMS = 6;
     private static final int NORMAL_STATUS_OF_ADD = 1;
    
-    private TableService<Integer> tableService;
-    private StudentService<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService;
-    private CourseService<List<CourseDTO>> courseService;
-    private GroupService<List<GroupDTO>, Integer> groupService;
-    private StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>,
+    private Table<Integer> tableService;
+    private Student<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService;
+    private Course<List<CourseDTO>> courseService;
+    private Group<List<GroupDTO>, Integer> groupService;
+    private StudentCourse<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>,
                                  Integer> studentCourseService;
     private MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                      Integer> menuView;
-    public Menu(TableService<Integer> tableService, StudentService<List<StudentDTO>, List<GroupDTO>, 
+    public Menu(Table<Integer> tableService, Student<List<StudentDTO>, List<GroupDTO>, 
                                                                    String, Integer> studentService,
-                CourseService<List<CourseDTO>> courseService, GroupService<List<GroupDTO>, 
+                Course<List<CourseDTO>> courseService, Group<List<GroupDTO>, 
                                                                            Integer> groupService,
-                StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
+                StudentCourse<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
                                      Integer> studentCourseService,
                 MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                              Integer> menuView) {

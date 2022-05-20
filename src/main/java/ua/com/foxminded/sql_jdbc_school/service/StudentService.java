@@ -3,17 +3,19 @@ package ua.com.foxminded.sql_jdbc_school.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupEntity;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
-public class StudentService implements Student<List<StudentDTO>, 
-                                                                List<GroupEntity>, 
-                                                                String, 
-                                                                Integer> {
+public class StudentService implements Student<List<StudentDTO>,
+											   List<GroupDTO>, 
+                                               String, 
+                                               Integer> {
     private static final String FIST_NAME_FILENAME_KEY = "FirstNameFilename";
     private static final String LAST_NAME_FILENAME_KEY = "LastNameFilename";
     private static final String ERROR_INSERT = "The student addition service to the database fails.";
@@ -37,7 +39,13 @@ public class StudentService implements Student<List<StudentDTO>,
         try {
         DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
         StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-        return studentDAO.getStudentsWithGroupId();
+        return studentDAO.getStudentsWithGroupId()
+        			     .stream()
+        			     .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(), 
+        			    		 								studentEntity.getGroupId(), 
+        			    		 								studentEntity.getFirstName(), 
+        			    		 								studentEntity.getLastName()))
+        			     .collect(Collectors.toList());
         } catch (DAOException e) {
             throw new ServiceException(ERROR_GET_STUDENTS_WITH_GROUP, e);
         }
@@ -59,7 +67,13 @@ public class StudentService implements Student<List<StudentDTO>,
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-            return studentDAO.getAllStudents();
+            return studentDAO.getAllStudents()
+            				 .stream()
+            				 .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(),
+            						 								studentEntity.getGroupId(),
+            						 								studentEntity.getFirstName(),
+            						 								studentEntity.getLastName()))
+            				 .collect(Collectors.toList());
         } catch (DAOException e) {
             throw new ServiceException(ERROR_GET_ALL_STUDENT, e);
         }
@@ -70,37 +84,49 @@ public class StudentService implements Student<List<StudentDTO>,
     public Integer addStudent(String lastName, String firstName) 
             throws ServiceException {
        try {
-           List<StudentDTO> student = new ArrayList<>();
-           student.add(new StudentDTO(firstName, lastName));
+           List<StudentDTO> studentDTOs = new ArrayList<>();
+           studentDTOs.add(new StudentDTO(firstName, lastName));
            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-           return studentDAO.insertStudent(student);
+           List<StudentEntity> studentEntities = studentDTOs
+        		   .stream()
+        		   .map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
+        				   								  studentDTO.getLastName()))
+        		   .collect(Collectors.toList());
+           
+           return studentDAO.create(studentEntities);
        } catch (DAOException e) {
            throw new ServiceException(ERROR_ADD_STUDENT, e);
        }
     }
     
     @Override
-    public List<StudentDTO> assignGroup(List<GroupEntity> groups) throws ServiceException {
+    public List<StudentDTO> assignGroup(List<GroupDTO> groups) throws ServiceException {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-            List<StudentDTO> students = studentDAO.getAllStudents();
-            List<Integer> groupSize = generator.getNumberOfStudentsInGroup(students.size(), 
+            List<StudentEntity> studentEntities = studentDAO.getAllStudents();
+            List<Integer> groupSize = generator.getNumberOfStudentsInGroup(studentEntities.size(), 
                                                                            groups.size());
-            List<StudentDTO> studentsHaveGroupId = new ArrayList<>(); 
+            List<StudentEntity> studentsHaveGroupId = new ArrayList<>();
+            
             AtomicInteger atomicInteger = new AtomicInteger();
             IntStream.range(0, groupSize.size())
                      .forEach((groupIndex) -> IntStream.range(0, groupSize.get(groupIndex))
-                     .forEach((index) -> { 
-                         studentsHaveGroupId.add(new StudentDTO(students.get(atomicInteger.get()).getStudentId(),
-                                                                groups.get(groupIndex).getGroupId(),
-                                                                students.get(atomicInteger.get()).getFirstName(),
-                                                                students.get(atomicInteger.getAndIncrement())
-                                                                                          .getLastName()));
+                    		 						   .forEach((index) -> {
+                    		 							   int studentIndex = atomicInteger.getAndIncrement();
+                    studentsHaveGroupId.add(new StudentEntity(studentEntities.get(studentIndex).getStudentId(),
+                                                              groups.get(groupIndex).getGroupId(),
+                                                              studentEntities.get(studentIndex).getFirstName(),
+                                                              studentEntities.get(studentIndex).getLastName()));
                              }));
             studentDAO.updateStudent(studentsHaveGroupId);
-            return studentsHaveGroupId;
+            return studentsHaveGroupId.stream()
+            						  .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(),
+            																 studentEntity.getGroupId(),
+            																 studentEntity.getFirstName(),
+            																 studentEntity.getLastName()))
+            						  .collect(Collectors.toList());
         } catch (DAOException e) {
             throw new ServiceException(ERROR_ASSIGN_GROUP, e); 
         }
@@ -115,11 +141,15 @@ public class StudentService implements Student<List<StudentDTO>,
                                                                    .getProperty(LAST_NAME_FILENAME_KEY);
             List<String> firstNames = reader.toList(fistNameFilename);
             List<String> lastNames = reader.toList(lastNameFilename);
-            List<StudentDTO> students = generator.getStudentData(firstNames, lastNames);
+            List<StudentDTO> studentDTOs = generator.getStudentData(firstNames, lastNames);
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-            studentDAO.insertStudent(students);
-            return studentDAO.getAllStudents();
+            List<StudentEntity> studentEntities = studentDTOs.stream()
+            		.map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
+            											   studentDTO.getLastName()))
+            		.collect(Collectors.toList()); 
+            studentDAO.create(studentEntities);
+            return studentDTOs;
         } catch (ServiceException | DAOException e) {
             throw new ServiceException(ERROR_INSERT, e);
         }

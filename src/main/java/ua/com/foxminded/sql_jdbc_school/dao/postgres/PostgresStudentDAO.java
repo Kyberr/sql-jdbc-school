@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
 public class PostgresStudentDAO implements StudentDAO {
     
@@ -36,15 +36,15 @@ public class PostgresStudentDAO implements StudentDAO {
                                                                 + "group ID failed.";
     
     @Override
-    public List<StudentDTO> getStudentsWithGroupId() throws DAOException {
+    public List<StudentEntity> getStudentsWithGroupId() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_STUDENTS_WITH_GROUP_ID);
              ResultSet resultSet = statement.executeQuery();) {
             
-            List<StudentDTO> studentsHaveGroupId = new ArrayList<>();
+            List<StudentEntity> studentsHaveGroupId = new ArrayList<>();
             
             while (resultSet.next()) {
-                studentsHaveGroupId.add(new StudentDTO(resultSet.getInt(STUDENT_ID),
+                studentsHaveGroupId.add(new StudentEntity(resultSet.getInt(STUDENT_ID),
                                                        resultSet.getInt(GROUP_ID),
                                                        resultSet.getString(FIRST_NAME),
                                                        resultSet.getString(LAST_NAME)));
@@ -57,16 +57,16 @@ public class PostgresStudentDAO implements StudentDAO {
     }
     
     @Override
-    public StudentDTO getStudent(int studentId) throws DAOException {
+    public StudentEntity getStudent(int studentId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_STUDENT);) {
 
-            StudentDTO student = null;
+            StudentEntity student = null;
             statement.setInt(1, studentId);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                student = new StudentDTO(resultSet.getInt(STUDENT_ID), 
+                student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
                                          (Integer) resultSet.getObject(GROUP_ID),
                                          resultSet.getString(FIRST_NAME), 
                                          resultSet.getString(LAST_NAME));
@@ -91,7 +91,7 @@ public class PostgresStudentDAO implements StudentDAO {
     }
     
     @Override
-    public int insertStudent(List<StudentDTO> students) throws DAOException {
+    public Integer create(List<StudentEntity> studentEntities) throws DAOException {
         try(Connection con = PostgresDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(INSERT_STUDENTS);) {
             con.setAutoCommit(false);
@@ -100,7 +100,7 @@ public class PostgresStudentDAO implements StudentDAO {
             try {
                 int status = 0;
                 
-                for (StudentDTO student : students) {
+                for (StudentEntity student : studentEntities) {
                     statement.setObject(1, student.getGroupId());
                     statement.setString(2, student.getFirstName());
                     statement.setString(3, student.getLastName());
@@ -126,14 +126,14 @@ public class PostgresStudentDAO implements StudentDAO {
     }
     
     @Override
-    public List<StudentDTO> getAllStudents() throws DAOException {
+    public List<StudentEntity> getAllStudents() throws DAOException {
         try(Connection con = PostgresDAOFactory.creatConnection();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(SELECT_ALL);) {
-            List<StudentDTO> students = new ArrayList<>();
+            List<StudentEntity> students = new ArrayList<>();
             
             while(resultSet.next()) {
-                students.add(new StudentDTO((Integer) resultSet.getObject(STUDENT_ID),
+                students.add(new StudentEntity((Integer) resultSet.getObject(STUDENT_ID),
                                             (Integer) resultSet.getObject(GROUP_ID),
                                             resultSet.getString(FIRST_NAME),
                                             resultSet.getString(LAST_NAME)));
@@ -145,7 +145,7 @@ public class PostgresStudentDAO implements StudentDAO {
     }
     
     @Override
-    public int updateStudent(List<StudentDTO> students) throws DAOException {
+    public int updateStudent(List<StudentEntity> students) throws DAOException {
         try(Connection con = PostgresDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(UPDATE)) {
             con.setAutoCommit(false);
@@ -153,7 +153,7 @@ public class PostgresStudentDAO implements StudentDAO {
             int status = 0;
             
             try {
-                for (StudentDTO student : students) {
+                for (StudentEntity student : students) {
                     statement.setInt(4, student.getStudentId());
                     statement.setObject(1, student.getGroupId());
                     statement.setString(2, student.getFirstName());
@@ -178,4 +178,5 @@ public class PostgresStudentDAO implements StudentDAO {
             throw new DAOException(ERROR_UDATE, e);
         }
     }
+
 }

@@ -23,7 +23,7 @@ public class TableService implements Table<Integer> {
             											   .getProperty(SQL_FILE_NAME_KEY);
             List<String> sqlScriptList = reader.toList(fileName);
             String sqlScript = parser.toStringList(sqlScriptList); 
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             TableDAO universityTableDAO = universityDAOFactory.getTableDAO();
             return universityTableDAO.createTables(sqlScript);
         } catch (ServiceException | DAOException e) {

@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.postgres;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 
-public class UniversityCourseDAO implements CourseDAO {
+public class PostgresCourseDAO implements CourseDAO {
     
     public static final String SELECT_COURSE = "select * from department.courses where course_id = ?";
     public static final String INSERT = "insert into department.courses(course_name) values (?)";
@@ -26,7 +26,7 @@ public class UniversityCourseDAO implements CourseDAO {
     
     @Override
     public CourseDTO getCourse(int courseId) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_COURSE);) {
             
             CourseDTO course = null;
@@ -47,7 +47,7 @@ public class UniversityCourseDAO implements CourseDAO {
     
     @Override
     public List<CourseDTO> getAllCourses() throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = PostgresDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(SELECT_ALL)) {
 
@@ -67,7 +67,7 @@ public class UniversityCourseDAO implements CourseDAO {
     
     @Override
     public int insertCourse(List<String> courseNameList) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(INSERT)) {
            
             con.setAutoCommit(false);

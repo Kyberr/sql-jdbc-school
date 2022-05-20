@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.postgres;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 
-public class UniversityGroupDAO implements GroupDAO {
+public class PostgresGroupDAO implements GroupDAO {
     private static final String SQL_INSERT = "insert into department.groups"
                                            + "(group_name) values (?)";
     private static final String SQL_SELECT_ALL = "select * from department.groups";
@@ -33,7 +33,7 @@ public class UniversityGroupDAO implements GroupDAO {
     
     @Override
     public List<GroupDTO> getGroupsWithLessOrEqualStudents (int students) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(String
                      .format(SQL_SELECT_LESS_EQUAL_STUDENTS, students));
              ResultSet resultSet = statement.executeQuery();) {
@@ -53,7 +53,7 @@ public class UniversityGroupDAO implements GroupDAO {
     
     @Override
     public List<GroupDTO> getAllGroups() throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = PostgresDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL)) {
             
@@ -72,7 +72,7 @@ public class UniversityGroupDAO implements GroupDAO {
     @Override
     public int insertGroup(List<String> groupNameList) throws DAOException {
 
-        try (Connection connection = UniversityDAOFactory.creatConnection();
+        try (Connection connection = PostgresDAOFactory.creatConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT)) {
             
             connection.setAutoCommit(false);

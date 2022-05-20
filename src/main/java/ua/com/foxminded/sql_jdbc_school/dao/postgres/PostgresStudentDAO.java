@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.postgres;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
-public class UniversityStudentDAO implements StudentDAO {
+public class PostgresStudentDAO implements StudentDAO {
     
     private static final String SELECT_STUDENTS_WITH_GROUP_ID = "select * from department.students "
                                                              + "where group_id is not null";
@@ -37,7 +37,7 @@ public class UniversityStudentDAO implements StudentDAO {
     
     @Override
     public List<StudentDTO> getStudentsWithGroupId() throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_STUDENTS_WITH_GROUP_ID);
              ResultSet resultSet = statement.executeQuery();) {
             
@@ -58,7 +58,7 @@ public class UniversityStudentDAO implements StudentDAO {
     
     @Override
     public StudentDTO getStudent(int studentId) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_STUDENT);) {
 
             StudentDTO student = null;
@@ -80,7 +80,7 @@ public class UniversityStudentDAO implements StudentDAO {
     
     @Override
     public int deleteStudent(int studentId) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DELETE_STUDENT)) {
             
             statement.setInt(1, studentId);
@@ -92,7 +92,7 @@ public class UniversityStudentDAO implements StudentDAO {
     
     @Override
     public int insertStudent(List<StudentDTO> students) throws DAOException {
-        try(Connection con = UniversityDAOFactory.creatConnection();
+        try(Connection con = PostgresDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(INSERT_STUDENTS);) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
@@ -127,7 +127,7 @@ public class UniversityStudentDAO implements StudentDAO {
     
     @Override
     public List<StudentDTO> getAllStudents() throws DAOException {
-        try(Connection con = UniversityDAOFactory.creatConnection();
+        try(Connection con = PostgresDAOFactory.creatConnection();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(SELECT_ALL);) {
             List<StudentDTO> students = new ArrayList<>();
@@ -146,7 +146,7 @@ public class UniversityStudentDAO implements StudentDAO {
     
     @Override
     public int updateStudent(List<StudentDTO> students) throws DAOException {
-        try(Connection con = UniversityDAOFactory.creatConnection();
+        try(Connection con = PostgresDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(UPDATE)) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();

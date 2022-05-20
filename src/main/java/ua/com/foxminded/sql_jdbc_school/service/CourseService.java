@@ -23,7 +23,7 @@ public class CourseService implements Course<List<CourseDTO>> {
             String coursesListFilename = ReaderServicesPropertiesCache.getInstance()
                                                                       .getProperty(COURSES_LIST_FILENAME_KEY);
             List<String> coursesList = reader.toList(coursesListFilename);
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
             universityCourseDAO.insertCourse(coursesList);
             return universityCourseDAO.getAllCourses();
@@ -35,7 +35,7 @@ public class CourseService implements Course<List<CourseDTO>> {
     @Override
     public List<CourseDTO> getAllCourses() throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
             return universityCourseDAO.getAllCourses();
         } catch (DAOException e) {

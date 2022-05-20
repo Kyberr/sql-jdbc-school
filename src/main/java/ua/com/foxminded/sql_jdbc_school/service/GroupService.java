@@ -20,7 +20,7 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
     public List<GroupDTO> findGroupsWithLessOrEqualStudents(Integer studentsNumber) 
             throws ServiceException {
         try {
-            DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
             return groupDAO.getGroupsWithLessOrEqualStudents(studentsNumber);
         } catch (DAOException e) {
@@ -32,7 +32,7 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
     public List<GroupDTO> createGroups() throws ServiceException {
         try {
             List<String> groupList = generator.getGroupName();
-            DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
             groupDAO.insertGroup(groupList);
             return groupDAO.getAllGroups();

@@ -1,9 +1,9 @@
 package ua.com.foxminded.sql_jdbc_school.dao;
 
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.postgres.PostgresDAOFactory;
 
 public abstract class DAOFactory {
-    public static final int UNIVERSITY = 1;
+    public static final int POSTGRES = 1;
     
     public abstract TableDAO getTableDAO();
     public abstract StudentDAO getStudentDAO();
@@ -13,8 +13,8 @@ public abstract class DAOFactory {
     
     public static DAOFactory getDAOFactory(int whichFactory) {
         switch (whichFactory) {
-        case UNIVERSITY:
-            return new UniversityDAOFactory();
+        case POSTGRES:
+            return new PostgresDAOFactory();
         default:
             return null;
         }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 
 public class PostgresGroupDAO implements GroupDAO {
     private static final String SQL_INSERT = "insert into department.groups"
@@ -32,16 +32,16 @@ public class PostgresGroupDAO implements GroupDAO {
                                                              + "equal number of students is failed.";
     
     @Override
-    public List<GroupDTO> getGroupsWithLessOrEqualStudents (int students) throws DAOException {
+    public List<GroupEntity> getGroupsWithLessOrEqualStudents (int students) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(String
                      .format(SQL_SELECT_LESS_EQUAL_STUDENTS, students));
              ResultSet resultSet = statement.executeQuery();) {
             
-            List<GroupDTO> result = new ArrayList<>();
+            List<GroupEntity> result = new ArrayList<>();
             
             while (resultSet.next()) {
-                result.add(new GroupDTO((Integer) resultSet.getObject(GROUP_ID),
+                result.add(new GroupEntity((Integer) resultSet.getObject(GROUP_ID),
                                         resultSet.getString(GROUP_NAME),
                                         Integer.valueOf(resultSet.getString(GROUP_STUDENTS_NUMBER))));
             }
@@ -52,15 +52,15 @@ public class PostgresGroupDAO implements GroupDAO {
     }
     
     @Override
-    public List<GroupDTO> getAllGroups() throws DAOException {
+    public List<GroupEntity> getAllGroups() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL)) {
             
-            List<GroupDTO> result = new ArrayList<>();
+            List<GroupEntity> result = new ArrayList<>();
             
             while (resultSet.next()) {
-                result.add(new GroupDTO(resultSet.getInt(GROUP_ID), 
+                result.add(new GroupEntity(resultSet.getInt(GROUP_ID), 
                                         resultSet.getString(GROUP_NAME)));
             }
             return result;
@@ -70,7 +70,7 @@ public class PostgresGroupDAO implements GroupDAO {
     }
     
     @Override
-    public int insertGroup(List<String> groupNameList) throws DAOException {
+    public Integer create(List<GroupEntity> groups) throws DAOException {
 
         try (Connection connection = PostgresDAOFactory.creatConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT)) {
@@ -78,12 +78,13 @@ public class PostgresGroupDAO implements GroupDAO {
             connection.setAutoCommit(false);
             Savepoint save1 = connection.setSavepoint();
             int status = 0;
+           
             try {
-                for (String groupName : groupNameList) {
-                    preparedStatement.setString(1, groupName);
+                for (GroupEntity group : groups) {
+                    preparedStatement.setString(1, group.getGroupName());
                     status = preparedStatement.executeUpdate();
                 }
-
+                
                 connection.commit();
                 return status;
             } catch (SQLException e) {

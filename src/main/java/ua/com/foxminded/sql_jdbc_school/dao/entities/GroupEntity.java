@@ -1,20 +1,20 @@
-package ua.com.foxminded.sql_jdbc_school.service.dto;
+package ua.com.foxminded.sql_jdbc_school.dao.entities;
 
 import java.util.Objects;
 
-public class GroupDTO {
+public class GroupEntity {
 	private Integer groupId;
     private String groupName;
     private Integer studentsNumber;
 	
-    public GroupDTO(Integer groupId, String groupName, Integer studentsNumber) {
+    public GroupEntity(Integer groupId, String groupName, Integer studentsNumber) {
 		super();
 		this.groupId = groupId;
 		this.groupName = groupName;
 		this.studentsNumber = studentsNumber;
 	}
-    
-	public GroupDTO(Integer groupId, String groupName) {
+
+	public GroupEntity(Integer groupId, String groupName) {
 		super();
 		this.groupId = groupId;
 		this.groupName = groupName;
@@ -57,13 +57,14 @@ public class GroupDTO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		GroupDTO other = (GroupDTO) obj;
+		GroupEntity other = (GroupEntity) obj;
 		return Objects.equals(groupId, other.groupId) && Objects.equals(groupName, other.groupName)
 				&& Objects.equals(studentsNumber, other.studentsNumber);
 	}
 
 	@Override
 	public String toString() {
-		return "GroupDTO [groupId=" + groupId + ", groupName=" + groupName + ", studentsNumber=" + studentsNumber + "]";
+		return "GroupEntity [groupId=" + groupId + ", groupName=" + groupName + ", studentsNumber=" + studentsNumber
+				+ "]";
 	}
 }

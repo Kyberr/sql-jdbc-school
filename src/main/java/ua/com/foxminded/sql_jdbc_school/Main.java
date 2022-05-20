@@ -18,7 +18,7 @@ import ua.com.foxminded.sql_jdbc_school.service.Student;
 import ua.com.foxminded.sql_jdbc_school.service.Table;
 import ua.com.foxminded.sql_jdbc_school.service.TableService;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 import ua.com.foxminded.sql_jdbc_school.view.ConsoleMenuView;
@@ -33,13 +33,13 @@ public class Main {
         Parser parser = new Parser();
         Generator generator = new Generator();
         Table<Integer> tableService = new TableService(reader, parser);
-        Student<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService = 
+        Student<List<StudentDTO>, List<GroupEntity>, String, Integer> studentService = 
         		new StudentService(reader, generator);
         Course<List<CourseDTO>> courseService = new CourseService(reader);
-        Group<List<GroupDTO>, Integer> groupService = new GroupService(generator);
+        Group<List<GroupEntity>, Integer> groupService = new GroupService(generator);
         StudentCourse<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
         			  Integer> studentCourseService = new StudentCourseService(generator);
-        MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+        MenuView<List<GroupEntity>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                  Integer> menuView = new ConsoleMenuView();
         Menu menu = new Menu(tableService, studentService, courseService, groupService, 
                              studentCourseService, menuView);

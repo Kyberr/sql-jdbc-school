@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 import ua.com.foxminded.sql_jdbc_school.view.MenuView;
@@ -23,20 +23,20 @@ public class Menu {
     private static final int NORMAL_STATUS_OF_ADD = 1;
    
     private Table<Integer> tableService;
-    private Student<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService;
+    private Student<List<StudentDTO>, List<GroupEntity>, String, Integer> studentService;
     private Course<List<CourseDTO>> courseService;
-    private Group<List<GroupDTO>, Integer> groupService;
+    private Group<List<GroupEntity>, Integer> groupService;
     private StudentCourse<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>,
                                  Integer> studentCourseService;
-    private MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+    private MenuView<List<GroupEntity>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                      Integer> menuView;
-    public Menu(Table<Integer> tableService, Student<List<StudentDTO>, List<GroupDTO>, 
+    public Menu(Table<Integer> tableService, Student<List<StudentDTO>, List<GroupEntity>, 
                                                                    String, Integer> studentService,
-                Course<List<CourseDTO>> courseService, Group<List<GroupDTO>, 
+                Course<List<CourseDTO>> courseService, Group<List<GroupEntity>, 
                                                                            Integer> groupService,
                 StudentCourse<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
                                      Integer> studentCourseService,
-                MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+                MenuView<List<GroupEntity>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                              Integer> menuView) {
         this.tableService = tableService;
         this.studentService = studentService;
@@ -86,7 +86,7 @@ public class Menu {
             tableService.creatTables();
             List<CourseDTO> courses = courseService.createCourses();
             studentService.createStudents();
-            List<GroupDTO> groups = groupService.createGroups();
+            List<GroupEntity> groups = groupService.createGroups();
             List<StudentDTO> studentsHaveGroupID = studentService.assignGroup(groups);
             studentCourseService.createStudentCourseRelation(studentsHaveGroupID, courses);
         } catch (ServiceException e) {
@@ -275,7 +275,7 @@ public class Menu {
     private void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) 
             throws ServiceException {
         menuView.enterNumberOfStudents();
-        List<GroupDTO> groups = groupService
+        List<GroupEntity> groups = groupService
                 .findGroupsWithLessOrEqualStudents(scanOnlyIntInput(studentsNumberScanner));
         menuView.showNumberOfStudentsInGroups(groups);
         exitOrReturnMainMenu(studentsNumberScanner);

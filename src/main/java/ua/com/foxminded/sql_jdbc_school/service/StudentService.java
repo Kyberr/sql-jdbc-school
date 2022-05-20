@@ -7,11 +7,11 @@ import java.util.stream.IntStream;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
 public class StudentService implements Student<List<StudentDTO>, 
-                                                                List<GroupDTO>, 
+                                                                List<GroupEntity>, 
                                                                 String, 
                                                                 Integer> {
     private static final String FIST_NAME_FILENAME_KEY = "FirstNameFilename";
@@ -81,7 +81,7 @@ public class StudentService implements Student<List<StudentDTO>,
     }
     
     @Override
-    public List<StudentDTO> assignGroup(List<GroupDTO> groups) throws ServiceException {
+    public List<StudentDTO> assignGroup(List<GroupEntity> groups) throws ServiceException {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();

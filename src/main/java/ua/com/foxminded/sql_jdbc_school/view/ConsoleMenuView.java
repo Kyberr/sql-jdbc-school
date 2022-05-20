@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
-public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
+public class ConsoleMenuView implements MenuView<List<GroupEntity>, List<CourseDTO>, List<StudentCourseDTO>, 
                                                  List<StudentDTO>, Integer> {
     
     private static final String START_MESSAGE_FORMAT = "%85s";
@@ -282,7 +282,7 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
     }
     
     @Override
-    public void showNumberOfStudentsInGroups(List<GroupDTO> groupsList) {
+    public void showNumberOfStudentsInGroups(List<GroupEntity> groupsList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         
         if (groupsList.isEmpty()) {

@@ -1,9 +1,12 @@
 package ua.com.foxminded.sql_jdbc_school.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 
 public class GroupService implements Group<List<GroupDTO>, Integer> {
@@ -22,7 +25,12 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
         try {
             DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
-            return groupDAO.getGroupsWithLessOrEqualStudents(studentsNumber);
+            return groupDAO.getGroupsWithLessOrEqualStudents(studentsNumber)
+            			   .stream()
+            			   .map((groupEntity) -> new GroupDTO(groupEntity.getGroupId(), 
+            					   							  groupEntity.getGroupName(), 
+            					   							  groupEntity.getStudentsNumber()))
+            			   .collect(Collectors.toList());
         } catch (DAOException e) {
             throw new ServiceException (ERROR_FIND_LESS_OR_EQUALS, e); 
         }
@@ -31,11 +39,19 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
     @Override
     public List<GroupDTO> createGroups() throws ServiceException {
         try {
-            List<String> groupList = generator.getGroupName();
-            DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            GroupDAO groupDAO = universityFactory.getGroupDAO();
-            groupDAO.insertGroup(groupList);
-            return groupDAO.getAllGroups();
+            List<String> groupNames = generator.getGroupName();
+            List<GroupEntity> groupEntities = new ArrayList<>();
+            groupEntities = groupNames.stream()
+            				       .map((line) -> new GroupEntity(null, line))
+            			           .collect(Collectors.toList());
+            DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            GroupDAO groupDAO = postgresFactory.getGroupDAO();
+            groupDAO.create(groupEntities);
+            return groupDAO.getAllGroups()
+            			   .stream()
+            			   .map((groupEntity) -> new GroupDTO(groupEntity.getGroupId(), 
+            					   							  groupEntity.getGroupName()))
+            			   .collect(Collectors.toList());
         } catch (DAOException e) {
             throw new ServiceException(ERROR_CREAT, e);
         }

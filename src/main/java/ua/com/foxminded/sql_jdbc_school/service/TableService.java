@@ -3,7 +3,7 @@ package ua.com.foxminded.sql_jdbc_school.service;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
-import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.Entity;
 
 public class TableService implements Table<Integer> {
     private static final String ERROR_TABLE_CREATION = "The table creation service dosn't work.";
@@ -23,9 +23,9 @@ public class TableService implements Table<Integer> {
             											   .getProperty(SQL_FILE_NAME_KEY);
             List<String> sqlScriptList = reader.toList(fileName);
             String sqlScript = parser.toStringList(sqlScriptList); 
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            TableDAO universityTableDAO = universityDAOFactory.getTableDAO();
-            return universityTableDAO.createTables(sqlScript);
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            Entity postgresEntity = postgresDAOFactory.getEntity();
+            return postgresEntity.create(sqlScript);
         } catch (ServiceException | DAOException e) {
             throw new ServiceException(ERROR_TABLE_CREATION, e);
         }

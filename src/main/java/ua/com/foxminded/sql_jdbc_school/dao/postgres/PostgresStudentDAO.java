@@ -12,7 +12,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
-public class PostgresStudentDAO extends PostgresGenericDAO<StudentEntity> implements StudentDAO {
+public class PostgresStudentDAO implements StudentDAO {
     
     private static final String SELECT_STUDENTS_WITH_GROUP_ID = "select * from department.students "
                                                              + "where group_id is not null";

@@ -12,7 +12,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 
-public class PostgresGroupDAO extends PostgresGenericDAO<GroupEntity> implements GroupDAO {
+public class PostgresGroupDAO implements GroupDAO {
     private static final String SQL_INSERT = "insert into department.groups"
                                            + "(group_name) values (?)";
     private static final String SQL_SELECT_ALL = "select * from department.groups";

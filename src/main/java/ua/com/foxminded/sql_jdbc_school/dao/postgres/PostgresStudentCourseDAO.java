@@ -11,8 +11,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentCourseEntity;
 
-public class PostgresStudentCourseDAO extends PostgresGenericDAO<StudentCourseEntity> 
-									  implements StudentCourseDAO {
+public class PostgresStudentCourseDAO implements StudentCourseDAO {
     
     private static final String DELETE_STUDENT_FROM_COURSE = "delete from department.student_course "
             + "where student_id = ? and course_id = ?";

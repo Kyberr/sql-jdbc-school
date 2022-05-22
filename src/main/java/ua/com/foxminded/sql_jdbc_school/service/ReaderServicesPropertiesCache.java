@@ -14,7 +14,7 @@ public class ReaderServicesPropertiesCache implements ServicePropertyCache<Strin
         try (InputStream input = this.getClass()
                                      .getClassLoader()
                                      .getResourceAsStream(PROPERTIES_FILE_NAME)) {
-            property.load(input);
+             property.load(input);
         } catch (Exception e) {
             throw new ServiceException (ERROR_PROPERTIES_FILE, e);
         }

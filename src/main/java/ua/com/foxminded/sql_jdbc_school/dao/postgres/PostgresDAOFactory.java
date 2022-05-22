@@ -9,7 +9,6 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.TableDAO;
 
 public class PostgresDAOFactory extends DAOFactory {
     private static final String DB_URL_KEY = "PostgresDatabaseURL";
@@ -28,11 +27,6 @@ public class PostgresDAOFactory extends DAOFactory {
         } catch (DAOException | SQLException e) {
             throw new DAOException(CONNECT_ERROR, e);
         }
-    }
-    
-    @Override
-    public TableDAO getTableDAO() {
-        return new PostgresTableDAO();
     }
     
     @Override

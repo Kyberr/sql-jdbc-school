@@ -12,7 +12,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
-public class PostgresCourseDAO implements CourseDAO {
+public class PostgresCourseDAO extends PostgresGenericDAO<CourseEntity> implements CourseDAO {
     
     public static final String SELECT_COURSE = "select * from department.courses where course_id = ?";
     public static final String INSERT = "insert into department.courses(course_name) values (?)";

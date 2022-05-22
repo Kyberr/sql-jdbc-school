@@ -52,7 +52,7 @@ public class PostgresGroupDAO implements GroupDAO {
     }
     
     @Override
-    public List<GroupEntity> getAllGroups() throws DAOException {
+    public List<GroupEntity> readAll() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL)) {

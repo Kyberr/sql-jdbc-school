@@ -70,7 +70,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     }
     
     @Override
-    public List<StudentCourseEntity> getAllStudentCourse() throws DAOException {
+    public List<StudentCourseEntity> readAll() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_ALL);
              ResultSet resultSet = statement.executeQuery();) {

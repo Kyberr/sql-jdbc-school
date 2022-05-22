@@ -46,7 +46,7 @@ public class PostgresCourseDAO implements CourseDAO {
     }
     
     @Override
-    public List<CourseEntity> getAllCourses() throws DAOException {
+    public List<CourseEntity> readAll() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(SELECT_ALL)) {

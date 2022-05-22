@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentCourseEntity;
 
 public class PostgresStudentCourseDAO implements StudentCourseDAO {
     
@@ -70,21 +70,21 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     }
     
     @Override
-    public List<StudentCourseDTO> getAllStudentCourse() throws DAOException {
+    public List<StudentCourseEntity> getAllStudentCourse() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_ALL);
              ResultSet resultSet = statement.executeQuery();) {
             
-            List<StudentCourseDTO> studentCourse = new ArrayList<>();
+            List<StudentCourseEntity> studentCourse = new ArrayList<>();
             
             while (resultSet.next()) {
-                studentCourse.add(new StudentCourseDTO((Integer) resultSet.getObject(STUDENT_ID),
-                                                       (Integer) resultSet.getObject(GROUP_ID),
-                                                       resultSet.getString(FIRST_NAME),
-                                                       resultSet.getString(LAST_NAME),
-                                                       (Integer) resultSet.getObject(COURSE_ID),
-                                                       resultSet.getString(COURSE_NAME),
-                                                       resultSet.getString(COURSE_DESC)));
+                studentCourse.add(new StudentCourseEntity((Integer) resultSet.getObject(STUDENT_ID),
+                                                          (Integer) resultSet.getObject(GROUP_ID),
+                                                          resultSet.getString(FIRST_NAME),
+                                                          resultSet.getString(LAST_NAME),
+                                                          (Integer) resultSet.getObject(COURSE_ID),
+                                                          resultSet.getString(COURSE_NAME),
+                                                          resultSet.getString(COURSE_DESC)));
             }
             return studentCourse;
         } catch (DAOException | SQLException e) {
@@ -92,23 +92,23 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
         }
     }
     @Override
-    public List<StudentCourseDTO> getStudentCourse(int studentId, int courseId) throws DAOException {
+    public List<StudentCourseEntity> getStudentCourse(int studentId, int courseId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_STUDENT_ID_COURSE_ID)) {
             
-            List<StudentCourseDTO> studentCourse = new ArrayList<>();
+            List<StudentCourseEntity> studentCourse = new ArrayList<>();
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);
             ResultSet resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
-                studentCourse.add(new StudentCourseDTO((Integer) resultSet.getObject(STUDENT_ID),
-                                                       (Integer) resultSet.getObject(GROUP_ID),
-                                                       resultSet.getString(FIRST_NAME),
-                                                       resultSet.getString(LAST_NAME),
-                                                       (Integer) resultSet.getObject(COURSE_ID),
-                                                       resultSet.getString(COURSE_NAME),
-                                                       resultSet.getString(COURSE_DESC)));
+                studentCourse.add(new StudentCourseEntity((Integer) resultSet.getObject(STUDENT_ID),
+                                                          (Integer) resultSet.getObject(GROUP_ID),
+                                                          resultSet.getString(FIRST_NAME),
+                                                          resultSet.getString(LAST_NAME),
+                                                          (Integer) resultSet.getObject(COURSE_ID),
+                                                          resultSet.getString(COURSE_NAME),
+                                                          resultSet.getString(COURSE_DESC)));
             }
             resultSet.close();
             return studentCourse;
@@ -118,21 +118,21 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     }
     
     @Override
-    public List<StudentCourseDTO> getStudentsOfCourse(int courseId) throws DAOException {
+    public List<StudentCourseEntity> getStudentsOfCourse(int courseId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(String
             		 .format(SELECT_STUDENTS_OF_COURSE, courseId));
              ResultSet resultSet = statement.executeQuery();) {
-            List<StudentCourseDTO> studentCourse = new ArrayList<>();
+            List<StudentCourseEntity> studentCourse = new ArrayList<>();
             
             while (resultSet.next()) {
-                studentCourse.add(new StudentCourseDTO((Integer) resultSet.getObject(STUDENT_ID),
-                                                       (Integer) resultSet.getObject(GROUP_ID),
-                                                       resultSet.getString(FIRST_NAME), 
-                                                       resultSet.getString(LAST_NAME),
-                                                       (Integer) resultSet.getObject(COURSE_ID),
-                                                       resultSet.getString(COURSE_NAME),
-                                                       resultSet.getString(COURSE_DESC)));
+                studentCourse.add(new StudentCourseEntity((Integer) resultSet.getObject(STUDENT_ID),
+                                                          (Integer) resultSet.getObject(GROUP_ID),
+                                                          resultSet.getString(FIRST_NAME), 
+                                                          resultSet.getString(LAST_NAME),
+                                                          (Integer) resultSet.getObject(COURSE_ID),
+                                                          resultSet.getString(COURSE_NAME),
+                                                          resultSet.getString(COURSE_DESC)));
             }
             return studentCourse;
         } catch (DAOException | SQLException e) {
@@ -141,7 +141,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     }
     
     @Override
-    public int insertStudentCourse(List<StudentCourseDTO> studentsCourses) throws DAOException {
+    public Integer create(List<StudentCourseEntity> studentsCourseEntities) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(INSERT)) {
             con.setAutoCommit(false);
@@ -149,15 +149,15 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             int status = 0;
             
             try {
-                for (StudentCourseDTO studentCourse : studentsCourses) {
-                    statement.setObject(1, studentCourse.getStudentId());
-                    statement.setObject(2, studentCourse.getGroupId());
-                    statement.setString(3, studentCourse.getFirstName());
-                    statement.setString(4, studentCourse.getLastName());
-                    statement.setObject(5, studentCourse.getCourseId());
-                    statement.setObject(6, studentCourse.getCourseName());
-                    statement.setString(7, studentCourse.getCourseDescription());
-                    status += statement.executeUpdate();
+                for (StudentCourseEntity studentCourse : studentsCourseEntities) {
+                     statement.setObject(1, studentCourse.getStudentId());
+                     statement.setObject(2, studentCourse.getGroupId());
+                     statement.setString(3, studentCourse.getFirstName());
+                     statement.setString(4, studentCourse.getLastName());
+                     statement.setObject(5, studentCourse.getCourseId());
+                     statement.setObject(6, studentCourse.getCourseName());
+                     statement.setString(7, studentCourse.getCourseDescription());
+                     status += statement.executeUpdate();
                 }
                 con.commit();
                 return status;

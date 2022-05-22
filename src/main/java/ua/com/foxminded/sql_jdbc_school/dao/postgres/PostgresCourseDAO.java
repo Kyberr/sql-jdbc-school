@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
 public class PostgresCourseDAO implements CourseDAO {
     
@@ -21,22 +21,22 @@ public class PostgresCourseDAO implements CourseDAO {
     public static final String COURSE_NAME = "course_name";
     public static final String COURSE_DESC = "course_description";
     public static final String ERROR_GET_COURSE = "The getting of the course from the database is failed.";
-    public static final String ERROR_INSERT = "The insertion of the courses to the database is failed.";
+    public static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     public static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     
     @Override
-    public CourseDTO getCourse(int courseId) throws DAOException {
+    public CourseEntity getCourse(int courseId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(SELECT_COURSE);) {
             
-            CourseDTO course = null;
+            CourseEntity course = null;
             statement.setInt(1, courseId);
             ResultSet resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
-                course = new CourseDTO(resultSet.getInt(COURSE_ID), 
-                                       resultSet.getString(COURSE_NAME),
-                                       resultSet.getString(COURSE_DESC));
+                course = new CourseEntity(resultSet.getInt(COURSE_ID), 
+                                          resultSet.getString(COURSE_NAME),
+                                          resultSet.getString(COURSE_DESC));
             }
             resultSet.close();
             return course;
@@ -46,19 +46,19 @@ public class PostgresCourseDAO implements CourseDAO {
     }
     
     @Override
-    public List<CourseDTO> getAllCourses() throws DAOException {
+    public List<CourseEntity> getAllCourses() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(SELECT_ALL)) {
 
-            List<CourseDTO> courses = new ArrayList<>();
+            List<CourseEntity> courseEntities = new ArrayList<>();
             
             while (resultSet.next()) {
-                courses.add(new CourseDTO(resultSet.getInt(COURSE_ID),
-                                          resultSet.getString(COURSE_NAME),
-                                          resultSet.getString(COURSE_DESC)));
+                courseEntities.add(new CourseEntity(resultSet.getInt(COURSE_ID),
+                                          			resultSet.getString(COURSE_NAME),
+                                          			resultSet.getString(COURSE_DESC)));
             }
-            return courses;
+            return courseEntities;
         } catch (DAOException | SQLException e) {
             throw new DAOException(ERROR_GET_ALL_COURSES, e);
             
@@ -66,7 +66,7 @@ public class PostgresCourseDAO implements CourseDAO {
     }
     
     @Override
-    public int insertCourse(List<String> courseNameList) throws DAOException {
+    public Integer create(List<CourseEntity> courseEntities) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(INSERT)) {
            
@@ -75,8 +75,8 @@ public class PostgresCourseDAO implements CourseDAO {
             int status = 0;
 
             try {
-                for (String courseName : courseNameList) {
-                    statement.setString(1, courseName);
+                for (CourseEntity courseEntity : courseEntities) {
+                    statement.setString(1, courseEntity.getCourseName());
                     status = statement.executeUpdate();
                 }
 
@@ -94,7 +94,7 @@ public class PostgresCourseDAO implements CourseDAO {
                 throw new SQLException(e);
             }
         } catch (DAOException | SQLException e) {
-            throw new DAOException(ERROR_INSERT, e);
+            throw new DAOException(ERROR_CREATE, e);
         }
     }
 }

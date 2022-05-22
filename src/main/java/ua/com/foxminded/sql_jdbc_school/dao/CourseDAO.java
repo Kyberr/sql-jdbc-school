@@ -1,12 +1,10 @@
 package ua.com.foxminded.sql_jdbc_school.dao;
 
 import java.util.List;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
-
-public interface CourseDAO {
+public interface CourseDAO extends GenericDAO<CourseEntity, Integer> {
     
-    public CourseDTO getCourse(int courseId) throws DAOException;
-    public int insertCourse(List<String> courseNameList) throws DAOException;
-    public List<CourseDTO> getAllCourses() throws DAOException;
+    public CourseEntity getCourse(int courseId) throws DAOException;
+    public List<CourseEntity> getAllCourses() throws DAOException;
 }

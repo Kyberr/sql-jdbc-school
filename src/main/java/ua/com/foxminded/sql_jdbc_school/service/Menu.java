@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 import ua.com.foxminded.sql_jdbc_school.view.MenuView;

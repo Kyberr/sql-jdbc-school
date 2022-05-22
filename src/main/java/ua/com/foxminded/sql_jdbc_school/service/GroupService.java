@@ -47,7 +47,7 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
             DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             GroupDAO groupDAO = postgresFactory.getGroupDAO();
             groupDAO.create(groupEntities);
-            return groupDAO.getAllGroups()
+            return groupDAO.readAll()
             			   .stream()
             			   .map((groupEntity) -> new GroupDTO(groupEntity.getGroupId(), 
             					   							  groupEntity.getGroupName()))

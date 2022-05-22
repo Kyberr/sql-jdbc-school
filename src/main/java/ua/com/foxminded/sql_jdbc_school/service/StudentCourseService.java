@@ -53,7 +53,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
         try {
             DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
-            return studentCourseDAO.getAllStudentCourse()
+            return studentCourseDAO.readAll()
             					   .parallelStream()
             					   .map((entity) -> new StudentCourseDTO(entity.getStudentId(), 
             													         entity.getGroupId(), 

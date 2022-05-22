@@ -33,7 +33,7 @@ public class CourseService implements Course<List<CourseDTO>> {
             postgresCourseDAO.create(courseEntities);
             
             
-            return postgresCourseDAO.getAllCourses()
+            return postgresCourseDAO.readAll()
             						.parallelStream()
             						.map((entity) -> new CourseDTO(entity.getCourseId(), 
             													   entity.getCourseName(), 
@@ -49,7 +49,7 @@ public class CourseService implements Course<List<CourseDTO>> {
     	try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
-            return universityCourseDAO.getAllCourses()
+            return universityCourseDAO.readAll()
             						  .parallelStream()
             						  .map((entity) -> new CourseDTO(entity.getCourseId(), 
             								  						 entity.getCourseName(), 

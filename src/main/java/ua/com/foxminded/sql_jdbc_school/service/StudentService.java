@@ -67,7 +67,7 @@ public class StudentService implements Student<List<StudentDTO>,
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-            return studentDAO.getAllStudents()
+            return studentDAO.readAll()
             				 .stream()
             				 .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(),
             						 								studentEntity.getGroupId(),
@@ -105,7 +105,7 @@ public class StudentService implements Student<List<StudentDTO>,
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-            List<StudentEntity> studentEntities = studentDAO.getAllStudents();
+            List<StudentEntity> studentEntities = studentDAO.readAll();
             List<Integer> groupSize = generator.getNumberOfStudentsInGroup(studentEntities.size(), 
                                                                            groups.size());
             List<StudentEntity> studentsHaveGroupId = new ArrayList<>();

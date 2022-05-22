@@ -282,7 +282,7 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
     }
     
     @Override
-    public void showNumberOfStudentsInGroups(List<GroupEntity> groupsList) {
+    public void showNumberOfStudentsInGroups(List<GroupDTO> groupsList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         
         if (groupsList.isEmpty()) {

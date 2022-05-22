@@ -3,13 +3,12 @@ package ua.com.foxminded.sql_jdbc_school;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.service.Course;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.Group;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
+import ua.com.foxminded.sql_jdbc_school.service.Menu;
 import ua.com.foxminded.sql_jdbc_school.service.Parser;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.Student;
@@ -41,7 +40,7 @@ public class Main {
         Group<List<GroupDTO>,Integer> groupService = new GroupService(generator);
         StudentCourse<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
         			  Integer> studentCourseService = new StudentCourseService(generator);
-        MenuView<List<GroupEntity>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+        MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                  Integer> menuView = new ConsoleMenuView();
         Menu menu = new Menu(tableService, studentService, courseService, groupService, 
                              studentCourseService, menuView);

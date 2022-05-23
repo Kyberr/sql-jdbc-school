@@ -83,7 +83,7 @@ public class Menu {
     
     public void bootstrap() throws ServiceException {
         try {
-            tableService.creatTables();
+            tableService.createTables();
             List<CourseDTO> courses = courseService.createCourses();
             studentService.createStudents();
             List<GroupDTO> groups = groupService.createGroups();

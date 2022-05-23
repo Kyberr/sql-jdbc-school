@@ -1,13 +1,21 @@
 package ua.com.foxminded.sql_jdbc_school.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
+
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOEntity;
 
 public class TableService implements Table<Integer> {
+	private static final String ERROR_CREATE_STUDENT_COURSE_TABLE = "The StudentCourse table "
+																  + "has not been created.";
     private static final String ERROR_TABLE_CREATION = "The table creation service dosn't work.";
-    private static final String SQL_FILE_NAME_KEY = "SQLFileName";
+    private static final String SQL_FILE_NAME = "SQLFileName";
+    private static final String STUDENT_COURSE_PROPERTIES = "studentCourseQueries.properties";
+    private static final String CREATE_STUDENT_COURSE_ENTITY_SQL_QUERY = "createEntity";
     private Reader reader;
     private Parser parser;
     
@@ -17,17 +25,34 @@ public class TableService implements Table<Integer> {
     }
     
     @Override
-    public Integer creatTables() throws ServiceException {
+    public Integer createTables() throws ServiceException {
         try {
             String fileName = ReaderServicesPropertiesCache.getInstance()
-            											   .getProperty(SQL_FILE_NAME_KEY);
+            											   .getProperty(SQL_FILE_NAME);
             List<String> sqlScriptList = reader.toList(fileName);
             String sqlScript = parser.toStringList(sqlScriptList); 
             DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            DAOEntity postgresEntity = postgresDAOFactory.getEntity();
-            return postgresEntity.create(sqlScript);
+            DAOEntity postgresEntities = postgresDAOFactory.getEntity();
+            return postgresEntities.create(sqlScript);
         } catch (ServiceException | DAOException e) {
             throw new ServiceException(ERROR_TABLE_CREATION, e);
         }
+    }
+    
+    @Override 
+    public Integer createStudentCourseTable() throws ServiceException {
+    	try (InputStream input = this.getClass()
+									 .getClassLoader()
+									 .getResourceAsStream(STUDENT_COURSE_PROPERTIES);) {
+    		
+    		Properties properties = new Properties();
+    		properties.load(input);
+    		String studentCourseEntitySql = properties.getProperty(CREATE_STUDENT_COURSE_ENTITY_SQL_QUERY);
+    		DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+    		DAOEntity postgresEntity = postgresDAOFactory.getEntity();
+    		return postgresEntity.create(studentCourseEntitySql);
+    	} catch (DAOException | IOException e) {
+    		throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_TABLE, e);
+    	}
     }
 }

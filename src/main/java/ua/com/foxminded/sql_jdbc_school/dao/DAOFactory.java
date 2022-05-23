@@ -9,7 +9,7 @@ public abstract class DAOFactory {
     public abstract GroupDAO getGroupDAO();
     public abstract CourseDAO getCourseDAO();
     public abstract StudentCourseDAO getStudentCourseDAO();
-    public abstract Entity getEntity();
+    public abstract DAOEntity getEntity();
     
     public static DAOFactory getDAOFactory(int whichFactory) {
         switch (whichFactory) {

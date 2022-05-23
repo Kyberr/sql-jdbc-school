@@ -9,20 +9,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
 public class PostgresStudentDAO implements StudentDAO {
     
-    private static final String SELECT_STUDENTS_WITH_GROUP_ID = "select * from department.students "
-                                                             + "where group_id is not null";
-    private static final String SELECT_STUDENT = "select * from department.students where student_id = ?";
-    private static final String INSERT_STUDENTS = "insert into department.students (group_id, "
-                                                + "first_name, last_name) values (?, ?, ?)";
-    private static final String SELECT_ALL = "select * from department.students";
-    private static final String UPDATE = "update department.students set group_id=?, "
-                                       + "first_name=?, last_name=? where student_id=?";
-    private static final String DELETE_STUDENT = "delete from department.students where student_id = ?";
+	private static final String QUERIES_FILE_NAME = "studentQueries.properties";
+	private static final String SELECT_STUDENTS_WITH_GROUP = "selectStudentsWithGroup";
+	private static final String SELECT_STUDENT = "selectStudent";
+	private static final String DELETE_STUDENT = "deleteStudent";
+	private static final String INSERT_STUDENTS = "insertStudent";
+	private static final String SELECT_ALL = "selectAll";
+    private static final String UPDATE = "update";
     private static final String STUDENT_ID = "student_id";
     private static final String GROUP_ID = "group_id";
     private static final String FIRST_NAME = "first_name";
@@ -33,12 +32,13 @@ public class PostgresStudentDAO implements StudentDAO {
     private static final String ERROR_DELETE = "The deletion of the student data failed.";
     private static final String ERROR_GET_STUDENT = "Getting the student data failed.";
     private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
-                                                                + "group ID failed.";
+                                                                 + "group ID failed.";
     
     @Override
     public List<StudentEntity> getStudentsWithGroupId() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(SELECT_STUDENTS_WITH_GROUP_ID);
+             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENTS_WITH_GROUP));
              ResultSet resultSet = statement.executeQuery();) {
             
             List<StudentEntity> studentsHaveGroupId = new ArrayList<>();
@@ -53,13 +53,13 @@ public class PostgresStudentDAO implements StudentDAO {
         } catch (DAOException | SQLException e) {
             throw new DAOException(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);
         }
-        
     }
     
     @Override
     public StudentEntity getStudent(int studentId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(SELECT_STUDENT);) {
+             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENT));) {
 
             StudentEntity student = null;
             statement.setInt(1, studentId);
@@ -81,7 +81,8 @@ public class PostgresStudentDAO implements StudentDAO {
     @Override
     public int deleteStudent(int studentId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(DELETE_STUDENT)) {
+             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(DELETE_STUDENT))) {
             
             statement.setInt(1, studentId);
             return statement.executeUpdate();
@@ -93,7 +94,8 @@ public class PostgresStudentDAO implements StudentDAO {
     @Override
     public Integer create(List<StudentEntity> studentEntities) throws DAOException {
         try(Connection con = PostgresDAOFactory.creatConnection();
-            PreparedStatement statement = con.prepareStatement(INSERT_STUDENTS);) {
+            PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
+            		.getInstance(QUERIES_FILE_NAME).getProperty(INSERT_STUDENTS));) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
             
@@ -129,7 +131,8 @@ public class PostgresStudentDAO implements StudentDAO {
     public List<StudentEntity> readAll() throws DAOException {
         try(Connection con = PostgresDAOFactory.creatConnection();
             Statement statement = con.createStatement();
-            ResultSet resultSet = statement.executeQuery(SELECT_ALL);) {
+            ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
+            		.getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL));) {
             List<StudentEntity> students = new ArrayList<>();
             
             while(resultSet.next()) {
@@ -147,7 +150,8 @@ public class PostgresStudentDAO implements StudentDAO {
     @Override
     public int updateStudent(List<StudentEntity> students) throws DAOException {
         try(Connection con = PostgresDAOFactory.creatConnection();
-            PreparedStatement statement = con.prepareStatement(UPDATE)) {
+            PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
+            		.getInstance(QUERIES_FILE_NAME).getProperty(UPDATE))) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
             int status = 0;

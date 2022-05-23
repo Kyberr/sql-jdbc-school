@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.Entity;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOEntity;
 
-public class PostgresEntity implements Entity{
+public class PostgresDAOEntity implements DAOEntity{
 	private static final String ERROR_ENTITY_CREATION = "The creation of the tables "
 			   + "in the database is failed!";	
 	

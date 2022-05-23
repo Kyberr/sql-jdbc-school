@@ -21,5 +21,4 @@ public class PostgresEntity implements Entity{
 	            throw new DAOException(ERROR_ENTITY_CREATION, e);
 	        }
 	    }
-
 }

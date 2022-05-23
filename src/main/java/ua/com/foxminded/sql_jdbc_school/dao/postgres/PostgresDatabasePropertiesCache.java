@@ -10,7 +10,7 @@ public class PostgresDatabasePropertiesCache implements DAOPropertiesCache<Strin
     private static final String PROPERTIES_FILE_NAME = "postgresDatabase.properties";
     private static final String ERROR_PROPERTIES_FILE = "The database properties has not been loaded.";
     private static final String ERROR_INSTANCE = "The instance of the "
-            + "UniversityDAOPropertyCache class has not been created.";
+            + "PostgresDAOPropertyCache class has not been created.";
     private Properties property = new Properties();
 
     private PostgresDatabasePropertiesCache() throws DAOException {
@@ -19,7 +19,7 @@ public class PostgresDatabasePropertiesCache implements DAOPropertiesCache<Strin
                                      .getResourceAsStream(PROPERTIES_FILE_NAME)) {
             property.load(input);
         } catch (Exception e) {
-            throw new DAOException (ERROR_PROPERTIES_FILE, e);
+            throw new DAOException(ERROR_PROPERTIES_FILE, e);
         }
     }
 

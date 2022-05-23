@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
 public class PostgresCourseDAO implements CourseDAO {
-    
-    public static final String SELECT_COURSE = "select * from department.courses where course_id = ?";
-    public static final String INSERT = "insert into department.courses(course_name) values (?)";
-    public static final String SELECT_ALL = "select * from department.courses";
+	public static final String QUERIES_FILE_NAME = "courseQueries.properties";
+    public static final String SELECT_COURSE = "selectCourse";
+    public static final String SELECT_ALL = "selectAll";
+    public static final String INSERT = "insert";
     public static final String COURSE_ID = "course_id";
     public static final String COURSE_NAME = "course_name";
     public static final String COURSE_DESC = "course_description";
@@ -25,9 +26,10 @@ public class PostgresCourseDAO implements CourseDAO {
     public static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     
     @Override
-    public CourseEntity getCourse(int courseId) throws DAOException {
+    public CourseEntity read(int courseId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(SELECT_COURSE);) {
+             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_COURSE));) {
             
             CourseEntity course = null;
             statement.setInt(1, courseId);
@@ -49,7 +51,8 @@ public class PostgresCourseDAO implements CourseDAO {
     public List<CourseEntity> readAll() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              Statement statement = con.createStatement();
-             ResultSet resultSet = statement.executeQuery(SELECT_ALL)) {
+             ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL))) {
 
             List<CourseEntity> courseEntities = new ArrayList<>();
             
@@ -68,7 +71,8 @@ public class PostgresCourseDAO implements CourseDAO {
     @Override
     public Integer create(List<CourseEntity> courseEntities) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(INSERT)) {
+             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(INSERT))) {
            
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();

@@ -39,7 +39,7 @@ public class StudentService implements Student<List<StudentDTO>,
         try {
         DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
         StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-        return studentDAO.getStudentsWithGroupId()
+        return studentDAO.readStudentsWithGroupId()
         			     .stream()
         			     .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(), 
         			    		 								studentEntity.getGroupId(), 
@@ -56,7 +56,7 @@ public class StudentService implements Student<List<StudentDTO>,
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-            return studentDAO.deleteStudent(studentId);
+            return studentDAO.delete(studentId);
         } catch (DAOException e) {
             throw new ServiceException(ERROR_DELETE_STUDENT, e);
         }
@@ -120,7 +120,7 @@ public class StudentService implements Student<List<StudentDTO>,
                                                               studentEntities.get(studentIndex).getFirstName(),
                                                               studentEntities.get(studentIndex).getLastName()));
                              }));
-            studentDAO.updateStudent(studentsHaveGroupId);
+            studentDAO.update(studentsHaveGroupId);
             return studentsHaveGroupId.stream()
             						  .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(),
             																 studentEntity.getGroupId(),

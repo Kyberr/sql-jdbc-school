@@ -17,9 +17,9 @@ import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
 public class StudentCourseService implements StudentCourse<List<StudentDTO>, 
-                                                                            List<CourseDTO>,
-                                                                            List<StudentCourseDTO>,
-                                                                            Integer> {
+                                                           List<CourseDTO>,
+                                                           List<StudentCourseDTO>,
+                                                           Integer> {
     
     private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of deletion of a student "
                                                                  + "from the course doesn't work.";
@@ -74,16 +74,15 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
         try {
             DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
-            List<StudentCourseEntity> studentCourseEntities = studentCourseDAO.getStudentCourse(studentId, 
-            																				    courseId);
+            List<StudentCourseEntity> studentCourseEntities = studentCourseDAO.read(studentId,courseId);
             
             if (!studentCourseEntities.isEmpty()) {
                 return BAD_STATUS;
             } else {
                 StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
                 CourseDAO courseDAO = postgresDAOFactory.getCourseDAO();
-                StudentEntity student = studentDAO.getStudent(studentId);
-                CourseEntity course = courseDAO.getCourse(courseId);
+                StudentEntity student = studentDAO.read(studentId);
+                CourseEntity course = courseDAO.read(courseId);
                 studentCourseEntities.add(new StudentCourseEntity(student.getStudentId(), 
                                                                   student.getGroupId(), 
                                                                   student.getFirstName(),
@@ -104,7 +103,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
         try {
             DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
-            return studentCourseDAO.getStudentsOfCourse(courseID)
+            return studentCourseDAO.readStudentsOfCourse(courseID)
             					   .parallelStream()
             					   .map((entity) -> new StudentCourseDTO(entity.getStudentId(), 
             							   								 entity.getGroupId(), 

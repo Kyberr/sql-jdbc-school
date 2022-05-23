@@ -25,11 +25,11 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
         try {
             DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
-            return groupDAO.getGroupsWithLessOrEqualStudents(studentsNumber)
+            return groupDAO.readGroupsWithLessOrEqualStudents(studentsNumber)
             			   .stream()
             			   .map((groupEntity) -> new GroupDTO(groupEntity.getGroupId(), 
             					   							  groupEntity.getGroupName(), 
-            					   							  groupEntity.getStudentsNumber()))
+            					   							  groupEntity.getStudentQuantity()))
             			   .collect(Collectors.toList());
         } catch (DAOException e) {
             throw new ServiceException (ERROR_FIND_LESS_OR_EQUALS, e); 

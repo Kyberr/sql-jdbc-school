@@ -9,22 +9,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 
 public class PostgresGroupDAO implements GroupDAO {
-    private static final String SQL_INSERT = "insert into department.groups"
-                                           + "(group_name) values (?)";
-    private static final String SQL_SELECT_ALL = "select * from department.groups";
-    private static final String SQL_SELECT_LESS_EQUAL_STUDENTS = "select department.groups.group_id, "
-            + "department.groups.group_name, count(department.students.group_id) students_number "
-            + "from department.groups join department.students on groups.group_id = students.group_id "
-            + "group by groups.group_id "
-            + "having count(department.students.group_id) <= %d "
-            + "order by group_id";
+	private static final String QUERIES_FILE_NAME = "groupQueries.properties";
+	private static final String SELECT_INCLUSIVE_LESS_STUDENTS = "selectInclusiveLessStudents";
+	private static final String SELECT_ALL = "selectAll";
+    private static final String INSERT = "insert";
     private static final String GROUP_ID = "group_id";
     private static final String GROUP_NAME = "group_name";
-    private static final String GROUP_STUDENTS_NUMBER = "students_number";
+    private static final String STUDENT_QUANTITY = "student_quantity";
     private static final String ERROR_INSERT_GROUP = "The group has not been iserted to the database.";
     private static final String ERROR_GET_ALL_GROUP = "The getting data from the "
                                                     + "\"groups\" table is failed.";
@@ -32,10 +28,10 @@ public class PostgresGroupDAO implements GroupDAO {
                                                              + "equal number of students is failed.";
     
     @Override
-    public List<GroupEntity> getGroupsWithLessOrEqualStudents (int students) throws DAOException {
+    public List<GroupEntity> readGroupsWithLessOrEqualStudents (int students) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(String
-                     .format(SQL_SELECT_LESS_EQUAL_STUDENTS, students));
+             PreparedStatement statement = con.prepareStatement(String.format(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), students));
              ResultSet resultSet = statement.executeQuery();) {
             
             List<GroupEntity> result = new ArrayList<>();
@@ -43,7 +39,7 @@ public class PostgresGroupDAO implements GroupDAO {
             while (resultSet.next()) {
                 result.add(new GroupEntity((Integer) resultSet.getObject(GROUP_ID),
                                         resultSet.getString(GROUP_NAME),
-                                        Integer.valueOf(resultSet.getString(GROUP_STUDENTS_NUMBER))));
+                                        Integer.valueOf(resultSet.getString(STUDENT_QUANTITY))));
             }
             return result;
         } catch (DAOException | ClassCastException | NumberFormatException | SQLException e) {
@@ -55,7 +51,8 @@ public class PostgresGroupDAO implements GroupDAO {
     public List<GroupEntity> readAll() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              Statement statement = con.createStatement();
-             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL)) {
+             ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL))) {
             
             List<GroupEntity> result = new ArrayList<>();
             
@@ -73,7 +70,8 @@ public class PostgresGroupDAO implements GroupDAO {
     public Integer create(List<GroupEntity> groups) throws DAOException {
 
         try (Connection connection = PostgresDAOFactory.creatConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
+            		 .getInstance(QUERIES_FILE_NAME).getProperty(INSERT))) {
             
             connection.setAutoCommit(false);
             Savepoint save1 = connection.setSavepoint();

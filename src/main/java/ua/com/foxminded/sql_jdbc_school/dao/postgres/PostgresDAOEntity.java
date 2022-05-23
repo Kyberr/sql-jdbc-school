@@ -9,7 +9,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOEntity;
 
 public class PostgresDAOEntity implements DAOEntity{
 	private static final String ERROR_ENTITY_CREATION = "The creation of the tables "
-			   + "in the database is failed!";	
+			   										  + "in the database is failed!";	
 	
 	@Override
 	    public Integer create(String sql) throws DAOException {

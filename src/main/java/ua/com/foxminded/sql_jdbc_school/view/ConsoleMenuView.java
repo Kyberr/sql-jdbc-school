@@ -171,7 +171,8 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
             students.stream().forEachOrdered((student) -> {
                 if (atomicInteger.getAndIncrement() == FIST_LINE) {
                     printWriter.println(new String(new char[STUDENTS_LINE_LENGTH]).replace(NULL, HATCH));
-                    printWriter.format(STUDENTS_FORMAT, STUDENT_ID, STUDENT_FIRST_NAME, STUDENT_LAST_NAME, GROUP_ID);
+                    printWriter.format(STUDENTS_FORMAT, STUDENT_ID, STUDENT_FIRST_NAME, 
+                    				   STUDENT_LAST_NAME, GROUP_ID);
                     printWriter.println(new String(new char[STUDENTS_LINE_LENGTH]).replace(NULL, HATCH));
                     printWriter.format(STUDENTS_FORMAT, student.getStudentId(), student.getFirstName(), 
                                        student.getLastName(), student.getGroupId());
@@ -292,18 +293,19 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
             groupsList.stream().forEachOrdered((line) -> {
                 if (atomicInteger.getAndIncrement() == FIST_LINE) {
                     printWriter.format(GROUPS_LINE_FORMAT, new String(new char[GROUP_LINE_LENGTH])
-                                                                     .replace(NULL, HATCH));
+                                                               .replace(NULL, HATCH));
                     printWriter.format(GROUPS_FORMAT, GROUP_ID, GROUP_NAME, NUMBER_OF_STUDENTS_IN_GROUP);
                     printWriter.format(GROUPS_LINE_FORMAT, new String(new char[GROUP_LINE_LENGTH])
-                                                                     .replace(NULL, HATCH));
+                                                               .replace(NULL, HATCH));
                     printWriter.format(GROUPS_FORMAT, line.getGroupId(), line.getGroupName(), 
-                                       line.getStudentsNumber());
+                                       line.getStudentQuantity());
                     printWriter.format(GROUPS_LINE_FORMAT, new String(new char[GROUP_LINE_LENGTH])
-                                                                     .replace(NULL, HATCH));
+                                                               .replace(NULL, HATCH));
                 } else {
-                    printWriter.format(GROUPS_FORMAT, line.getGroupId(), line.getGroupName(),line.getStudentsNumber());
+                    printWriter.format(GROUPS_FORMAT, line.getGroupId(), line.getGroupName(),
+                    				   line.getStudentQuantity());
                     printWriter.format(GROUPS_LINE_FORMAT, new String(new char[GROUP_LINE_LENGTH])
-                                                                     .replace(NULL, HATCH));
+                                                               .replace(NULL, HATCH));
                 }
             });
         }

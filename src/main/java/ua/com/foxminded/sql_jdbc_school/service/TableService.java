@@ -4,18 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAO;
 
 public class TableService implements Table<Integer> {
-	private static final String ERROR_CREATE_STUDENT_COURSE_TABLE = "The StudentCourse table "
-																  + "has not been created.";
-    private static final String ERROR_TABLE_CREATION = "The table creation service dosn't work.";
-    private static final String SQL_FILE_NAME = "SQLFileName";
-    private static final String STUDENT_COURSE_QUERIES_FILE_NAME = "studentCourseQueries.properties";
-    private static final String STUDENT_COURSE_SQL_QUERY = "createEntity";
+	private static final String ERROR_STUDENT_COURSE_TABLE_CREATION = "The StudentCourse table "
+																    + "has not been created.";
+    private static final String ERROR_TABLES_CREATION = "The table creation service dosn't work.";
+    private static final String TABLES_SQL_FILE_NAME = "tablesCreationSqlScript.txt";
+    private static final String STUDENT_COURSE_SQL_FILE_NAME = "studentCourseQueries.properties";
+    private static final String STUDENT_COURSE_SQL_QUERY = "createStudentCourseDAO";
     private Reader reader;
     private Parser parser;
     
@@ -27,15 +26,13 @@ public class TableService implements Table<Integer> {
     @Override
     public Integer createTables() throws ServiceException {
         try {
-            String fileName = ReaderServicesPropertiesCache.getInstance()
-            											   .getProperty(SQL_FILE_NAME);
-            List<String> sqlScriptList = reader.toList(fileName);
-            String sqlScript = parser.toStringList(sqlScriptList); 
+            List<String> sqlScriptList = reader.read(TABLES_SQL_FILE_NAME);
+            String tablesSqlScript = parser.toString(sqlScriptList); 
             DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            DAO postgresEntities = postgresDAOFactory.getDAO();
-            return postgresEntities.create(sqlScript);
+            DAO postgresDAO = postgresDAOFactory.getDAO();
+            return postgresDAO.create(tablesSqlScript);
         } catch (ServiceException | DAOException e) {
-            throw new ServiceException(ERROR_TABLE_CREATION, e);
+            throw new ServiceException(ERROR_TABLES_CREATION, e);
         }
     }
     
@@ -43,16 +40,16 @@ public class TableService implements Table<Integer> {
     public Integer createStudentCourseTable() throws ServiceException {
     	try (InputStream input = this.getClass()
 									 .getClassLoader()
-									 .getResourceAsStream(STUDENT_COURSE_QUERIES_FILE_NAME);) {
+									 .getResourceAsStream(STUDENT_COURSE_SQL_FILE_NAME);) {
     		
     		Properties properties = new Properties();
     		properties.load(input);
-    		String studentCourse = properties.getProperty(STUDENT_COURSE_SQL_QUERY);
+    		String studentCourseSqlScript = properties.getProperty(STUDENT_COURSE_SQL_QUERY);
     		DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
     		DAO postgresDAO = postgresDAOFactory.getDAO();
-    		return postgresDAO.create(studentCourse);
+    		return postgresDAO.create(studentCourseSqlScript);
     	} catch (DAOException | IOException e) {
-    		throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_TABLE, e);
+    		throw new ServiceException(ERROR_STUDENT_COURSE_TABLE_CREATION, e);
     	}
     }
 }

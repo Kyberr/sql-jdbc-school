@@ -13,7 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentCourseEntity;
 
 public class PostgresStudentCourseDAO implements StudentCourseDAO {
-	private static final String QUERIES_FILE_NAME = "deleteStudentFromCourse";
+	private static final String QUERIES_FILENAME = "studentCourseQueries.properties";
     private static final String DELETE_STUDENT_FROM_COURSE = "deleteStudentFromCourse";
     private static final String SELECT_ALL = "selectAll";
     private static final String SELECT_ENTITY = "selectEntity";
@@ -22,27 +22,11 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     
     
     
-    private static final String CREATE_TABLE = 
-            "drop table if exists department.student_course;"
-            + "create table department.student_course ("
-            + "student_id integer,"
-            + "group_id integer references department.groups(group_id) on delete set null,"
-            + "first_name varchar collate pg_catalog.\"default\","
-            + "last_name varchar collate pg_catalog.\"default\","
-            + "course_id integer,"
-            + "course_name varchar collate pg_catalog.\"default\","
-            + "course_description varchar collate pg_catalog.\"default\","
-            + "foreign key (student_id) references department.students on delete cascade,"
-            + "foreign key (course_id) references department.courses on delete cascade,"
-            + "primary key (student_id, course_id))"
-            + "tablespace pg_default;";
-    
-    
     private static final String ERROR_READ_ALL = "Deleting the student from the course is failed.";
-    private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "Getting all the student course relations from the database failed.";
+    private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "Getting all the student course "
+    															 + "relations from the database failed.";
     private static final String ERROR_READ = "Receiving the student-course "
-                                                                  + "relation is failed.";
-    private static final String ERROR_TABLE_CREATION = "The student_course table creating is failed.";
+                                           + "relation is failed.";
     private static final String ERROR_CREATE = "The student course hasn't been inserted.";
     private static final String ERROR_READ_STUDENTS_OF_COURSE = "The getting of students related to the "
                                                              + "specified course are failed.";
@@ -58,7 +42,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     public int deleteStudentFromCourse(int studentId, int courseId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME)
+            		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(DELETE_STUDENT_FROM_COURSE))) {
 
             statement.setInt(1, studentId);
@@ -73,7 +57,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     public List<StudentCourseEntity> readAll() throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME)
+            		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(SELECT_ALL));
              ResultSet resultSet = statement.executeQuery();) {
             
@@ -94,25 +78,25 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
         }
     }
     @Override
-    public List<StudentCourseEntity> read(int studentId, int courseId) throws DAOException {
+    public StudentCourseEntity read(int studentId, int courseId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME)
+            		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(SELECT_ENTITY))) {
             
-            List<StudentCourseEntity> studentCourse = new ArrayList<>();
+            StudentCourseEntity studentCourse = null;
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);
             ResultSet resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
-                studentCourse.add(new StudentCourseEntity((Integer) resultSet.getObject(STUDENT_ID),
-                                                          (Integer) resultSet.getObject(GROUP_ID),
-                                                          resultSet.getString(FIRST_NAME),
-                                                          resultSet.getString(LAST_NAME),
-                                                          (Integer) resultSet.getObject(COURSE_ID),
-                                                          resultSet.getString(COURSE_NAME),
-                                                          resultSet.getString(COURSE_DESC)));
+            	studentCourse = new StudentCourseEntity((Integer) resultSet.getObject(STUDENT_ID),
+                                                        (Integer) resultSet.getObject(GROUP_ID),
+                                                        resultSet.getString(FIRST_NAME),
+                                                        resultSet.getString(LAST_NAME),
+                                                        (Integer) resultSet.getObject(COURSE_ID),
+                                                        resultSet.getString(COURSE_NAME),
+                                                        resultSet.getString(COURSE_DESC));
             }
             resultSet.close();
             return studentCourse;
@@ -125,7 +109,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     public List<StudentCourseEntity> readStudentsOfCourse(int courseId) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(String.format(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME)
+            		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(SELECT_STUDENTS_OF_COURSE), courseId));
              ResultSet resultSet = statement.executeQuery();) {
             
@@ -151,7 +135,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     public Integer create(List<StudentCourseEntity> studentsCourseEntities) throws DAOException {
         try (Connection con = PostgresDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME)
+            		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(INSERT))) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
@@ -182,16 +166,6 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             }
         } catch (DAOException | SQLException e) {
             throw new DAOException(ERROR_CREATE, e);
-        }
-    }
-    
-    @Override
-    public int createStudentCourseTable() throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
-             PreparedStatement statement = con.prepareStatement(CREATE_TABLE)) {
-            return statement.executeUpdate();
-        } catch (DAOException | SQLException e) {
-            throw new DAOException(ERROR_TABLE_CREATION, e);
         }
     }
 }

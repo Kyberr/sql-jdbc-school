@@ -14,7 +14,7 @@ public class Reader {
     private static final String ERROR_TO_LIST = "The content converting of the "
             + "file to a list of strings is failed."; 
     
-    public List<String> toList(String fileName) throws ServiceException {
+    public List<String> read(String fileName) throws ServiceException {
         URL fileURL = this.getClass().getClassLoader().getResource(fileName);
         String filePath = new File(fileURL.getFile()).getPath();
         

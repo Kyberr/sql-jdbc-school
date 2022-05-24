@@ -21,10 +21,10 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
                                                            List<StudentCourseDTO>,
                                                            Integer> {
     
-    private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of deletion of a student "
+    private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
                                                                  + "from the course doesn't work.";
     private static final String ERROR_GET_ALL = "Getting all of the students from the database failed.";
-    private static final String ERROR_CREATE_RELATION = "The relation creation failed.";
+    private static final String ERROR_CREATE_STUDENT_COURSE_RELATION = "The relation creation failed.";
     private static final String ERROR_GET_STUDENTS_OF_COURSE = "The getting students of specified course failed.";
     private static final String ERROR_ADD_STUDENT = "Adding the student to the course failed.";
     private static final int STUDENT_INDEX = 0;
@@ -74,23 +74,24 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
         try {
             DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
-            List<StudentCourseEntity> studentCourseEntities = studentCourseDAO.read(studentId,courseId);
+            StudentCourseEntity studentCourseEntity = studentCourseDAO.read(studentId, courseId);
             
-            if (!studentCourseEntities.isEmpty()) {
+            if (studentCourseEntity == null) {
                 return BAD_STATUS;
             } else {
                 StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
                 CourseDAO courseDAO = postgresDAOFactory.getCourseDAO();
                 StudentEntity student = studentDAO.read(studentId);
                 CourseEntity course = courseDAO.read(courseId);
-                studentCourseEntities.add(new StudentCourseEntity(student.getStudentId(), 
-                                                                  student.getGroupId(), 
-                                                                  student.getFirstName(),
-                                                                  student.getLastName(),
-                                                                  course.getCourseId(), 
-                                                                  course.getCourseName(), 
-                                                                  course.getCourseDescription()));
-                studentCourseDAO.create(studentCourseEntities);
+                List<StudentCourseEntity> studentCourseEntityList = new ArrayList<>();
+                studentCourseEntityList.add(new StudentCourseEntity(student.getStudentId(), 
+                                                                    student.getGroupId(), 
+                                                                    student.getFirstName(),
+                                                                    student.getLastName(),
+                                                                    course.getCourseId(), 
+                                                                    course.getCourseName(), 
+                                                                    course.getCourseDescription()));
+                studentCourseDAO.create(studentCourseEntityList);
                 return NORMAL_STATUS;
             }
         } catch (DAOException e) {
@@ -104,7 +105,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
             DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.readStudentsOfCourse(courseID)
-            					   .parallelStream()
+            					   .stream()
             					   .map((entity) -> new StudentCourseDTO(entity.getStudentId(), 
             							   								 entity.getGroupId(), 
             							   								 entity.getFirstName(), 
@@ -123,8 +124,8 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
                                                               List<CourseDTO> courses) 
                                                             		  throws ServiceException {
         
-    	List<StudentCourseDTO> studentCourseDTOs = assignCrourseToStudent(studentsHaveGroupId, 
-        																  courses);
+    	List<StudentCourseDTO> studentCourseDTOs = assignStudentToCourse(studentsHaveGroupId, 
+        																 courses);
     	List<StudentCourseEntity> studentCourseEntities = studentCourseDTOs.parallelStream()
     			.map((dto) -> new StudentCourseEntity(dto.getStudentId(), 
         											  dto.getGroupId(), 
@@ -138,15 +139,14 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
         try {
             DAOFactory postgresDAOFacotry = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             StudentCourseDAO studentCourseDAO = postgresDAOFacotry.getStudentCourseDAO();
-            studentCourseDAO.createStudentCourseTable();
             studentCourseDAO.create(studentCourseEntities);
             return studentCourseDTOs;
         } catch (Exception e) {
-            throw new ServiceException(ERROR_CREATE_RELATION, e);
+            throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
         }
     }
     
-    public List<StudentCourseDTO> assignCrourseToStudent(List<StudentDTO> studentsHaveGroupId, 
+    public List<StudentCourseDTO> assignStudentToCourse(List<StudentDTO> studentsHaveGroupId, 
                                                          List<CourseDTO> courses) {
         List<List<Integer>> studentCourseIndexRelation = generator
                 .getStudentCourseIndexRelation(studentsHaveGroupId.size(),courses.size());

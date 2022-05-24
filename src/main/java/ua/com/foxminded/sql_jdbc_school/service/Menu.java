@@ -88,6 +88,7 @@ public class Menu {
             studentService.createStudents();
             List<GroupDTO> groups = groupService.createGroups();
             List<StudentDTO> studentsHaveGroupID = studentService.assignGroup(groups);
+            tableService.createStudentCourseTable();
             studentCourseService.createStudentCourseRelation(studentsHaveGroupID, courses);
         } catch (ServiceException e) {
             throw new ServiceException(ERROR_BOOTSTRAP, e);

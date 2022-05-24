@@ -7,7 +7,7 @@ import java.util.Properties;
 public class DAOPropertiesCache implements DAOProperties<String> {
 	private static final String ERROR_PROPERTIES_FILE = "The property file has not been loaded.";
 	private static final String ERROR_INSTANCE = "The instance of the "
-            + "DAOCache class has not been created.";
+            + "DAOPropertiesCache class has not been created.";
 	private Properties property = new Properties();
 	
 	private DAOPropertiesCache(String fileName) throws DAOException {

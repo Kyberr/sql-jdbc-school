@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAO;
 
-public class PostgresDAO implements DAO{
-	private static final String ERROR_ENTITY_CREATION = "The creation of the tables "
-			   										  + "in the database is failed!";	
+public class PostgresDAO implements DAO {
+	private static final String ERROR_DAO_CREATION = "The creation of the tables "
+			   									   + "in the database is failed!";	
 	
 	@Override
 	    public Integer create(String sql) throws DAOException {
@@ -18,7 +18,7 @@ public class PostgresDAO implements DAO{
 	             int status = preparedStatement.executeUpdate();
 	             return status;
 	        } catch (DAOException | SQLException e) {
-	            throw new DAOException(ERROR_ENTITY_CREATION, e);
+	            throw new DAOException(ERROR_DAO_CREATION, e);
 	        }
 	    }
 }

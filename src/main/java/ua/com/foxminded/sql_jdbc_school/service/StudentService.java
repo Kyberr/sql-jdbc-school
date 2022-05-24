@@ -16,8 +16,8 @@ public class StudentService implements Student<List<StudentDTO>,
 											   List<GroupDTO>, 
                                                String, 
                                                Integer> {
-    private static final String FIST_NAME_FILENAME_KEY = "FirstNameFilename";
-    private static final String LAST_NAME_FILENAME_KEY = "LastNameFilename";
+    private static final String FIST_NAME_FILENAME = "firstNameList.txt";
+    private static final String LAST_NAME_FILENAME = "lastNameList.txt";
     private static final String ERROR_INSERT = "The student addition service to the database fails.";
     private static final String ERROR_ASSIGN_GROUP = "The assining group to students is failed.";
     private static final String ERROR_ADD_STUDENT = "The student adding to the database is failed.";
@@ -37,8 +37,8 @@ public class StudentService implements Student<List<StudentDTO>,
     public List<StudentDTO> getStudentsWithGroupId() throws ServiceException {
         
         try {
-        DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-        StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+        DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+        StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
         return studentDAO.readStudentsWithGroupId()
         			     .stream()
         			     .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(), 
@@ -54,8 +54,8 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public Integer deleteStudent(Integer studentId) throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
             return studentDAO.delete(studentId);
         } catch (DAOException e) {
             throw new ServiceException(ERROR_DELETE_STUDENT, e);
@@ -65,8 +65,8 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public List<StudentDTO> getAllStudents() throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
             return studentDAO.readAll()
             				 .stream()
             				 .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(),
@@ -86,8 +86,8 @@ public class StudentService implements Student<List<StudentDTO>,
        try {
            List<StudentDTO> studentDTOs = new ArrayList<>();
            studentDTOs.add(new StudentDTO(firstName, lastName));
-           DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-           StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+           DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+           StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
            List<StudentEntity> studentEntities = studentDTOs
         		   .stream()
         		   .map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
@@ -103,8 +103,8 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override
     public List<StudentDTO> assignGroup(List<GroupDTO> groups) throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+            DAOFactory postgrresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            StudentDAO studentDAO = postgrresDAOFactory.getStudentDAO();
             List<StudentEntity> studentEntities = studentDAO.readAll();
             List<Integer> groupSize = generator.getNumberOfStudentsInGroup(studentEntities.size(), 
                                                                            groups.size());
@@ -114,12 +114,12 @@ public class StudentService implements Student<List<StudentDTO>,
             IntStream.range(0, groupSize.size())
                      .forEach((groupIndex) -> IntStream.range(0, groupSize.get(groupIndex))
                     		 						   .forEach((index) -> {
-                    		 							   int studentIndex = atomicInteger.getAndIncrement();
+                    int studentIndex = atomicInteger.getAndIncrement();
                     studentsHaveGroupId.add(new StudentEntity(studentEntities.get(studentIndex).getStudentId(),
-                                                              groups.get(groupIndex).getGroupId(),
-                                                              studentEntities.get(studentIndex).getFirstName(),
+                    		                                  groups.get(groupIndex).getGroupId(),
+                    		                                  studentEntities.get(studentIndex).getFirstName(),
                                                               studentEntities.get(studentIndex).getLastName()));
-                             }));
+                    		 						   					   }));
             studentDAO.update(studentsHaveGroupId);
             return studentsHaveGroupId.stream()
             						  .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(),
@@ -135,15 +135,11 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override
     public List<StudentDTO> createStudents() throws ServiceException {
         try {
-            String fistNameFilename = ReaderServicesPropertiesCache.getInstance()
-                                                                   .getProperty(FIST_NAME_FILENAME_KEY);
-            String lastNameFilename = ReaderServicesPropertiesCache.getInstance()
-                                                                   .getProperty(LAST_NAME_FILENAME_KEY);
-            List<String> firstNames = reader.toList(fistNameFilename);
-            List<String> lastNames = reader.toList(lastNameFilename);
+            List<String> firstNames = reader.read(FIST_NAME_FILENAME);
+            List<String> lastNames = reader.read(LAST_NAME_FILENAME);
             List<StudentDTO> studentDTOs = generator.getStudentData(firstNames, lastNames);
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
             List<StudentEntity> studentEntities = studentDTOs.stream()
             		.map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
             											   studentDTO.getLastName()))

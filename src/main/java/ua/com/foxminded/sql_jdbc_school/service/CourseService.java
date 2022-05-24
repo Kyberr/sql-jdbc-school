@@ -10,7 +10,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 
 public class CourseService implements Course<List<CourseDTO>> {
-    private static final String COURSES_LIST_FILENAME_KEY = "CoursesListFilename";
+    private static final String COURSE_NAME_LIST_FILENAME = "courseNameList.txt";
     private static final String ERROR_CREATE_COURSES = "The courses creation service doesn't work.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all courses service doesn't work.";
     private Reader reader;
@@ -22,9 +22,7 @@ public class CourseService implements Course<List<CourseDTO>> {
     @Override
     public List<CourseDTO> createCourses() throws ServiceException {
         try {
-            String coursesListFilename = ReaderServicesPropertiesCache.getInstance()
-                                                                      .getProperty(COURSES_LIST_FILENAME_KEY);
-            List<String> coursesList = reader.toList(coursesListFilename);
+            List<String> coursesList = reader.read(COURSE_NAME_LIST_FILENAME);
             List<CourseEntity> courseEntities = coursesList.parallelStream()
             											   .map((name) -> new CourseEntity(name))
             											   .collect(Collectors.toList());
@@ -50,7 +48,7 @@ public class CourseService implements Course<List<CourseDTO>> {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
             return universityCourseDAO.readAll()
-            						  .parallelStream()
+            						  .stream()
             						  .map((entity) -> new CourseDTO(entity.getCourseId(), 
             								  						 entity.getCourseName(), 
             								  						 entity.getCourseDescription()))

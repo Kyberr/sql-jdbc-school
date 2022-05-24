@@ -7,7 +7,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOEntity;
+import ua.com.foxminded.sql_jdbc_school.dao.DAO;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
@@ -51,7 +51,7 @@ public class PostgresDAOFactory extends DAOFactory {
     }
     
     @Override
-    public DAOEntity getEntity() {
-    	return new PostgresDAOEntity();
+    public DAO getDAO() {
+    	return new PostgresDAO();
     }
 }

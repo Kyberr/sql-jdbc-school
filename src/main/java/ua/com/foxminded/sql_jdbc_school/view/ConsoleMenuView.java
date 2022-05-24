@@ -1,6 +1,7 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
 import java.io.PrintWriter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -168,7 +169,9 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
             printWriter.println(DATABASE_HAS_NO_STUDENTS);
         } else {
             AtomicInteger atomicInteger = new AtomicInteger();
-            students.stream().forEachOrdered((student) -> {
+            students.parallelStream()
+            		.sorted(Comparator.comparing(StudentDTO::getStudentId))
+            		.forEachOrdered((student) -> {
                 if (atomicInteger.getAndIncrement() == FIST_LINE) {
                     printWriter.println(new String(new char[STUDENTS_LINE_LENGTH]).replace(NULL, HATCH));
                     printWriter.format(STUDENTS_FORMAT, STUDENT_ID, STUDENT_FIRST_NAME, 
@@ -260,18 +263,24 @@ public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>
     public void showCourses(List<CourseDTO> coursesList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         AtomicInteger atomicInteger = new AtomicInteger();
-        coursesList.stream().forEachOrdered((line) -> {
+        coursesList.parallelStream()
+        		   .sorted(Comparator.comparing(CourseDTO::getCourseId))
+        		   .forEachOrdered((line) -> {
             if (atomicInteger.getAndIncrement() == FIST_LINE) {
-                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH]).replace(NULL, HATCH));
+                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH])
+                										    .replace(NULL, HATCH));
                 printWriter.format(COURSES_FORMAT, COURSE_ID, COURSE_NAME, COURSE_DESCRIPTION);
-                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH]).replace(NULL, HATCH));
+                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH])
+                										    .replace(NULL, HATCH));
                 printWriter.format(COURSES_FORMAT, line.getCourseId(), line.getCourseName(), 
                                    line.getCourseDescription());
-                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH]).replace(NULL, HATCH));
+                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH])
+                										    .replace(NULL, HATCH));
             } else {
                 printWriter.format(COURSES_FORMAT, line.getCourseId(), line.getCourseName(),
                                    line.getCourseDescription());
-                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH]).replace(NULL, HATCH));
+                printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH])
+                										    .replace(NULL, HATCH));
             }
         });
     }

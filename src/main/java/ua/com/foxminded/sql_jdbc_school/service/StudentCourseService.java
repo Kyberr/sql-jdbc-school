@@ -76,7 +76,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
             StudentCourseEntity studentCourseEntity = studentCourseDAO.read(studentId, courseId);
             
-            if (studentCourseEntity == null) {
+            if (studentCourseEntity != null) {
                 return BAD_STATUS;
             } else {
                 StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();

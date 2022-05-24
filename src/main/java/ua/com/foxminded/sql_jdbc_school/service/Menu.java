@@ -20,7 +20,7 @@ public class Menu {
     private static final int NORMAL_STATUS = 1;
     private static final int NORMAL_DEL_STATUS = 0;
     private static final int NUMBER_OF_ITEMS = 6;
-    private static final int NORMAL_STATUS_OF_ADD = 1;
+    private static final int NORMAL_STATUS_OF_ADDING = 1;
    
     private Table<Integer> tableService;
     private Student<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService;
@@ -147,7 +147,7 @@ public class Menu {
 
             if (confirm.equals(WORD_YES)) {
                 status = studentCourseService.addStudentToCourse(studentId, courseId);
-                if (status == NORMAL_STATUS_OF_ADD) {
+                if (status == NORMAL_STATUS_OF_ADDING) {
                     menuView.studentHasBeenAddedToCourse();
                 } else {
                     menuView.studentHasNotBeenAddedToCourse();
@@ -253,7 +253,7 @@ public class Menu {
             String input = scanner.nextLine();
             
             if (input.equals(WORD_YES)) {
-                if (studentService.addStudent(lastName, firstName) == NORMAL_STATUS_OF_ADD) {
+                if (studentService.addStudent(lastName, firstName) == NORMAL_STATUS_OF_ADDING) {
                     menuView.studentHasBeenAddedToDatabase();
                     break;
                 }

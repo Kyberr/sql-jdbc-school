@@ -133,7 +133,7 @@ public class Menu {
     
     private void addStudentToCourse(Scanner scanner) throws ServiceException {
         first: for (;;) {
-            List<StudentDTO> studentsHaveGroupId = studentService.getStudentsWithGroupId();
+            List<StudentDTO> studentsHaveGroupId = studentService.getStudentsHavingGroupId();
             menuView.showStudents(studentsHaveGroupId);
             List<CourseDTO> allCourses = courseService.getAllCourses();
             menuView.showCourses(allCourses);

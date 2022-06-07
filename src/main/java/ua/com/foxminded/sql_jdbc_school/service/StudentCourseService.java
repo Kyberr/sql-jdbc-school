@@ -124,8 +124,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
                                                               List<CourseDTO> courses) 
                                                             		  throws ServiceException {
         
-    	List<StudentCourseDTO> studentCourseDTOs = assignStudentToCourse(studentsHaveGroupId, 
-        																 courses);
+    	List<StudentCourseDTO> studentCourseDTOs = assignStudentToCourse(studentsHaveGroupId, courses);
     	List<StudentCourseEntity> studentCourseEntities = studentCourseDTOs.parallelStream()
     			.map((dto) -> new StudentCourseEntity(dto.getStudentId(), 
         											  dto.getGroupId(), 
@@ -147,7 +146,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     }
     
     public List<StudentCourseDTO> assignStudentToCourse(List<StudentDTO> studentsHaveGroupId, 
-                                                         List<CourseDTO> courses) {
+                                                        List<CourseDTO> courses) {
         List<List<Integer>> studentCourseIndexRelation = generator
                 .getStudentCourseIndexRelation(studentsHaveGroupId.size(),courses.size());
         

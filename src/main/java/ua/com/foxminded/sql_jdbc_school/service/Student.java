@@ -2,7 +2,7 @@ package ua.com.foxminded.sql_jdbc_school.service;
 
 public interface Student<T, S, E, F> {
     
-    public T getStudentsWithGroupId() throws ServiceException;
+    public T getStudentsHavingGroupId() throws ServiceException;
     public F deleteStudent(F studentId) throws ServiceException;
     public T getAllStudents() throws ServiceException;
     public F addStudent(E lastName, E firstName) throws ServiceException;

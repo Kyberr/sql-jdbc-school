@@ -20,12 +20,12 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
     }
     
     @Override
-    public List<GroupDTO> findGroupsWithLessOrEqualStudents(Integer studentsNumber) 
+    public List<GroupDTO> findGroupsWithLessOrEqualStudents(Integer studentQuantity) 
             throws ServiceException {
         try {
             DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
-            return groupDAO.readGroupsWithLessOrEqualStudents(studentsNumber)
+            return groupDAO.readGroupsWithLessOrEqualStudents(studentQuantity)
             			   .stream()
             			   .map((groupEntity) -> new GroupDTO(groupEntity.getGroupId(), 
             					   							  groupEntity.getGroupName(), 

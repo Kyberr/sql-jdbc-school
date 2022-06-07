@@ -34,7 +34,7 @@ public class StudentService implements Student<List<StudentDTO>,
     }
     
     @Override 
-    public List<StudentDTO> getStudentsWithGroupId() throws ServiceException {
+    public List<StudentDTO> getStudentsHavingGroupId() throws ServiceException {
         
         try {
         DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);

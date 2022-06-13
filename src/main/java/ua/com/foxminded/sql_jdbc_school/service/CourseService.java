@@ -24,7 +24,7 @@ public class CourseService implements Course<List<CourseDTO>> {
         try {
             List<String> coursesList = reader.read(COURSE_NAME_LIST_FILENAME);
             List<CourseEntity> courseEntities = coursesList.parallelStream()
-            											   .map((name) -> new CourseEntity(name))
+            											   .map((courseName) -> new CourseEntity(courseName))
             											   .collect(Collectors.toList());
             DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
             CourseDAO postgresCourseDAO = postgresDAOFactory.getCourseDAO();

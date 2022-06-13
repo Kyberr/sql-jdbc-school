@@ -14,16 +14,17 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
 public class PostgresCourseDAO implements CourseDAO {
-	public static final String QUERIES_FILE_NAME = "courseQueries.properties";
-    public static final String SELECT_COURSE = "selectCourse";
-    public static final String SELECT_ALL = "selectAll";
-    public static final String INSERT = "insert";
-    public static final String COURSE_ID = "course_id";
-    public static final String COURSE_NAME = "course_name";
-    public static final String COURSE_DESC = "course_description";
-    public static final String ERROR_GET_COURSE = "The getting of the course from the database is failed.";
-    public static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
-    public static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
+	private static final String QUERIES_FILE_NAME = "courseQueries.properties";
+    private static final String SELECT_COURSE = "selectCourse";
+    private static final String SELECT_ALL = "selectAll";
+    private static final String INSERT = "insert";
+    private static final String COURSE_ID = "course_id";
+    private static final String COURSE_NAME = "course_name";
+    private static final String COURSE_DESC = "course_description";
+    private static final String ERROR_GET_COURSE = "The getting of the course from the database is failed.";
+    private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
+    private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
+    private static final Integer BAD_STATUS = 0;
     
     @Override
     public CourseEntity read(int courseId) throws DAOException {
@@ -76,7 +77,7 @@ public class PostgresCourseDAO implements CourseDAO {
            
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
-            int status = 0;
+            int status = BAD_STATUS;
 
             try {
                 for (CourseEntity courseEntity : courseEntities) {

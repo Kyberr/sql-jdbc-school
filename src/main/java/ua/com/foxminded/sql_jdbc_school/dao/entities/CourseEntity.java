@@ -6,8 +6,11 @@ public class CourseEntity {
 	 private Integer courseId;
 	 private String courseName;
 	 private String courseDescription;
-	
-	 public CourseEntity(Integer courseId, String courseName, String courseDescription) {
+	 
+	 public CourseEntity() {
+	}
+
+	public CourseEntity(Integer courseId, String courseName, String courseDescription) {
 		this.courseId = courseId;
 		this.courseName = courseName;
 		this.courseDescription = courseDescription;

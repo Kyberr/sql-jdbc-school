@@ -8,13 +8,17 @@ import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
 public class UniverstiyStudentDAO implements StudentDAO {
-    
+    private static final Logger LOGGER = LogManager.getLogger();
 	private static final String QUERIES_FILE_NAME = "studentQueries.properties";
 	private static final String SELECT_STUDENTS_WITH_GROUP = "selectStudentsWithGroup";
 	private static final String SELECT_STUDENT = "selectStudent";
@@ -51,6 +55,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
             }
             return studentsHaveGroupId;
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);
             throw new DAOException(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);
         }
     }
@@ -74,6 +79,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
             resultSet.close();
             return student;
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_GET_STUDENT, e);
             throw new DAOException(ERROR_GET_STUDENT, e);
         }
     }
@@ -87,6 +93,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
             statement.setInt(1, studentId);
             return statement.executeUpdate();
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_DELETE, e);
             throw new DAOException(ERROR_DELETE, e);
         }
     }
@@ -123,6 +130,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
                 throw new SQLException(ex);
             }
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_INSERT, e);
             throw new DAOException(ERROR_INSERT, e);
         } 
     }
@@ -143,6 +151,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
             }
             return students;
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_GET_ALL, e);
             throw new DAOException(ERROR_GET_ALL, e);
         }
     }
@@ -179,6 +188,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
                 throw new SQLException(ex);
             }
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_UDATE, e);
             throw new DAOException(ERROR_UDATE, e);
         }
     }

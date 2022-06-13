@@ -8,12 +8,18 @@ import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import ua.com.foxminded.sql_jdbc_school.Main;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
 public class UniversityCourseDAO implements CourseDAO {
+	private static final Logger LOGGER = LogManager.getLogger(Main.class);
 	private static final String QUERIES_FILE_NAME = "courseQueries.properties";
     private static final String SELECT_COURSE = "selectCourse";
     private static final String SELECT_ALL = "selectAll";
@@ -44,6 +50,7 @@ public class UniversityCourseDAO implements CourseDAO {
             resultSet.close();
             return course;
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_GET_COURSE, e);
             throw new DAOException(ERROR_GET_COURSE, e);
         }
     }
@@ -64,6 +71,7 @@ public class UniversityCourseDAO implements CourseDAO {
             }
             return courseEntities;
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_GET_ALL_COURSES, e);
             throw new DAOException(ERROR_GET_ALL_COURSES, e);
             
         }
@@ -99,6 +107,7 @@ public class UniversityCourseDAO implements CourseDAO {
                 throw new SQLException(e);
             }
         } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_CREATE, e);
             throw new DAOException(ERROR_CREATE, e);
         }
     }

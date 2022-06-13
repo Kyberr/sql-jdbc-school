@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
@@ -11,6 +14,7 @@ import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 import ua.com.foxminded.sql_jdbc_school.view.MenuView;
 
 public class Menu {
+	private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
     private static final String ERROR_EXECUTE = "The menu execution is failed.";
     private static final String WORD_EXIT = "exit";
@@ -75,6 +79,7 @@ public class Menu {
                 }
             }
         } catch (ServiceException | NoSuchElementException | IllegalStateException e) {
+        	LOGGER.error(ERROR_EXECUTE, e);
             throw new ServiceException(ERROR_EXECUTE, e);
         } finally {
             scanner.close();
@@ -91,11 +96,12 @@ public class Menu {
             tableService.createStudentCourseTable();
             studentCourseService.createStudentCourseRelation(studentsHaveGroupID, courses);
         } catch (ServiceException e) {
+        	LOGGER.error(ERROR_BOOTSTRAP, e);
             throw new ServiceException(ERROR_BOOTSTRAP, e);
         }
     }
     
-    public void removeStudentFromCourse(Scanner scanner) throws ServiceException {
+    private void removeStudentFromCourse(Scanner scanner) throws ServiceException {
         for (;;) {
             List<StudentCourseDTO> studnetCourse = studentCourseService.getAllStudentCourse();
             menuView.showStudentCourse(studnetCourse);

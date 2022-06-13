@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
@@ -16,9 +20,10 @@ public class StudentService implements Student<List<StudentDTO>,
 											   List<GroupDTO>, 
                                                String, 
                                                Integer> {
+	private static final Logger LOGGER = LogManager.getLogger();
     private static final String FIST_NAME_FILENAME = "firstNameList.txt";
     private static final String LAST_NAME_FILENAME = "lastNameList.txt";
-    private static final String ERROR_INSERT = "The student addition service to the database fails.";
+    private static final String ERROR_CREATE_STUDENTS = "The student addition service to the database fails.";
     private static final String ERROR_ASSIGN_GROUP = "The assining group to students is failed.";
     private static final String ERROR_ADD_STUDENT = "The student adding to the database is failed.";
     private static final String ERROR_GET_ALL_STUDENT = "Getting students from the database is failed.";
@@ -37,8 +42,8 @@ public class StudentService implements Student<List<StudentDTO>,
     public List<StudentDTO> getStudentsHavingGroupId() throws ServiceException {
         
         try {
-        DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-        StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
+        DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+        StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
         return studentDAO.readStudentsWithGroupId()
         			     .stream()
         			     .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(), 
@@ -47,6 +52,7 @@ public class StudentService implements Student<List<StudentDTO>,
         			    		 								studentEntity.getLastName()))
         			     .collect(Collectors.toList());
         } catch (DAOException e) {
+        	LOGGER.error(ERROR_GET_STUDENTS_WITH_GROUP, e);
             throw new ServiceException(ERROR_GET_STUDENTS_WITH_GROUP, e);
         }
     }
@@ -54,10 +60,11 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public Integer deleteStudent(Integer studentId) throws ServiceException {
         try {
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.delete(studentId);
         } catch (DAOException e) {
+        	LOGGER.error(ERROR_DELETE_STUDENT, e);
             throw new ServiceException(ERROR_DELETE_STUDENT, e);
         }
     }
@@ -65,8 +72,8 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public List<StudentDTO> getAllStudents() throws ServiceException {
         try {
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.getAll()
             				 .stream()
             				 .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(),
@@ -75,9 +82,9 @@ public class StudentService implements Student<List<StudentDTO>,
             						 								studentEntity.getLastName()))
             				 .collect(Collectors.toList());
         } catch (DAOException e) {
+        	LOGGER.error(ERROR_GET_ALL_STUDENT, e);
             throw new ServiceException(ERROR_GET_ALL_STUDENT, e);
         }
-        
     }
     
     @Override
@@ -86,8 +93,8 @@ public class StudentService implements Student<List<StudentDTO>,
        try {
            List<StudentDTO> studentDTOs = new ArrayList<>();
            studentDTOs.add(new StudentDTO(firstName, lastName));
-           DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-           StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
+           DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+           StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
            List<StudentEntity> studentEntities = studentDTOs
         		   .stream()
         		   .map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
@@ -96,6 +103,7 @@ public class StudentService implements Student<List<StudentDTO>,
            
            return studentDAO.insert(studentEntities);
        } catch (DAOException e) {
+    	   LOGGER.error(ERROR_ADD_STUDENT, e);
            throw new ServiceException(ERROR_ADD_STUDENT, e);
        }
     }
@@ -103,8 +111,8 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override
     public List<StudentDTO> assignGroup(List<GroupDTO> groups) throws ServiceException {
         try {
-            DAOFactory postgrresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            StudentDAO studentDAO = postgrresDAOFactory.getStudentDAO();
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentEntity> studentEntities = studentDAO.getAll();
             List<Integer> groupSize = generator.getNumberOfStudentsInGroup(studentEntities.size(), 
                                                                            groups.size());
@@ -128,6 +136,7 @@ public class StudentService implements Student<List<StudentDTO>,
             																 studentEntity.getLastName()))
             						  .collect(Collectors.toList());
         } catch (DAOException e) {
+        	LOGGER.error(ERROR_ASSIGN_GROUP, e);
             throw new ServiceException(ERROR_ASSIGN_GROUP, e); 
         }
     }
@@ -138,8 +147,8 @@ public class StudentService implements Student<List<StudentDTO>,
             List<String> firstNames = reader.read(FIST_NAME_FILENAME);
             List<String> lastNames = reader.read(LAST_NAME_FILENAME);
             List<StudentDTO> studentDTOs = generator.getStudentData(firstNames, lastNames);
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            StudentDAO studentDAO = postgresDAOFactory.getStudentDAO();
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentEntity> studentEntities = studentDTOs.stream()
             		.map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
             											   studentDTO.getLastName()))
@@ -147,7 +156,8 @@ public class StudentService implements Student<List<StudentDTO>,
             studentDAO.insert(studentEntities);
             return studentDTOs;
         } catch (ServiceException | DAOException e) {
-            throw new ServiceException(ERROR_INSERT, e);
+        	LOGGER.error(ERROR_CREATE_STUDENTS, e);
+            throw new ServiceException(ERROR_CREATE_STUDENTS, e);
         }
     }
 }

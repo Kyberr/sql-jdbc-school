@@ -3,6 +3,9 @@ package ua.com.foxminded.sql_jdbc_school.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
@@ -10,6 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 
 public class CourseService implements Course<List<CourseDTO>> {
+	private static final Logger LOGGER = LogManager.getLogger();
     private static final String COURSE_NAME_LIST_FILENAME = "courseNameList.txt";
     private static final String ERROR_CREATE_COURSES = "The courses creation service doesn't work.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all courses service doesn't work.";
@@ -26,18 +30,19 @@ public class CourseService implements Course<List<CourseDTO>> {
             List<CourseEntity> courseEntities = coursesList.parallelStream()
             											   .map((courseName) -> new CourseEntity(courseName))
             											   .collect(Collectors.toList());
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            CourseDAO postgresCourseDAO = postgresDAOFactory.getCourseDAO();
-            postgresCourseDAO.insert(courseEntities);
+            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
+            CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
+            universityCourseDAO.insert(courseEntities);
             
             
-            return postgresCourseDAO.getAll()
+            return universityCourseDAO.getAll()
             						.parallelStream()
             						.map((entity) -> new CourseDTO(entity.getCourseId(), 
             													   entity.getCourseName(), 
             													   entity.getCourseDescription()))
             						.collect(Collectors.toList());
         } catch (ServiceException | DAOException e) {
+        	LOGGER.error(ERROR_CREATE_COURSES, e);
             throw new ServiceException(ERROR_CREATE_COURSES, e);
         }
     }
@@ -46,14 +51,15 @@ public class CourseService implements Course<List<CourseDTO>> {
     public List<CourseDTO> getAllCourses() throws ServiceException {
     	try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
-            return universityCourseDAO.getAll()
+            CourseDAO courseDAO = universityDAOFactory.getCourseDAO();
+            return courseDAO.getAll()
             						  .stream()
             						  .map((entity) -> new CourseDTO(entity.getCourseId(), 
             								  						 entity.getCourseName(), 
             								  						 entity.getCourseDescription()))
             						  .collect(Collectors.toList());
         } catch (DAOException e) {
+        	LOGGER.error(ERROR_GET_ALL_COURSES, e);
             throw new ServiceException (ERROR_GET_ALL_COURSES, e);
         }
     }

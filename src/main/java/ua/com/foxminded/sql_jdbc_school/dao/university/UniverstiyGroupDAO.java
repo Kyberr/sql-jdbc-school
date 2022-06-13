@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.postgres;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 
-public class PostgresGroupDAO implements GroupDAO {
+public class UniverstiyGroupDAO implements GroupDAO {
 	private static final String QUERIES_FILE_NAME = "groupQueries.properties";
 	private static final String SELECT_INCLUSIVE_LESS_STUDENTS = "selectInclusiveLessStudents";
 	private static final String SELECT_ALL = "selectAll";
@@ -29,7 +29,7 @@ public class PostgresGroupDAO implements GroupDAO {
     
     @Override
     public List<GroupEntity> readGroupsWithLessOrEqualStudents (int students) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(String.format(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), students));
              ResultSet resultSet = statement.executeQuery();) {
@@ -48,8 +48,8 @@ public class PostgresGroupDAO implements GroupDAO {
     }
     
     @Override
-    public List<GroupEntity> readAll() throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+    public List<GroupEntity> getAll() throws DAOException {
+        try (Connection con = UniversityDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL))) {
@@ -67,9 +67,9 @@ public class PostgresGroupDAO implements GroupDAO {
     }
     
     @Override
-    public Integer create(List<GroupEntity> groups) throws DAOException {
+    public Integer insert(List<GroupEntity> groups) throws DAOException {
 
-        try (Connection connection = PostgresDAOFactory.creatConnection();
+        try (Connection connection = UniversityDAOFactory.creatConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(INSERT))) {
             

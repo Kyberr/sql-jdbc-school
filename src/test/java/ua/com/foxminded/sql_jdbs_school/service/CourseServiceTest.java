@@ -22,9 +22,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
-
-
-import ua.com.foxminded.sql_jdbc_school.dao.postgres.PostgresDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
@@ -81,6 +79,6 @@ class CourseServiceTest {
 	 * 
 	 */
 		courseService.createCourses();
-		verify(postgresCourseDAO, times(1)).readAll();
+		verify(postgresCourseDAO, times(1)).getAll();
 	}
 }

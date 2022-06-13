@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.postgres;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentCourseEntity;
 
-public class PostgresStudentCourseDAO implements StudentCourseDAO {
+public class UniversityStudentCourseDAO implements StudentCourseDAO {
 	private static final String QUERIES_FILENAME = "studentCourseQueries.properties";
     private static final String DELETE_STUDENT_FROM_COURSE = "deleteStudentFromCourse";
     private static final String SELECT_ALL = "selectAll";
@@ -40,7 +40,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     
     @Override
     public int deleteStudentFromCourse(int studentId, int courseId) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(DELETE_STUDENT_FROM_COURSE))) {
@@ -54,8 +54,8 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     }
     
     @Override
-    public List<StudentCourseEntity> readAll() throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+    public List<StudentCourseEntity> getAll() throws DAOException {
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(SELECT_ALL));
@@ -79,7 +79,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     }
     @Override
     public StudentCourseEntity read(int studentId, int courseId) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(SELECT_ENTITY))) {
@@ -107,7 +107,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     
     @Override
     public List<StudentCourseEntity> readStudentsOfCourse(int courseId) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(String.format(DAOPropertiesCache
             		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(SELECT_STUDENTS_OF_COURSE), courseId));
@@ -132,8 +132,8 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     }
     
     @Override
-    public Integer create(List<StudentCourseEntity> studentsCourseEntities) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+    public Integer insert(List<StudentCourseEntity> studentsCourseEntities) throws DAOException {
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILENAME)
             		 .getProperty(INSERT))) {

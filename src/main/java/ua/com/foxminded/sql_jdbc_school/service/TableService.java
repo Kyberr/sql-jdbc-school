@@ -28,7 +28,7 @@ public class TableService implements Table<Integer> {
         try {
             List<String> sqlScriptList = reader.read(TABLES_SQL_FILE_NAME);
             String tablesSqlScript = parser.toString(sqlScriptList); 
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             DAO postgresDAO = postgresDAOFactory.getDAO();
             return postgresDAO.create(tablesSqlScript);
         } catch (ServiceException | DAOException e) {
@@ -45,7 +45,7 @@ public class TableService implements Table<Integer> {
     		Properties properties = new Properties();
     		properties.load(input);
     		String studentCourseSqlScript = properties.getProperty(STUDENT_COURSE_SQL_QUERY);
-    		DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+    		DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
     		DAO postgresDAO = postgresDAOFactory.getDAO();
     		return postgresDAO.create(studentCourseSqlScript);
     	} catch (DAOException | IOException e) {

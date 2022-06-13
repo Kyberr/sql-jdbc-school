@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.postgres;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,13 +7,13 @@ import java.sql.SQLException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAO;
 
-public class PostgresDAO implements DAO {
+public class UniversityDAO implements DAO {
 	private static final String ERROR_DAO_CREATION = "The creation of the tables "
 			   									   + "in the database is failed!";	
 	
 	@Override
 	    public Integer create(String sql) throws DAOException {
-	        try (Connection connection = PostgresDAOFactory.creatConnection();
+	        try (Connection connection = UniversityDAOFactory.creatConnection();
 	             PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	             int status = preparedStatement.executeUpdate();
 	             return status;

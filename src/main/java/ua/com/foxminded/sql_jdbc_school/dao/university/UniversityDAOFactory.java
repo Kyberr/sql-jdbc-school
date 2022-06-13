@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.postgres;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,11 +12,11 @@ import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 
-public class PostgresDAOFactory extends DAOFactory {
+public class UniversityDAOFactory extends DAOFactory {
 	private static final String PROPERTIES_FILE_NAME = "db.properties";
-    private static final String DB_URL = "PostgresDatabaseURL";
-    private static final String USER_NAME = "PostgresUser";
-    private static final String USER_PASS = "PostgresPassword";
+    private static final String DB_URL = "UniversityDatabaseURL";
+    private static final String USER_NAME = "UniversityUser";
+    private static final String USER_PASS = "UniversityPassword";
     private static final String CONNECT_ERROR = "The database connection is failure."; 
     
     public static Connection creatConnection() throws DAOException {
@@ -32,26 +32,26 @@ public class PostgresDAOFactory extends DAOFactory {
     
     @Override
     public StudentDAO getStudentDAO() {
-        return new PostgresStudentDAO();
+        return new UniverstiyStudentDAO();
     }
     
     @Override
     public GroupDAO getGroupDAO() {
-        return new PostgresGroupDAO();
+        return new UniverstiyGroupDAO();
     }
 
     @Override
     public CourseDAO getCourseDAO() {
-        return new PostgresCourseDAO();
+        return new UniversityCourseDAO();
     }
     
     @Override
     public StudentCourseDAO getStudentCourseDAO() {
-        return new PostgresStudentCourseDAO();
+        return new UniversityStudentCourseDAO();
     }
     
     @Override
     public DAO getDAO() {
-    	return new PostgresDAO();
+    	return new UniversityDAO();
     }
 }

@@ -40,7 +40,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     @Override
     public Integer deleteStudentFromCourse(Integer studentId, Integer courseId) throws ServiceException {
         try {
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.deleteStudentFromCourse(studentId, courseId);
         } catch (DAOException e) {
@@ -51,9 +51,9 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     @Override 
     public List<StudentCourseDTO> getAllStudentCourse() throws ServiceException {
         try {
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
-            return studentCourseDAO.readAll()
+            return studentCourseDAO.getAll()
             					   .parallelStream()
             					   .map((entity) -> new StudentCourseDTO(entity.getStudentId(), 
             													         entity.getGroupId(), 
@@ -72,7 +72,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     public Integer addStudentToCourse(Integer studentId, Integer courseId) 
             throws ServiceException {
         try {
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
             StudentCourseEntity studentCourseEntity = studentCourseDAO.read(studentId, courseId);
             
@@ -91,7 +91,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
                                                                     course.getCourseId(), 
                                                                     course.getCourseName(), 
                                                                     course.getCourseDescription()));
-                studentCourseDAO.create(studentCourseEntityList);
+                studentCourseDAO.insert(studentCourseEntityList);
                 return NORMAL_STATUS;
             }
         } catch (DAOException e) {
@@ -102,7 +102,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     @Override
     public List<StudentCourseDTO> getStudentsOfCourse(Integer courseID) throws ServiceException {
         try {
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = postgresDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.readStudentsOfCourse(courseID)
             					   .stream()
@@ -136,9 +136,9 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
         		.collect(Collectors.toList());
         
         try {
-            DAOFactory postgresDAOFacotry = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            DAOFactory postgresDAOFacotry = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = postgresDAOFacotry.getStudentCourseDAO();
-            studentCourseDAO.create(studentCourseEntities);
+            studentCourseDAO.insert(studentCourseEntities);
             return studentCourseDTOs;
         } catch (Exception e) {
             throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_RELATION, e);

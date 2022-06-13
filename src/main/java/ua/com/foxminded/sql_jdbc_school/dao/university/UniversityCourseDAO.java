@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.postgres;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
-public class PostgresCourseDAO implements CourseDAO {
+public class UniversityCourseDAO implements CourseDAO {
 	private static final String QUERIES_FILE_NAME = "courseQueries.properties";
     private static final String SELECT_COURSE = "selectCourse";
     private static final String SELECT_ALL = "selectAll";
@@ -28,7 +28,7 @@ public class PostgresCourseDAO implements CourseDAO {
     
     @Override
     public CourseEntity read(int courseId) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_COURSE));) {
             
@@ -49,8 +49,8 @@ public class PostgresCourseDAO implements CourseDAO {
     }
     
     @Override
-    public List<CourseEntity> readAll() throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+    public List<CourseEntity> getAll() throws DAOException {
+        try (Connection con = UniversityDAOFactory.creatConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL))) {
@@ -70,8 +70,8 @@ public class PostgresCourseDAO implements CourseDAO {
     }
     
     @Override
-    public Integer create(List<CourseEntity> courseEntities) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+    public Integer insert(List<CourseEntity> courseEntities) throws DAOException {
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(INSERT))) {
            

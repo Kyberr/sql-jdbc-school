@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.postgres;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
-public class PostgresStudentDAO implements StudentDAO {
+public class UniverstiyStudentDAO implements StudentDAO {
     
 	private static final String QUERIES_FILE_NAME = "studentQueries.properties";
 	private static final String SELECT_STUDENTS_WITH_GROUP = "selectStudentsWithGroup";
@@ -36,7 +36,7 @@ public class PostgresStudentDAO implements StudentDAO {
     
     @Override
     public List<StudentEntity> readStudentsWithGroupId() throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENTS_WITH_GROUP));
              ResultSet resultSet = statement.executeQuery();) {
@@ -57,7 +57,7 @@ public class PostgresStudentDAO implements StudentDAO {
     
     @Override
     public StudentEntity read(int studentId) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENT));) {
 
@@ -80,7 +80,7 @@ public class PostgresStudentDAO implements StudentDAO {
     
     @Override
     public int delete(int studentId) throws DAOException {
-        try (Connection con = PostgresDAOFactory.creatConnection();
+        try (Connection con = UniversityDAOFactory.creatConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(DELETE_STUDENT))) {
             
@@ -92,8 +92,8 @@ public class PostgresStudentDAO implements StudentDAO {
     }
     
     @Override
-    public Integer create(List<StudentEntity> studentEntities) throws DAOException {
-        try(Connection con = PostgresDAOFactory.creatConnection();
+    public Integer insert(List<StudentEntity> studentEntities) throws DAOException {
+        try(Connection con = UniversityDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		.getInstance(QUERIES_FILE_NAME).getProperty(INSERT_STUDENTS));) {
             con.setAutoCommit(false);
@@ -128,8 +128,8 @@ public class PostgresStudentDAO implements StudentDAO {
     }
     
     @Override
-    public List<StudentEntity> readAll() throws DAOException {
-        try(Connection con = PostgresDAOFactory.creatConnection();
+    public List<StudentEntity> getAll() throws DAOException {
+        try(Connection con = UniversityDAOFactory.creatConnection();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
             		.getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL));) {
@@ -149,7 +149,7 @@ public class PostgresStudentDAO implements StudentDAO {
     
     @Override
     public int update(List<StudentEntity> students) throws DAOException {
-        try(Connection con = PostgresDAOFactory.creatConnection();
+        try(Connection con = UniversityDAOFactory.creatConnection();
             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		.getInstance(QUERIES_FILE_NAME).getProperty(UPDATE))) {
             con.setAutoCommit(false);

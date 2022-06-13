@@ -23,7 +23,7 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
     public List<GroupDTO> findGroupsWithLessOrEqualStudents(Integer studentQuantity) 
             throws ServiceException {
         try {
-            DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            DAOFactory universityFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = universityFactory.getGroupDAO();
             return groupDAO.readGroupsWithLessOrEqualStudents(studentQuantity)
             			   .stream()
@@ -44,10 +44,10 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
             groupEntities = groupNames.stream()
             				       .map((line) -> new GroupEntity(null, line))
             			           .collect(Collectors.toList());
-            DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRES);
+            DAOFactory postgresFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = postgresFactory.getGroupDAO();
-            groupDAO.create(groupEntities);
-            return groupDAO.readAll()
+            groupDAO.insert(groupEntities);
+            return groupDAO.getAll()
             			   .stream()
             			   .map((groupEntity) -> new GroupDTO(groupEntity.getGroupId(), 
             					   							  groupEntity.getGroupName()))

@@ -25,7 +25,6 @@ public class UniverstiyGroupDAO implements GroupDAO {
     private static final String INSERT = "insert";
     private static final String GROUP_ID = "group_id";
     private static final String GROUP_NAME = "group_name";
-    private static final String STUDENT_QUANTITY = "student_quantity";
     private static final String ERROR_INSERT_GROUP = "The group has not been iserted to the database.";
     private static final String ERROR_GET_ALL_GROUP = "The getting data from the "
                                                     + "\"groups\" table is failed.";

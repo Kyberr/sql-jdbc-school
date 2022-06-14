@@ -43,8 +43,7 @@ public class UniverstiyGroupDAO implements GroupDAO {
             
             while (resultSet.next()) {
                 result.add(new GroupEntity((Integer) resultSet.getObject(GROUP_ID),
-                                        resultSet.getString(GROUP_NAME),
-                                        Integer.valueOf(resultSet.getString(STUDENT_QUANTITY))));
+                                        resultSet.getString(GROUP_NAME)));
             }
             return result;
         } catch (DAOException | ClassCastException | NumberFormatException | SQLException e) {

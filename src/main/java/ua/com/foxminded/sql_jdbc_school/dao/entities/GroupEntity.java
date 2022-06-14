@@ -5,17 +5,14 @@ import java.util.Objects;
 public class GroupEntity {
 	private Integer groupId;
     private String groupName;
-    private Integer studentQuantity;
 	
-    public GroupEntity(Integer groupId, String groupName, Integer studentQuantity) {
+    public GroupEntity(Integer groupId, String groupName) {
 		this.groupId = groupId;
 		this.groupName = groupName;
-		this.studentQuantity = studentQuantity;
 	}
 
-	public GroupEntity(Integer groupId, String groupName) {
+	public GroupEntity(Integer groupId) {
 		this.groupId = groupId;
-		this.groupName = groupName;
 	}
 
 	public Integer getGroupId() {
@@ -34,17 +31,9 @@ public class GroupEntity {
 		this.groupName = groupName;
 	}
 
-	public Integer getStudentQuantity() {
-		return studentQuantity;
-	}
-
-	public void setStudentQuantity(Integer studentQuantity) {
-		this.studentQuantity = studentQuantity;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(groupId, groupName, studentQuantity);
+		return Objects.hash(groupId, groupName);
 	}
 
 	@Override
@@ -56,21 +45,11 @@ public class GroupEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		GroupEntity other = (GroupEntity) obj;
-		return Objects.equals(groupId, other.groupId) && Objects.equals(groupName, other.groupName)
-				&& Objects.equals(studentQuantity, other.studentQuantity);
+		return Objects.equals(groupId, other.groupId) && Objects.equals(groupName, other.groupName);
 	}
 
 	@Override
 	public String toString() {
-		return "GroupEntity [groupId=" + groupId + ", groupName=" + groupName + ", studentQuantity=" + studentQuantity
-				+ "]";
+		return "GroupEntity [groupId=" + groupId + ", groupName=" + groupName + "]";
 	}
-	
-	
-    
-    
-    
-    
-	
-    
 }

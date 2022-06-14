@@ -10,7 +10,9 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 
 public class GroupService implements Group<List<GroupDTO>, Integer> {
@@ -30,12 +32,19 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
         try {
             DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = universityDAOFactory.getGroupDAO();
-            return groupDAO.readGroupsWithLessOrEqualStudents(studentQuantity)
-            			   .stream()
-            			   .map((groupEntity) -> new GroupDTO(groupEntity.getGroupId(), 
-            					   							  groupEntity.getGroupName(), 
-            					   							  groupEntity.getStudentQuantity()))
-            			   .collect(Collectors.toList());
+            List<GroupEntity> groups = groupDAO.readGroupsWithLessOrEqualStudents(studentQuantity);
+            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
+            List<StudentEntity> students = studentDAO.getAll();
+            List<GroupDTO> groupDTO = new ArrayList<>();
+            groups.stream().forEach((group) -> {
+            	long studentsInGroup = students.stream()
+            			.filter((student) -> student.getGroupId() == group.getGroupId())
+            			.count();
+            	groupDTO.add(new GroupDTO(group.getGroupId(), 
+            						      group.getGroupName(), 
+            						      (int) studentsInGroup));
+            });
+            return groupDTO;		
         } catch (DAOException e) {
         	LOGGER.error(ERROR_FIND_LESS_OR_EQUALS, e);
             throw new ServiceException (ERROR_FIND_LESS_OR_EQUALS, e); 

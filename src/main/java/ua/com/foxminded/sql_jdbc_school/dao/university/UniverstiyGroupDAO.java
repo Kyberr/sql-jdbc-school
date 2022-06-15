@@ -12,12 +12,14 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 
 public class UniverstiyGroupDAO implements GroupDAO {
+	
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String QUERIES_FILE_NAME = "groupQueries.properties";
 	private static final String SELECT_INCLUSIVE_LESS_STUDENTS = "selectInclusiveLessStudents";
@@ -30,10 +32,15 @@ public class UniverstiyGroupDAO implements GroupDAO {
                                                     + "\"groups\" table is failed.";
     private static final String ERROR_GET_LESS_OR_EQUAL_STUD = "Getting the groups with a less or "
                                                              + "equal number of students is failed.";
+    private final ConnectionDAOFactory universityConnectionDAOFactory;
     
-    @Override
+    public UniverstiyGroupDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
+	}
+
+	@Override
     public List<GroupEntity> readGroupsWithLessOrEqualStudents (int students) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(String.format(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), students));
              ResultSet resultSet = statement.executeQuery();) {
@@ -53,7 +60,7 @@ public class UniverstiyGroupDAO implements GroupDAO {
     
     @Override
     public List<GroupEntity> getAll() throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = universityConnectionDAOFactory.createConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL))) {
@@ -74,7 +81,7 @@ public class UniverstiyGroupDAO implements GroupDAO {
     @Override
     public Integer insert(List<GroupEntity> groups) throws DAOException {
 
-        try (Connection connection = UniversityDAOFactory.creatConnection();
+        try (Connection connection = universityConnectionDAOFactory.createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(INSERT))) {
             

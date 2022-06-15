@@ -20,9 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
@@ -43,18 +43,19 @@ class CourseServiceTest {
 	@Mock
 	private Reader reader;
 	
-//	@Mock
-//	private DAOFactory postresDAOFactory;
+	@Mock
+	private ConnectionDAOFactory universityDAOFactory;
 	
 	@Mock
-	private CourseDAO postgresCourseDAO;
+	private CourseDAO universityCourseDAO;
 	
 	@Test
 	void createCourses_creationAndMappingToDatabase_success() throws ServiceException, 
 																	 DAOException {
 		
-	//	courseService.createCourses();
-	//	verify(reader, times(1)).read(any(String.class));
+		courseService.createCourses();
+		verify(reader, times(1)).read(any(String.class));
+		verify(universityDAOFactory, times(1)).getCourseDAO();
 	/*
 		List<String> courseNameList = new ArrayList<>();
 		courseNameList.add(COURSE_NAME_1);
@@ -74,11 +75,11 @@ class CourseServiceTest {
 		
 		
 		
-	//	verify(postresDAOFactory, times(1)).getCourseDAO();
+	//	
 	//	verify(postgresCourseDAO, times(1)).create(ArgumentMatchers.<CourseEntity>anyList());
 	 * 
 	 */
-		courseService.createCourses();
-		verify(postgresCourseDAO, times(1)).getAll();
+	//	courseService.createCourses();
+	//	verify(postgresCourseDAO, times(1)).getAll();
 	}
 }

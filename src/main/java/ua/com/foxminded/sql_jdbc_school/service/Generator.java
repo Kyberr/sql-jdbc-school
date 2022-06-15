@@ -11,7 +11,8 @@ import java.util.stream.Stream;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
 public class Generator {
-    private static final String HYPHEN = "-";
+    
+	private static final String HYPHEN = "-";
     private static final int MIN_STUDENTS = 10; 
     private static final int MAX_STUDENTS = 30; 
     private static final int SINGLE_DIDGIT_OF_MAX_VALUE = 9; 

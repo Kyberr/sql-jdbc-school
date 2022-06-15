@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Reader {
+	
 	private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_TO_LIST = "The content converting of the "
             + "file to a list of strings is failed."; 

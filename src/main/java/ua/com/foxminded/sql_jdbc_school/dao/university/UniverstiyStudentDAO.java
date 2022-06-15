@@ -12,13 +12,15 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
 public class UniverstiyStudentDAO implements StudentDAO {
-    private static final Logger LOGGER = LogManager.getLogger();
+    
+	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String QUERIES_FILE_NAME = "studentQueries.properties";
 	private static final String SELECT_STUDENTS_WITH_GROUP = "selectStudentsWithGroup";
 	private static final String SELECT_STUDENT = "selectStudent";
@@ -37,10 +39,15 @@ public class UniverstiyStudentDAO implements StudentDAO {
     private static final String ERROR_GET_STUDENT = "Getting the student data failed.";
     private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
                                                                  + "group ID failed.";
+    private final ConnectionDAOFactory universityConnectionDAOFactory;
     
-    @Override
+    public UniverstiyStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
+	}
+
+	@Override
     public List<StudentEntity> readStudentsWithGroupId() throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENTS_WITH_GROUP));
              ResultSet resultSet = statement.executeQuery();) {
@@ -62,7 +69,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
     
     @Override
     public StudentEntity read(int studentId) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENT));) {
 
@@ -86,7 +93,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
     
     @Override
     public int delete(int studentId) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(DELETE_STUDENT))) {
             
@@ -100,7 +107,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
     
     @Override
     public Integer insert(List<StudentEntity> studentEntities) throws DAOException {
-        try(Connection con = UniversityDAOFactory.creatConnection();
+        try(Connection con = universityConnectionDAOFactory.createConnection();
             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		.getInstance(QUERIES_FILE_NAME).getProperty(INSERT_STUDENTS));) {
             con.setAutoCommit(false);
@@ -137,7 +144,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
     
     @Override
     public List<StudentEntity> getAll() throws DAOException {
-        try(Connection con = UniversityDAOFactory.creatConnection();
+        try(Connection con = universityConnectionDAOFactory.createConnection();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
             		.getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL));) {
@@ -158,7 +165,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
     
     @Override
     public int update(List<StudentEntity> students) throws DAOException {
-        try(Connection con = UniversityDAOFactory.creatConnection();
+        try(Connection con = universityConnectionDAOFactory.createConnection();
             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		.getInstance(QUERIES_FILE_NAME).getProperty(UPDATE))) {
             con.setAutoCommit(false);

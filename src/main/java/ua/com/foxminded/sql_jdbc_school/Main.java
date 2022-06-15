@@ -4,8 +4,18 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.DAO;
+import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityCourseDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentCourseDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniverstiyGroupDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniverstiyStudentDAO;
 import ua.com.foxminded.sql_jdbc_school.service.Course;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
@@ -35,14 +45,20 @@ public class Main {
         Reader reader = new Reader();
         Parser parser = new Parser();
         Generator generator = new Generator();
-        DAOFactory universityDAOFactory = new UniversityDAOFactory();
-        Table<Integer> tableService = new TableService(reader, parser, universityDAOFactory);
+        ConnectionDAOFactory universityConnectionDAOFactory = new UniversityConnectionDAOFactory();
+        CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory);
+        StudentDAO studentDAO = new UniverstiyStudentDAO(universityConnectionDAOFactory);
+        GroupDAO groupDAO = new UniverstiyGroupDAO(universityConnectionDAOFactory);
+        StudentCourseDAO studentCourseDAO = new UniversityStudentCourseDAO(universityConnectionDAOFactory);
+        DAO universityDAO = new UniversityDAO(universityConnectionDAOFactory);
+        Table<Integer> tableService = new TableService(reader, parser, universityDAO);
         Student<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService = 
-        		new StudentService(reader, generator, universityDAOFactory);
-        Course<List<CourseDTO>> courseService = new CourseService(reader, universityDAOFactory);
-        Group<List<GroupDTO>,Integer> groupService = new GroupService(generator, universityDAOFactory);
+        		new StudentService(reader, generator, studentDAO);
+        Course<List<CourseDTO>> courseService = new CourseService(reader, courseDAO);
+        Group<List<GroupDTO>,Integer> groupService = new GroupService(generator, groupDAO, studentDAO);
         StudentCourse<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
-        			  Integer> studentCourseService = new StudentCourseService(generator, universityDAOFactory);
+        			  Integer> studentCourseService = new StudentCourseService(generator, studentCourseDAO, 
+        					  											       studentDAO, courseDAO);
         MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                  Integer> menuView = new ConsoleMenuView();
         Menu menu = new Menu(tableService, studentService, courseService, groupService, 

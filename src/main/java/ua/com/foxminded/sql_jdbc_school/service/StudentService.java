@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
@@ -20,6 +17,7 @@ public class StudentService implements Student<List<StudentDTO>,
 											   List<GroupDTO>, 
                                                String, 
                                                Integer> {
+	
 	private static final Logger LOGGER = LogManager.getLogger();
     private static final String FIST_NAME_FILENAME = "firstNameList.txt";
     private static final String LAST_NAME_FILENAME = "lastNameList.txt";
@@ -29,22 +27,20 @@ public class StudentService implements Student<List<StudentDTO>,
     private static final String ERROR_GET_ALL_STUDENT = "Getting students from the database is failed.";
     private static final String ERROR_DELETE_STUDENT = "The deletion of the student from the database is failed.";
     private static final String ERROR_GET_STUDENTS_WITH_GROUP = "Getting students that have group ID is failed.";
+    private final Reader reader;
+    private final Generator generator;
+    private final StudentDAO studentDAO;
     
-    private Reader reader;
-    private Generator generator;
-    private DAOFactory universityDAOFactory;
+    public StudentService(Reader reader, Generator generator, StudentDAO studentDAO) {
+		this.reader = reader;
+		this.generator = generator;
+		this.studentDAO = studentDAO;
+	}
 
-    public StudentService(Reader reader, Generator generator, DAOFactory universityDAOFactory) {
-        this.reader = reader;
-        this.generator = generator;
-        this.universityDAOFactory = universityDAOFactory;
-    }
-    
-    @Override 
+	@Override 
     public List<StudentDTO> getStudentsHavingGroupId() throws ServiceException {
         
         try {
-        StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
         return studentDAO.readStudentsWithGroupId()
         			     .stream()
         			     .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(), 
@@ -61,7 +57,6 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public Integer deleteStudent(Integer studentId) throws ServiceException {
         try {
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.delete(studentId);
         } catch (DAOException e) {
         	LOGGER.error(ERROR_DELETE_STUDENT, e);
@@ -72,7 +67,6 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public List<StudentDTO> getAllStudents() throws ServiceException {
         try {
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.getAll()
             				 .stream()
             				 .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(),
@@ -92,7 +86,6 @@ public class StudentService implements Student<List<StudentDTO>,
        try {
            List<StudentDTO> studentDTOs = new ArrayList<>();
            studentDTOs.add(new StudentDTO(firstName, lastName));
-           StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
            List<StudentEntity> studentEntities = studentDTOs
         		   .stream()
         		   .map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
@@ -109,7 +102,6 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override
     public List<StudentDTO> assignGroup(List<GroupDTO> groups) throws ServiceException {
         try {
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentEntity> studentEntities = studentDAO.getAll();
             List<Integer> groupSize = generator.getNumberOfStudentsInGroup(studentEntities.size(), 
                                                                            groups.size());
@@ -144,7 +136,6 @@ public class StudentService implements Student<List<StudentDTO>,
             List<String> firstNames = reader.read(FIST_NAME_FILENAME);
             List<String> lastNames = reader.read(LAST_NAME_FILENAME);
             List<StudentDTO> studentDTOs = generator.getStudentData(firstNames, lastNames);
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentEntity> studentEntities = studentDTOs.stream()
             		.map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
             											   studentDTO.getLastName()))

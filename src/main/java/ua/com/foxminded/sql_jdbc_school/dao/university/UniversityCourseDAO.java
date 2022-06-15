@@ -13,12 +13,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.Main;
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
 public class UniversityCourseDAO implements CourseDAO {
+	
 	private static final Logger LOGGER = LogManager.getLogger(Main.class);
 	private static final String QUERIES_FILE_NAME = "courseQueries.properties";
     private static final String SELECT_COURSE = "selectCourse";
@@ -31,10 +33,15 @@ public class UniversityCourseDAO implements CourseDAO {
     private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     private static final Integer BAD_STATUS = 0;
+    private final ConnectionDAOFactory universityConnectionDAOFactory;
     
-    @Override
+    public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
+	}
+
+	@Override
     public CourseEntity read(int courseId) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_COURSE));) {
             
@@ -57,7 +64,7 @@ public class UniversityCourseDAO implements CourseDAO {
     
     @Override
     public List<CourseEntity> getAll() throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = universityConnectionDAOFactory.createConnection();
              Statement statement = con.createStatement();
              ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL))) {
@@ -79,7 +86,7 @@ public class UniversityCourseDAO implements CourseDAO {
     
     @Override
     public Integer insert(List<CourseEntity> courseEntities) throws DAOException {
-        try (Connection con = UniversityDAOFactory.creatConnection();
+        try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(INSERT))) {
            

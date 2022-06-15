@@ -4,15 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAO;
 
 public class TableService implements Table<Integer> {
+
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String ERROR_CREATE_STUDENT_COURSE_TABLE = "The StudentCourse table "
 																    + "has not been created.";
@@ -20,23 +18,22 @@ public class TableService implements Table<Integer> {
     private static final String TABLES_SQL_FILE_NAME = "tablesCreationSqlScript.txt";
     private static final String STUDENT_COURSE_SQL_FILE_NAME = "studentCourseQueries.properties";
     private static final String STUDENT_COURSE_SQL_QUERY = "createStudentCourseDAO";
-    private Reader reader;
-    private Parser parser;
-    private DAOFactory universityDAOFactory;
+    private final Reader reader;
+    private final Parser parser;
+    private final DAO dao;
     
-    public TableService(Reader reader, Parser parser, DAOFactory universityDAOFactory) {
-        this.reader = reader;
-        this.parser = parser;
-        this.universityDAOFactory = universityDAOFactory;
-    }
-    
-    @Override
+    public TableService(Reader reader, Parser parser, DAO dao) {
+		this.reader = reader;
+		this.parser = parser;
+		this.dao = dao;
+	}
+
+	@Override
     public Integer createTables() throws ServiceException {
         try {
             List<String> sqlScriptList = reader.read(TABLES_SQL_FILE_NAME);
             String tablesSqlScript = parser.toString(sqlScriptList); 
-            DAO postgresDAO = universityDAOFactory.getDAO();
-            return postgresDAO.create(tablesSqlScript);
+            return dao.create(tablesSqlScript);
         } catch (ServiceException | DAOException e) {
         	LOGGER.error(ERROR_CREATE_TABLE, e);
             throw new ServiceException(ERROR_CREATE_TABLE, e);
@@ -52,7 +49,6 @@ public class TableService implements Table<Integer> {
     		Properties properties = new Properties();
     		properties.load(input);
     		String studentCourseSqlScript = properties.getProperty(STUDENT_COURSE_SQL_QUERY);
-    		DAO dao = universityDAOFactory.getDAO();
     		return dao.create(studentCourseSqlScript);
     	} catch (DAOException | IOException e) {
     		LOGGER.error(ERROR_CREATE_STUDENT_COURSE_TABLE, e);

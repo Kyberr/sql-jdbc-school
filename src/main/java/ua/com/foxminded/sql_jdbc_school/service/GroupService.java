@@ -3,12 +3,9 @@ package ua.com.foxminded.sql_jdbc_school.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
@@ -20,21 +17,21 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
     private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "
             + "less or equal to the specified number of students is failed. ";
-    private Generator generator;
-    private DAOFactory universityDAOFactory;
+    private final Generator generator;
+    private final GroupDAO groupDAO;
+    private final StudentDAO studentDAO;
 
-    public GroupService(Generator generator, DAOFactory universityDAOFactory) {
+    public GroupService(Generator generator, GroupDAO groupDAO, StudentDAO studentDAO) {
         this.generator = generator;
-        this.universityDAOFactory = universityDAOFactory;
+        this.groupDAO = groupDAO;
+        this.studentDAO = studentDAO;
     }
     
     @Override
     public List<GroupDTO> findGroupsWithLessOrEqualStudents(Integer studentQuantity) 
             throws ServiceException {
         try {
-            GroupDAO groupDAO = universityDAOFactory.getGroupDAO();
             List<GroupEntity> groups = groupDAO.readGroupsWithLessOrEqualStudents(studentQuantity);
-            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentEntity> students = studentDAO.getAll();
             List<GroupDTO> groupDTO = new ArrayList<>();
             groups.stream().forEach((group) -> {
@@ -58,9 +55,8 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
             List<String> groupNames = generator.getGroupName();
             List<GroupEntity> groupEntities = new ArrayList<>();
             groupEntities = groupNames.stream()
-            				       .map((line) -> new GroupEntity(null, line))
-            			           .collect(Collectors.toList());
-            GroupDAO groupDAO = universityDAOFactory.getGroupDAO();
+            				          .map((line) -> new GroupEntity(null, line))
+            			              .collect(Collectors.toList());
             groupDAO.insert(groupEntities);
             return groupDAO.getAll()
             			   .stream()

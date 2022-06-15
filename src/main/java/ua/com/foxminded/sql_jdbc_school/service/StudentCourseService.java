@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
@@ -24,6 +21,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
                                                            List<CourseDTO>,
                                                            List<StudentCourseDTO>,
                                                            Integer> {
+	
 	private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
                                                                  + "from the course doesn't work.";
@@ -35,18 +33,22 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     private static final int COURSE_INDEX = 1;
     private static final int BAD_STATUS = 0;
     private static final int NORMAL_STATUS = 1;
-    private Generator generator;
-    private DAOFactory universityDAOFactory;
+    private final Generator generator;
+    private final StudentCourseDAO studentCourseDAO;
+    private final StudentDAO studentDAO;
+    private final CourseDAO courseDAO;
     
-    public StudentCourseService(Generator generator, DAOFactory universityDAOFactory) {
-        this.generator = generator;
-        this.universityDAOFactory = universityDAOFactory;
-    }
+    public StudentCourseService(Generator generator, StudentCourseDAO studentCourseDAO, StudentDAO studentDAO,
+			CourseDAO courseDAO) {
+		this.generator = generator;
+		this.studentCourseDAO = studentCourseDAO;
+		this.studentDAO = studentDAO;
+		this.courseDAO = courseDAO;
+	}
     
     @Override
     public Integer deleteStudentFromCourse(Integer studentId, Integer courseId) throws ServiceException {
         try {
-            StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.deleteStudentFromCourse(studentId, courseId);
         } catch (DAOException e) {
         	LOGGER.error(ERROR_DELETE_STUDENT_FROM_COURSE, e);
@@ -57,7 +59,6 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     @Override 
     public List<StudentCourseDTO> getAllStudentCourse() throws ServiceException {
         try {
-            StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.getAll()
             					   .parallelStream()
             					   .map((entity) -> new StudentCourseDTO(entity.getStudentId(), 
@@ -78,14 +79,11 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     public Integer addStudentToCourse(Integer studentId, Integer courseId) 
             throws ServiceException {
         try {
-            StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             StudentCourseEntity studentCourseEntity = studentCourseDAO.read(studentId, courseId);
             
             if (studentCourseEntity != null) {
                 return BAD_STATUS;
             } else {
-                StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
-                CourseDAO courseDAO = universityDAOFactory.getCourseDAO();
                 StudentEntity student = studentDAO.read(studentId);
                 CourseEntity course = courseDAO.read(courseId);
                 List<StudentCourseEntity> studentCourseEntityList = new ArrayList<>();
@@ -108,7 +106,6 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     @Override
     public List<StudentCourseDTO> getStudentsOfCourse(Integer courseID) throws ServiceException {
         try {
-            StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.readStudentsOfCourse(courseID)
             					   .stream()
             					   .map((entity) -> new StudentCourseDTO(entity.getStudentId(), 
@@ -142,7 +139,6 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
         		.collect(Collectors.toList());
         
         try {
-            StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             studentCourseDAO.insert(studentCourseEntities);
             return studentCourseDTOs;
         } catch (Exception e) {

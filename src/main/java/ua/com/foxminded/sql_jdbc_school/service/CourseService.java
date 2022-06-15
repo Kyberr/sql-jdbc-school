@@ -2,13 +2,10 @@ package ua.com.foxminded.sql_jdbc_school.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 
@@ -17,12 +14,12 @@ public class CourseService implements Course<List<CourseDTO>> {
     private static final String COURSE_NAME_LIST_FILENAME = "courseNameList.txt";
     private static final String ERROR_CREATE_COURSES = "The courses creation service doesn't work.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all courses service doesn't work.";
-    private Reader reader;
-    private DAOFactory universityDAOFactory;
+    private final Reader reader;
+    private final CourseDAO courseDAO;
     
-    public CourseService(Reader reader, DAOFactory universityDAOFactory) {
+    public CourseService(Reader reader, CourseDAO courseDAO) {
         this.reader = reader;
-        this.universityDAOFactory = universityDAOFactory;
+        this.courseDAO = courseDAO;
     }
     
     @Override
@@ -32,7 +29,6 @@ public class CourseService implements Course<List<CourseDTO>> {
             List<CourseEntity> courseEntities = coursesList.parallelStream()
             											   .map((courseName) -> new CourseEntity(courseName))
             											   .collect(Collectors.toList());
-            CourseDAO courseDAO = universityDAOFactory.getCourseDAO();
             courseDAO.insert(courseEntities);
             
             
@@ -51,13 +47,12 @@ public class CourseService implements Course<List<CourseDTO>> {
     @Override
     public List<CourseDTO> getAllCourses() throws ServiceException {
     	try {
-            CourseDAO courseDAO = universityDAOFactory.getCourseDAO();
             return courseDAO.getAll()
-            						  .stream()
-            						  .map((entity) -> new CourseDTO(entity.getCourseId(), 
-            								  						 entity.getCourseName(), 
-            								  						 entity.getCourseDescription()))
-            						  .collect(Collectors.toList());
+            			    .stream()
+            			    .map((entity) -> new CourseDTO(entity.getCourseId(), 
+            				   	  						   entity.getCourseName(), 
+            				   	  						   entity.getCourseDescription()))
+            			    .collect(Collectors.toList());
         } catch (DAOException e) {
         	LOGGER.error(ERROR_GET_ALL_COURSES, e);
             throw new ServiceException (ERROR_GET_ALL_COURSES, e);

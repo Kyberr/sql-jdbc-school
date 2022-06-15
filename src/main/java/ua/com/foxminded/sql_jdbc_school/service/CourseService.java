@@ -30,14 +30,12 @@ public class CourseService implements Course<List<CourseDTO>> {
             											   .map((courseName) -> new CourseEntity(courseName))
             											   .collect(Collectors.toList());
             courseDAO.insert(courseEntities);
-            
-            
             return courseDAO.getAll()
             				.parallelStream()
             				.map((entity) -> new CourseDTO(entity.getCourseId(), 
             						                       entity.getCourseName(), 
             						                       entity.getCourseDescription()))
-            						.collect(Collectors.toList());
+            				.collect(Collectors.toList());
         } catch (ServiceException | DAOException e) {
         	LOGGER.error(ERROR_CREATE_COURSES, e);
             throw new ServiceException(ERROR_CREATE_COURSES, e);

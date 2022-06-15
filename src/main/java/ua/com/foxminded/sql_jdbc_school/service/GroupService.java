@@ -53,10 +53,9 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
     public List<GroupDTO> createGroups() throws ServiceException {
         try {
             List<String> groupNames = generator.getGroupName();
-            List<GroupEntity> groupEntities = new ArrayList<>();
-            groupEntities = groupNames.stream()
-            				          .map((line) -> new GroupEntity(null, line))
-            			              .collect(Collectors.toList());
+            List<GroupEntity> groupEntities = groupNames.stream()
+            				          					.map((line) -> new GroupEntity(null, line))
+            				          					.collect(Collectors.toList());
             groupDAO.insert(groupEntities);
             return groupDAO.getAll()
             			   .stream()

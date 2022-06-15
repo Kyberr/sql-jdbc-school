@@ -5,8 +5,8 @@ import java.util.Objects;
 public class GroupEntity {
 	private Integer groupId;
     private String groupName;
-	
-    public GroupEntity(Integer groupId, String groupName) {
+
+	public GroupEntity(Integer groupId, String groupName) {
 		this.groupId = groupId;
 		this.groupName = groupName;
 	}

@@ -9,7 +9,6 @@ public class StudentEntity {
     private String lastName;
 	
     public StudentEntity(Integer studentId, Integer groupId, String firstName, String lastName) {
-		super();
 		this.studentId = studentId;
 		this.groupId = groupId;
 		this.firstName = firstName;
@@ -17,9 +16,12 @@ public class StudentEntity {
 	}
     
 	public StudentEntity(String firstName, String lastName) {
-		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
+	}
+	
+	public StudentEntity(Integer groupId) {
+		this.groupId = groupId;
 	}
 
 	public Integer getStudentId() {

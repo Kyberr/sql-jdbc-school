@@ -32,17 +32,18 @@ public class StudentService implements Student<List<StudentDTO>,
     
     private Reader reader;
     private Generator generator;
+    private DAOFactory universityDAOFactory;
 
-    public StudentService(Reader reader, Generator generator) {
+    public StudentService(Reader reader, Generator generator, DAOFactory universityDAOFactory) {
         this.reader = reader;
         this.generator = generator;
+        this.universityDAOFactory = universityDAOFactory;
     }
     
     @Override 
     public List<StudentDTO> getStudentsHavingGroupId() throws ServiceException {
         
         try {
-        DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
         StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
         return studentDAO.readStudentsWithGroupId()
         			     .stream()
@@ -60,7 +61,6 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public Integer deleteStudent(Integer studentId) throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.delete(studentId);
         } catch (DAOException e) {
@@ -72,7 +72,6 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public List<StudentDTO> getAllStudents() throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             return studentDAO.getAll()
             				 .stream()
@@ -93,7 +92,6 @@ public class StudentService implements Student<List<StudentDTO>,
        try {
            List<StudentDTO> studentDTOs = new ArrayList<>();
            studentDTOs.add(new StudentDTO(firstName, lastName));
-           DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
            StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
            List<StudentEntity> studentEntities = studentDTOs
         		   .stream()
@@ -111,7 +109,6 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override
     public List<StudentDTO> assignGroup(List<GroupDTO> groups) throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentEntity> studentEntities = studentDAO.getAll();
             List<Integer> groupSize = generator.getNumberOfStudentsInGroup(studentEntities.size(), 
@@ -147,7 +144,6 @@ public class StudentService implements Student<List<StudentDTO>,
             List<String> firstNames = reader.read(FIST_NAME_FILENAME);
             List<String> lastNames = reader.read(LAST_NAME_FILENAME);
             List<StudentDTO> studentDTOs = generator.getStudentData(firstNames, lastNames);
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
             List<StudentEntity> studentEntities = studentDTOs.stream()
             		.map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 

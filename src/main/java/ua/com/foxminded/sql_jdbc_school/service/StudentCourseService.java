@@ -36,15 +36,16 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     private static final int BAD_STATUS = 0;
     private static final int NORMAL_STATUS = 1;
     private Generator generator;
+    private DAOFactory universityDAOFactory;
     
-    public StudentCourseService(Generator generator) {
+    public StudentCourseService(Generator generator, DAOFactory universityDAOFactory) {
         this.generator = generator;
+        this.universityDAOFactory = universityDAOFactory;
     }
     
     @Override
     public Integer deleteStudentFromCourse(Integer studentId, Integer courseId) throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.deleteStudentFromCourse(studentId, courseId);
         } catch (DAOException e) {
@@ -56,7 +57,6 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     @Override 
     public List<StudentCourseDTO> getAllStudentCourse() throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.getAll()
             					   .parallelStream()
@@ -78,7 +78,6 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     public Integer addStudentToCourse(Integer studentId, Integer courseId) 
             throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             StudentCourseEntity studentCourseEntity = studentCourseDAO.read(studentId, courseId);
             
@@ -109,7 +108,6 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
     @Override
     public List<StudentCourseDTO> getStudentsOfCourse(Integer courseID) throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             return studentCourseDAO.readStudentsOfCourse(courseID)
             					   .stream()
@@ -144,8 +142,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
         		.collect(Collectors.toList());
         
         try {
-            DAOFactory universityDAOFacotry = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            StudentCourseDAO studentCourseDAO = universityDAOFacotry.getStudentCourseDAO();
+            StudentCourseDAO studentCourseDAO = universityDAOFactory.getStudentCourseDAO();
             studentCourseDAO.insert(studentCourseEntities);
             return studentCourseDTOs;
         } catch (Exception e) {

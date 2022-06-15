@@ -3,6 +3,9 @@ package ua.com.foxminded.sql_jdbc_school;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import ua.com.foxminded.sql_jdbc_school.dao.DAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.service.Course;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
@@ -29,17 +32,17 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-
         Reader reader = new Reader();
         Parser parser = new Parser();
         Generator generator = new Generator();
-        Table<Integer> tableService = new TableService(reader, parser);
+        DAOFactory universityDAOFactory = new UniversityDAOFactory();
+        Table<Integer> tableService = new TableService(reader, parser, universityDAOFactory);
         Student<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService = 
-        		new StudentService(reader, generator);
-        Course<List<CourseDTO>> courseService = new CourseService(reader);
-        Group<List<GroupDTO>,Integer> groupService = new GroupService(generator);
+        		new StudentService(reader, generator, universityDAOFactory);
+        Course<List<CourseDTO>> courseService = new CourseService(reader, universityDAOFactory);
+        Group<List<GroupDTO>,Integer> groupService = new GroupService(generator, universityDAOFactory);
         StudentCourse<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
-        			  Integer> studentCourseService = new StudentCourseService(generator);
+        			  Integer> studentCourseService = new StudentCourseService(generator, universityDAOFactory);
         MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                  Integer> menuView = new ConsoleMenuView();
         Menu menu = new Menu(tableService, studentService, courseService, groupService, 

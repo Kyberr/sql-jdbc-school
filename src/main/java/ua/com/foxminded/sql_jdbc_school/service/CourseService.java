@@ -18,9 +18,11 @@ public class CourseService implements Course<List<CourseDTO>> {
     private static final String ERROR_CREATE_COURSES = "The courses creation service doesn't work.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all courses service doesn't work.";
     private Reader reader;
+    private DAOFactory universityDAOFactory;
     
-    public CourseService(Reader reader) {
+    public CourseService(Reader reader, DAOFactory universityDAOFactory) {
         this.reader = reader;
+        this.universityDAOFactory = universityDAOFactory;
     }
     
     @Override
@@ -30,16 +32,15 @@ public class CourseService implements Course<List<CourseDTO>> {
             List<CourseEntity> courseEntities = coursesList.parallelStream()
             											   .map((courseName) -> new CourseEntity(courseName))
             											   .collect(Collectors.toList());
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            CourseDAO universityCourseDAO = universityDAOFactory.getCourseDAO();
-            universityCourseDAO.insert(courseEntities);
+            CourseDAO courseDAO = universityDAOFactory.getCourseDAO();
+            courseDAO.insert(courseEntities);
             
             
-            return universityCourseDAO.getAll()
-            						.parallelStream()
-            						.map((entity) -> new CourseDTO(entity.getCourseId(), 
-            													   entity.getCourseName(), 
-            													   entity.getCourseDescription()))
+            return courseDAO.getAll()
+            				.parallelStream()
+            				.map((entity) -> new CourseDTO(entity.getCourseId(), 
+            						                       entity.getCourseName(), 
+            						                       entity.getCourseDescription()))
             						.collect(Collectors.toList());
         } catch (ServiceException | DAOException e) {
         	LOGGER.error(ERROR_CREATE_COURSES, e);
@@ -50,7 +51,6 @@ public class CourseService implements Course<List<CourseDTO>> {
     @Override
     public List<CourseDTO> getAllCourses() throws ServiceException {
     	try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             CourseDAO courseDAO = universityDAOFactory.getCourseDAO();
             return courseDAO.getAll()
             						  .stream()

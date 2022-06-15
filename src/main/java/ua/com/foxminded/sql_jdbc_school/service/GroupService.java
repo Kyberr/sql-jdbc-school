@@ -21,16 +21,17 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "
             + "less or equal to the specified number of students is failed. ";
     private Generator generator;
+    private DAOFactory universityDAOFactory;
 
-    public GroupService(Generator generator) {
+    public GroupService(Generator generator, DAOFactory universityDAOFactory) {
         this.generator = generator;
+        this.universityDAOFactory = universityDAOFactory;
     }
     
     @Override
     public List<GroupDTO> findGroupsWithLessOrEqualStudents(Integer studentQuantity) 
             throws ServiceException {
         try {
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = universityDAOFactory.getGroupDAO();
             List<GroupEntity> groups = groupDAO.readGroupsWithLessOrEqualStudents(studentQuantity);
             StudentDAO studentDAO = universityDAOFactory.getStudentDAO();
@@ -59,7 +60,6 @@ public class GroupService implements Group<List<GroupDTO>, Integer> {
             groupEntities = groupNames.stream()
             				       .map((line) -> new GroupEntity(null, line))
             			           .collect(Collectors.toList());
-            DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
             GroupDAO groupDAO = universityDAOFactory.getGroupDAO();
             groupDAO.insert(groupEntities);
             return groupDAO.getAll()

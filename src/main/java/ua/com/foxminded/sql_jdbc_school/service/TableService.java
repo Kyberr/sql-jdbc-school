@@ -22,10 +22,12 @@ public class TableService implements Table<Integer> {
     private static final String STUDENT_COURSE_SQL_QUERY = "createStudentCourseDAO";
     private Reader reader;
     private Parser parser;
+    private DAOFactory universityDAOFactory;
     
-    public TableService(Reader reader, Parser parser) {
+    public TableService(Reader reader, Parser parser, DAOFactory universityDAOFactory) {
         this.reader = reader;
         this.parser = parser;
+        this.universityDAOFactory = universityDAOFactory;
     }
     
     @Override
@@ -33,8 +35,7 @@ public class TableService implements Table<Integer> {
         try {
             List<String> sqlScriptList = reader.read(TABLES_SQL_FILE_NAME);
             String tablesSqlScript = parser.toString(sqlScriptList); 
-            DAOFactory postgresDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
-            DAO postgresDAO = postgresDAOFactory.getDAO();
+            DAO postgresDAO = universityDAOFactory.getDAO();
             return postgresDAO.create(tablesSqlScript);
         } catch (ServiceException | DAOException e) {
         	LOGGER.error(ERROR_CREATE_TABLE, e);
@@ -51,7 +52,6 @@ public class TableService implements Table<Integer> {
     		Properties properties = new Properties();
     		properties.load(input);
     		String studentCourseSqlScript = properties.getProperty(STUDENT_COURSE_SQL_QUERY);
-    		DAOFactory universityDAOFactory = DAOFactory.getDAOFactory(DAOFactory.UNIVERSITY);
     		DAO dao = universityDAOFactory.getDAO();
     		return dao.create(studentCourseSqlScript);
     	} catch (DAOException | IOException e) {

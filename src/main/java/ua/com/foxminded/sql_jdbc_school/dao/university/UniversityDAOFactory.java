@@ -16,7 +16,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 
-public class UniversityDAOFactory extends DAOFactory {
+public class UniversityDAOFactory implements DAOFactory {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String PROPERTIES_FILE_NAME = "db.properties";
     private static final String DB_URL = "UniversityDatabaseURL";

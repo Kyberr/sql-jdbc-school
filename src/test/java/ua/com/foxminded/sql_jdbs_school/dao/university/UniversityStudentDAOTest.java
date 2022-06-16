@@ -23,7 +23,8 @@ public class UniversityStudentDAOTest {
 	private static final String DB_URL = "TestDatabaseURL";
     private static final String USER_NAME = "TestDatabaseUser";
     private static final String USER_PASS = "TestDatabasePassword";
-    private static final String TABLE_CRIETION_SCRIPT_FILENAME = "tableCreationScript.sql";
+    private static final String TABLES_SCRIPT_FILENAME = "tables.sql";
+    private static final String TEST_DATA_FILENAME = "test-data.sql";
     private static final String END_LINE = "\n";
 	
 	@Test
@@ -36,13 +37,17 @@ public class UniversityStudentDAOTest {
 														 testDbProperties.getProperty(USER_NAME),
 														 testDbProperties.getProperty(USER_PASS));
 			
-			URL tableCreationScriptUrl = this.getClass().getClassLoader().getResource(TABLE_CRIETION_SCRIPT_FILENAME);
-			String tableCreationScriptPath = new File(tableCreationScriptUrl.getFile()).getPath();
-			String tableCreationScript = Files.lines(Paths.get(tableCreationScriptPath))
-							        		  .collect(Collectors.joining(END_LINE));
-			PreparedStatement prStatement = con.prepareStatement(tableCreationScript);
+			URL tablesScriptUrl = this.getClass().getClassLoader().getResource(TABLES_SCRIPT_FILENAME);
+			String tablesScriptPath = new File(tablesScriptUrl.getFile()).getPath();
+			String tablesScript = Files.lines(Paths.get(tablesScriptPath))
+							           .collect(Collectors.joining(END_LINE));
+			PreparedStatement prStatement = con.prepareStatement(tablesScript);
 			prStatement.execute();
-			URL testDataAddingScriptUrl = this.getClass().getClassLoader().getResourse(sqlScript);
+			URL testDataScriptUrl = this.getClass().getClassLoader().getResource(TEST_DATA_FILENAME);
+			String testDataScriptPath = new File(testDataScriptUrl.getFile()).getAbsolutePath();
+			String testDataScript = Files.lines(Paths.get(testDataScriptPath))
+										 .collect(Collectors.joining(END_LINE));
+			prStatement.execute(testDataScript);
 			
 		} finally {
 			

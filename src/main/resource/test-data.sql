@@ -1,0 +1,10 @@
+insert into department.groups (group_name) values ('uf-57');
+insert into department.groups (group_name) values ('zl-01');
+insert into department.students (group_id, last_name, first_name) values (1, 'Smith', 'Oliver');
+insert into department.students (group_id, last_name, first_name) values (1, 'Gonzales', 'Lucas');
+insert into department.students (group_id, last_name, first_name) values (1, 'Wilson', 'Mary');
+insert into department.students (group_id, last_name, first_name) values (2, 'Anderson', 'Linda');
+insert into department.students (group_id, last_name, first_name) values (2, 'Harris', 'James');
+insert into department.students (last_name, first_name) values ('Thomas', 'Henry');
+insert into department.courses (course_name) values ('Math');
+insert into department.courses (course_name) values ('Programming');

@@ -21,7 +21,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 public class UniverstiyStudentDAO implements StudentDAO {
     
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final String QUERIES_FILE_NAME = "studentQueries.properties";
+	private static final String QUERIES_FILE_NAME = "student-queries.properties";
 	private static final String SELECT_STUDENTS_WITH_GROUP = "selectStudentsWithGroup";
 	private static final String SELECT_STUDENT = "selectStudent";
 	private static final String DELETE_STUDENT = "deleteStudent";
@@ -46,7 +46,7 @@ public class UniverstiyStudentDAO implements StudentDAO {
 	}
 
 	@Override
-    public List<StudentEntity> readStudentsWithGroupId() throws DAOException {
+    public List<StudentEntity> readStudentsHavingGroupId() throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENTS_WITH_GROUP));

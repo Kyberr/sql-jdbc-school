@@ -15,8 +15,8 @@ public class TableService implements Table<Integer> {
 	private static final String ERROR_CREATE_STUDENT_COURSE_TABLE = "The StudentCourse table "
 																    + "has not been created.";
     private static final String ERROR_CREATE_TABLE = "The table creation service dosn't work.";
-    private static final String TABLES_SQL_FILE_NAME = "tablesCreationSqlScript.txt";
-    private static final String STUDENT_COURSE_SQL_FILE_NAME = "studentCourseQueries.properties";
+    private static final String TABLES_SQL_FILENAME = "tables.sql";
+    private static final String STUDENT_COURSE_SQL_FILENAME = "studentCourse-queries.properties";
     private static final String STUDENT_COURSE_SQL_QUERY = "createStudentCourseDAO";
     private final Reader reader;
     private final Parser parser;
@@ -31,7 +31,7 @@ public class TableService implements Table<Integer> {
 	@Override
     public Integer createTables() throws ServiceException {
         try {
-            List<String> sqlScriptList = reader.read(TABLES_SQL_FILE_NAME);
+            List<String> sqlScriptList = reader.read(TABLES_SQL_FILENAME);
             String tablesSqlScript = parser.toString(sqlScriptList); 
             return dao.create(tablesSqlScript);
         } catch (ServiceException | DAOException e) {
@@ -44,7 +44,7 @@ public class TableService implements Table<Integer> {
     public Integer createStudentCourseTable() throws ServiceException {
     	try (InputStream input = this.getClass()
 									 .getClassLoader()
-									 .getResourceAsStream(STUDENT_COURSE_SQL_FILE_NAME);) {
+									 .getResourceAsStream(STUDENT_COURSE_SQL_FILENAME);) {
     		
     		Properties properties = new Properties();
     		properties.load(input);

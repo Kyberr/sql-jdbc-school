@@ -41,7 +41,7 @@ public class StudentService implements Student<List<StudentDTO>,
     public List<StudentDTO> getStudentsHavingGroupId() throws ServiceException {
         
         try {
-        return studentDAO.readStudentsWithGroupId()
+        return studentDAO.readStudentsHavingGroupId()
         			     .stream()
         			     .map((studentEntity) -> new StudentDTO(studentEntity.getStudentId(), 
         			    		 								studentEntity.getGroupId(), 

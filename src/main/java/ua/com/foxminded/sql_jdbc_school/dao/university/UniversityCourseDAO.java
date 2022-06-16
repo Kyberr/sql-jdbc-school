@@ -8,11 +8,8 @@ import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import ua.com.foxminded.sql_jdbc_school.Main;
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
@@ -21,8 +18,8 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
 public class UniversityCourseDAO implements CourseDAO {
 	
-	private static final Logger LOGGER = LogManager.getLogger(Main.class);
-	private static final String QUERIES_FILE_NAME = "courseQueries.properties";
+	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String QUERIES_FILE_NAME = "course-queries.properties";
     private static final String SELECT_COURSE = "selectCourse";
     private static final String SELECT_ALL = "selectAll";
     private static final String INSERT = "insert";

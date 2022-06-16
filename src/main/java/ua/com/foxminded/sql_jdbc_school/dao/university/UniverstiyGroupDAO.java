@@ -21,7 +21,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 public class UniverstiyGroupDAO implements GroupDAO {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final String QUERIES_FILE_NAME = "groupQueries.properties";
+	private static final String QUERIES_FILE_NAME = "group-queries.properties";
 	private static final String SELECT_INCLUSIVE_LESS_STUDENTS = "selectInclusiveLessStudents";
 	private static final String SELECT_ALL = "selectAll";
     private static final String INSERT = "insert";

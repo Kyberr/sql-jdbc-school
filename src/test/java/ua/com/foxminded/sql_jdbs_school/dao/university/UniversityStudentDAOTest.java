@@ -31,7 +31,6 @@ import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentDAO;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityStudentDAOTest {
-	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-db.properties";
 	private static final String TEST_TABLES_SCRIPT_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-tables.sql";
 	private static final String TEST_DATA_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-data.sql";
@@ -74,9 +73,7 @@ class UniversityStudentDAOTest {
 			when(universityConnectionDaoFactory.createConnection()).thenReturn(con);
 			assertEquals(STUDENT_QUANTITY_HAVING_GROUP_ID, 
 					     universityStudentDao.getStudentsHavingGroupId().size());
-		} catch (Exception e) {
-			LOGGER.error("Error", e);
-		} finally {
+		}  finally {
 			con.close();
 			prStatement.close();
 		}

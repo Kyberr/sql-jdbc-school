@@ -14,8 +14,8 @@ import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionDAOFa
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentCourseDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniverstiyGroupDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniverstiyStudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGroupDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentDAO;
 import ua.com.foxminded.sql_jdbc_school.service.Course;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
@@ -47,8 +47,8 @@ public class Main {
         Generator generator = new Generator();
         ConnectionDAOFactory universityConnectionDAOFactory = new UniversityConnectionDAOFactory();
         CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory);
-        StudentDAO studentDAO = new UniverstiyStudentDAO(universityConnectionDAOFactory);
-        GroupDAO groupDAO = new UniverstiyGroupDAO(universityConnectionDAOFactory);
+        StudentDAO studentDAO = new UniversityStudentDAO(universityConnectionDAOFactory);
+        GroupDAO groupDAO = new UniversityGroupDAO(universityConnectionDAOFactory);
         StudentCourseDAO studentCourseDAO = new UniversityStudentCourseDAO(universityConnectionDAOFactory);
         DAO universityDAO = new UniversityDAO(universityConnectionDAOFactory);
         Table<Integer> tableService = new TableService(reader, parser, universityDAO);

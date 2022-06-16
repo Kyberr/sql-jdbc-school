@@ -18,7 +18,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
-public class UniverstiyStudentDAO implements StudentDAO {
+public class UniversityStudentDAO implements StudentDAO {
     
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String QUERIES_FILE_NAME = "student-queries.properties";
@@ -41,26 +41,27 @@ public class UniverstiyStudentDAO implements StudentDAO {
                                                                  + "group ID failed.";
     private final ConnectionDAOFactory universityConnectionDAOFactory;
     
-    public UniverstiyStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+    public UniversityStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
 		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
 	}
 
 	@Override
-    public List<StudentEntity> readStudentsHavingGroupId() throws DAOException {
+    public List<StudentEntity> getStudentsHavingGroupId() throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENTS_WITH_GROUP));
              ResultSet resultSet = statement.executeQuery();) {
             
-            List<StudentEntity> studentsHaveGroupId = new ArrayList<>();
+            List<StudentEntity> studentsHavingGroupId = new ArrayList<>();
             
             while (resultSet.next()) {
-                studentsHaveGroupId.add(new StudentEntity(resultSet.getInt(STUDENT_ID),
-                                                       resultSet.getInt(GROUP_ID),
-                                                       resultSet.getString(FIRST_NAME),
-                                                       resultSet.getString(LAST_NAME)));
+                studentsHavingGroupId.add(new StudentEntity(resultSet.getInt(STUDENT_ID),
+                                                            resultSet.getInt(GROUP_ID),
+                                                            resultSet.getString(FIRST_NAME),
+                                                            resultSet.getString(LAST_NAME)));
             }
-            return studentsHaveGroupId;
+            
+            return studentsHavingGroupId;
         } catch (DAOException | SQLException e) {
         	LOGGER.error(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);
             throw new DAOException(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);

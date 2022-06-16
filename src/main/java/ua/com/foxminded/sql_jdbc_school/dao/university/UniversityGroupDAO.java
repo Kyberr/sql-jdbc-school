@@ -18,7 +18,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 
-public class UniverstiyGroupDAO implements GroupDAO {
+public class UniversityGroupDAO implements GroupDAO {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String QUERIES_FILE_NAME = "group-queries.properties";
@@ -34,7 +34,7 @@ public class UniverstiyGroupDAO implements GroupDAO {
                                                              + "equal number of students is failed.";
     private final ConnectionDAOFactory universityConnectionDAOFactory;
     
-    public UniverstiyGroupDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+    public UniversityGroupDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
 		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
 	}
 

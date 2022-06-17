@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +17,7 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,7 +45,7 @@ class UniversityStudentDAOTest {
     @Mock
     ConnectionDAOFactory universityConnectionDaoFactory;
 	
-	@Test
+	@BeforeAll
 	static void init() throws SQLException, DAOException, IOException {
 		Connection con = null;
 		Statement statement = null;
@@ -94,4 +96,25 @@ class UniversityStudentDAOTest {
 			con.close();
 		}
 	}
+	/*
+	@Test
+	void getById() throws SQLException, IOException, DAOException {
+		Connection con = null;
+		
+		try {
+			FileInputStream testDbInput = new FileInputStream(TEST_DB_PROP_PATH);
+			Properties testDbProperties = new Properties();
+			testDbProperties.load(testDbInput);
+			con = DriverManager.getConnection(testDbProperties.getProperty(DB_URL),
+											  testDbProperties.getProperty(USER_NAME),
+											  testDbProperties.getProperty(USER_PASS));
+			when(universityConnectionDaoFactory.createConnection()).thenReturn(con);
+			assertEquals(STUDENT_QUANTITY_HAVING_GROUP_ID, 
+					     universityStudentDao.().size());
+		} finally {
+			con.close();
+		}
+		
+	}
+	*/
 }

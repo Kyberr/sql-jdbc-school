@@ -69,7 +69,7 @@ public class UniversityStudentDAO implements StudentDAO {
     }
     
     @Override
-    public StudentEntity read(int studentId) throws DAOException {
+    public StudentEntity getById(int studentId) throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENT));) {
@@ -93,7 +93,7 @@ public class UniversityStudentDAO implements StudentDAO {
     }
     
     @Override
-    public int delete(int studentId) throws DAOException {
+    public int deleteById(int studentId) throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(DELETE_STUDENT))) {

@@ -57,7 +57,7 @@ public class StudentService implements Student<List<StudentDTO>,
     @Override 
     public Integer deleteStudent(Integer studentId) throws ServiceException {
         try {
-            return studentDAO.delete(studentId);
+            return studentDAO.deleteById(studentId);
         } catch (DAOException e) {
         	LOGGER.error(ERROR_DELETE_STUDENT, e);
             throw new ServiceException(ERROR_DELETE_STUDENT, e);

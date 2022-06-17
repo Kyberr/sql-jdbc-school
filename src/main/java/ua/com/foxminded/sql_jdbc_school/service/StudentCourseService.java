@@ -84,7 +84,7 @@ public class StudentCourseService implements StudentCourse<List<StudentDTO>,
             if (studentCourseEntity != null) {
                 return BAD_STATUS;
             } else {
-                StudentEntity student = studentDAO.read(studentId);
+                StudentEntity student = studentDAO.getById(studentId);
                 CourseEntity course = courseDAO.read(courseId);
                 List<StudentCourseEntity> studentCourseEntityList = new ArrayList<>();
                 studentCourseEntityList.add(new StudentCourseEntity(student.getStudentId(), 

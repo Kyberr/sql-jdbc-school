@@ -1,5 +1,6 @@
 package ua.com.foxminded.sql_jdbc_school.service.impl;
 
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,20 +12,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentCourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
 
 public class StudentServiceImpl implements StudentService<List<StudentDto>,
-											   List<GroupDTO>, 
-                                               String, 
-                                               Integer> {
+											   			  List<GroupDto>, 
+											   			  String, 
+											   			  Integer, 
+											   			  List<CourseDto>> {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final int STUDENT_INDEX = 0;
@@ -49,25 +52,37 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 	}
     
     @Override
-    public List<StudentDto> assignStudentToCourse(List<StudentDto> studentsHaveGroupId, 
-                                                              List<CourseDTO> courses) 
-                                                            		  throws ServiceException {
+    public List<StudentDto> assignStudentToCourse(List<StudentDto> studentsHavingGroupId, 
+                                                  List<CourseDto> courses) throws ServiceException {
         
-    	List<StudentDto> studentCourseRelation = generateStudentCourseRelation(studentsHaveGroupId, courses);
-    	List<StudentCourseEntity> studentCourseEntities = studentCourseRelation.parallelStream()
-    			.map((dto) -> new StudentCourseEntity(dto.getStudentId(), 
-        											  dto.getGroupId(), 
-        											  dto.getFirstName(), 
-        											  dto.getLastName(), 
-        											  dto.getCourseId(), 
-        											  dto.getCourseName(), 
-        											  dto.getCourseDescription()))
-        		.collect(Collectors.toList());
-        
+    	List<StudentDto> studentsHavingCourseId = generateStudentCourseRelation(studentsHavingGroupId, 
+    																			courses);
+    	
         try {
-            studentCourseDAO.insert(studentCourseEntities);
-            return studentCourseRelation;
-        } catch (Exception e) {
+        	studentsHavingCourseId.stream().forEach((student) -> {
+        		
+        			try {
+						studentDAO
+						.addStudentToCourse(new StudentEntity(student.getStudentId(), 
+															  student.getGroupId(),
+															  student.getFirstName(),
+															  student.getLastName()), 
+											new CourseEntity(student.getCourseId(), 
+															 student.getCourseName(),
+															 student.getCourseDescription()));
+					} catch (DAOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						throw new UncheckedIOException(e);
+					}
+        		
+        	});
+        	
+            return studentsHavingCourseId;
+        } catch (DAOException e) {
+        	
+        	
+        	
         	LOGGER.error(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
             throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
         }
@@ -136,7 +151,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
     
     @Override
-    public List<StudentDto> assignGroup(List<GroupDTO> groups) throws ServiceException {
+    public List<StudentDto> assignGroup(List<GroupDto> groups) throws ServiceException {
         try {
             List<StudentEntity> studentEntities = studentDAO.getAll();
             List<Integer> groupSize = generator.getNumberOfStudentsInGroup(studentEntities.size(), 
@@ -185,7 +200,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
     
 	private List<StudentDto> generateStudentCourseRelation(List<StudentDto> studentsHaveGroupId,
-			List<CourseDTO> courses) {
+			List<CourseDto> courses) {
 		List<List<Integer>> studentCourseIndexRelation = generator
 				.getStudentCourseIndexRelation(studentsHaveGroupId.size(), courses.size());
 
@@ -200,5 +215,5 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 							courses.get(indexRelation.get(COURSE_INDEX)).getCourseDescription()))
 					.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 		}
-}
+	}
 }

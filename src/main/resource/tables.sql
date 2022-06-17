@@ -35,14 +35,14 @@ drop table if exists department.student_course;
 create table department.student_course 
 (
 student_id integer,
-group_id integer references department.groups(group_id) on delete set null,
-first_name varchar collate pg_catalog."default",
-last_name varchar collate pg_catalog."default",
+group_id integer,
+first_name varchar,
+last_name varchar,
 course_id integer references department.courses(course_id) on delete set null,
-course_name varchar collate pg_catalog."default",
-course_description varchar collate pg_catalog."default",
-foreign key (student_id) references department.students on delete cascade,
-foreign key (course_id) references department.courses on delete cascade,
+course_name varchar,
+course_description varchar,
+foreign key (student_id) references department.students(student_id) on delete cascade,
+foreign key (group_id) references department.groups(group_id) on delete set null,
 primary key (student_id, course_id)
 )
 tablespace pg_default;

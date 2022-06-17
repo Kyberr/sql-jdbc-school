@@ -16,11 +16,14 @@ import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
 public class UniversityStudentDAO implements StudentDAO {
     
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String ERROR_ADD_STUDENT_TO_COURSE = "The student has not been added to the course";
+	private static final String ADD_STUDENT_TO_COURSE = "addStudentToCourse";
 	private static final String QUERIES_FILE_NAME = "student-queries.properties";
 	private static final String SELECT_STUDENTS_WITH_GROUP = "selectStudentsWithGroup";
 	private static final String SELECT_STUDENT = "selectStudent";
@@ -44,6 +47,43 @@ public class UniversityStudentDAO implements StudentDAO {
     public UniversityStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
 		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
 	}
+    
+    @Override
+    public int addStudentToCourse(StudentEntity student, CourseEntity course) throws DAOException {
+    	try(Connection con = universityConnectionDAOFactory.createConnection();
+    	    PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
+    	    		.getInstance(QUERIES_FILE_NAME).getProperty(ADD_STUDENT_TO_COURSE))) {
+    		
+    		con.setAutoCommit(false);
+    		Savepoint save1 = con.setSavepoint();
+    		int status = 0;
+    		
+    		try {
+    			prStatement.setObject(1, student.getStudentId());
+    			prStatement.setObject(2, student.getGroupId());
+    			prStatement.setObject(3, student.getFirstName());
+    			prStatement.setObject(4, student.getLastName());
+    			prStatement.setObject(5, course.getCourseId());
+    			prStatement.setObject(6, course.getCourseName());
+    			prStatement.setObject(7, course.getCourseDescription());
+    			status = prStatement.executeUpdate();
+    			con.commit();
+    		} catch (SQLException ex) {
+    			if (con != null) {
+    				try {
+    					con.rollback(save1);
+    				} catch (SQLException exp) {
+    					throw new SQLException(exp);
+    				}
+    				throw new SQLException(ex);
+    			}
+    		}
+    		return status;
+    	} catch (DAOException | SQLException e) {
+    		LOGGER.error(ERROR_ADD_STUDENT_TO_COURSE, e);
+    		throw new DAOException(ERROR_ADD_STUDENT_TO_COURSE, e);
+    	}
+    }
 
 	@Override
     public List<StudentEntity> getStudentsHavingGroupId() throws DAOException {
@@ -113,9 +153,9 @@ public class UniversityStudentDAO implements StudentDAO {
             		.getInstance(QUERIES_FILE_NAME).getProperty(INSERT_STUDENTS));) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
-            
+            int status = 0;
             try {
-                int status = 0;
+                
                 
                 for (StudentEntity student : studentEntities) {
                     statement.setObject(1, student.getGroupId());
@@ -125,7 +165,6 @@ public class UniversityStudentDAO implements StudentDAO {
                 }
                 
                 con.commit();
-                return status;
             } catch (SQLException ex) {
                 if (con != null) {
                     try {
@@ -137,6 +176,8 @@ public class UniversityStudentDAO implements StudentDAO {
                 
                 throw new SQLException(ex);
             }
+            
+            return status;
         } catch (DAOException | SQLException e) {
         	LOGGER.error(ERROR_INSERT, e);
             throw new DAOException(ERROR_INSERT, e);
@@ -183,7 +224,6 @@ public class UniversityStudentDAO implements StudentDAO {
                 }
                 
                 con.commit();
-                return status;
             } catch (SQLException ex) {
                 if (con != null) {
                     try {
@@ -195,10 +235,11 @@ public class UniversityStudentDAO implements StudentDAO {
                 
                 throw new SQLException(ex);
             }
+            
+            return status;
         } catch (DAOException | SQLException e) {
         	LOGGER.error(ERROR_UDATE, e);
             throw new DAOException(ERROR_UDATE, e);
         }
     }
-
 }

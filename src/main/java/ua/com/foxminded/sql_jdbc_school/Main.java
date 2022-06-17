@@ -25,10 +25,10 @@ import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
 import ua.com.foxminded.sql_jdbc_school.service.StudentCourseService;
 import ua.com.foxminded.sql_jdbc_school.service.TableService;
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
 import ua.com.foxminded.sql_jdbc_school.service.impl.CourseServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.StudentCourseServiceImpl;
@@ -52,14 +52,14 @@ public class Main {
         StudentCourseDAO studentCourseDAO = new UniversityStudentCourseDAO(universityConnectionDAOFactory);
         DAO universityDAO = new UniversityDAO(universityConnectionDAOFactory);
         TableService<Integer> tableService = new TableServiceImpl(reader, parser, universityDAO);
-        StudentService<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService = 
+        StudentService<List<StudentDto>, List<GroupDto>, String, Integer> studentService = 
         		new StudentServiceImpl(reader, generator, studentDAO);
-        CourseService<List<CourseDTO>> courseService = new CourseServiceImpl(reader, courseDAO);
-        GroupService<List<GroupDTO>,Integer> groupService = new GroupServiceImpl(generator, groupDAO, studentDAO);
-        StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
+        CourseService<List<CourseDto>> courseService = new CourseServiceImpl(reader, courseDAO);
+        GroupService<List<GroupDto>,Integer> groupService = new GroupServiceImpl(generator, groupDAO, studentDAO);
+        StudentCourseService<List<StudentDto>, List<CourseDto>, List<StudentDto>, 
         			  Integer> studentCourseService = new StudentCourseServiceImpl(generator, studentCourseDAO, 
         					  											       studentDAO, courseDAO);
-        ServiceControllerView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+        ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 
                  Integer> menuView = new ConsoleServiceControllerView();
         ServiceController menu = new ServiceController(tableService, studentService, courseService, groupService, 
                              studentCourseService, menuView);

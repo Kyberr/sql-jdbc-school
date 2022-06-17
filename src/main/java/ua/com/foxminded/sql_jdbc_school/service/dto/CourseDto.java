@@ -2,12 +2,12 @@ package ua.com.foxminded.sql_jdbc_school.service.dto;
 
 import java.util.Objects;
 
-public class CourseDTO {
+public class CourseDto {
     private Integer courseId;
     private String courseName;
     private String courseDescription;
     
-    public CourseDTO(Integer courseId, String courseName, String courseDescription) {
+    public CourseDto(Integer courseId, String courseName, String courseDescription) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseDescription = courseDescription;
@@ -50,7 +50,7 @@ public class CourseDTO {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        CourseDTO other = (CourseDTO) obj;
+        CourseDto other = (CourseDto) obj;
         return Objects.equals(courseDescription, other.courseDescription) && Objects.equals(courseId, other.courseId)
                 && Objects.equals(courseName, other.courseName);
     }

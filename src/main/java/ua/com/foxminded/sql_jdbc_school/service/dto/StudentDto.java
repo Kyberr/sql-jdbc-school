@@ -2,7 +2,7 @@ package ua.com.foxminded.sql_jdbc_school.service.dto;
 
 import java.util.Objects;
 
-public class StudentCourseDTO {
+public class StudentDto {
     Integer studentId;
     Integer groupId;
     String firstName;
@@ -11,7 +11,7 @@ public class StudentCourseDTO {
     String courseName;
     String courseDescription;
     
-    public StudentCourseDTO(Integer studentId, Integer groupId, String firstName, String lastName, Integer courseId,
+    public StudentDto(Integer studentId, Integer groupId, String firstName, String lastName, Integer courseId,
             String courseName, String courseDescription) {
         this.studentId = studentId;
         this.groupId = groupId;
@@ -22,14 +22,19 @@ public class StudentCourseDTO {
         this.courseDescription = courseDescription;
     }
     
-    public StudentCourseDTO(Integer studentId, Integer groupId, String firstName, String lastName) {
+    public StudentDto(Integer studentId, Integer groupId, String firstName, String lastName) {
         this.studentId = studentId;
         this.groupId = groupId;
         this.firstName = firstName;
         this.lastName = lastName;
     }
+    
+    public StudentDto(String firstName, String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 
-    public Integer getStudentId() {
+	public Integer getStudentId() {
         return studentId;
     }
 
@@ -98,7 +103,7 @@ public class StudentCourseDTO {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        StudentCourseDTO other = (StudentCourseDTO) obj;
+        StudentDto other = (StudentDto) obj;
         return Objects.equals(courseDescription, other.courseDescription) && Objects.equals(courseName, other.courseName)
                 && Objects.equals(courseId, other.courseId) && Objects.equals(lastName, other.lastName) 
                 && Objects.equals(firstName, other.firstName) && Objects.equals(groupId, other.groupId) 

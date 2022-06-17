@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
 
 public class Generator {
     
@@ -100,8 +100,8 @@ public class Generator {
         return result;
     }
 
-    public List<StudentDTO> getStudentData(List<String> firstNames, List<String> lastNames) {
-        return Stream.generate(() -> new StudentDTO(firstNames.get(new Random().nextInt(firstNames.size())),
+    public List<StudentDto> getStudentData(List<String> firstNames, List<String> lastNames) {
+        return Stream.generate(() -> new StudentDto(firstNames.get(new Random().nextInt(firstNames.size())),
                                                     lastNames.get(new Random().nextInt(lastNames.size()))))
                      .limit(200).collect(Collectors.toList());
     }

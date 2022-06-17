@@ -47,22 +47,6 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
 		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
 	}
 
-	@Override
-    public int deleteStudentFromCourse(int studentId, int courseId) throws DAOException {
-        try (Connection con = universityConnectionDAOFactory.createConnection();
-             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILENAME)
-            		 .getProperty(DELETE_STUDENT_FROM_COURSE))) {
-
-            statement.setInt(1, studentId);
-            statement.setInt(2, courseId);
-            return statement.executeUpdate();
-        } catch (DAOException | SQLException e) {
-        	LOGGER.error(ERROR_DELETE_STUDENT_FROM_COURSE, e);
-            throw new DAOException(ERROR_DELETE_STUDENT_FROM_COURSE, e);
-        }
-    }
-    
     @Override
     public List<StudentCourseEntity> getAll() throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();

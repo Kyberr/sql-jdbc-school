@@ -2,18 +2,18 @@ package ua.com.foxminded.sql_jdbc_school.service.dto;
 
 import java.util.Objects;
 
-public class GroupDTO {
+public class GroupDto {
 	private Integer groupId;
     private String groupName;
     private Integer studentQuantity;
 	
-    public GroupDTO(Integer groupId, String groupName, Integer studentQuantity) {
+    public GroupDto(Integer groupId, String groupName, Integer studentQuantity) {
 		this.groupId = groupId;
 		this.groupName = groupName;
 		this.studentQuantity = studentQuantity;
 	}
 
-	public GroupDTO(Integer groupId, String groupName) {
+	public GroupDto(Integer groupId, String groupName) {
 		this.groupId = groupId;
 		this.groupName = groupName;
 	}
@@ -55,7 +55,7 @@ public class GroupDTO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		GroupDTO other = (GroupDTO) obj;
+		GroupDto other = (GroupDto) obj;
 		return Objects.equals(groupId, other.groupId) && Objects.equals(groupName, other.groupName)
 				&& Objects.equals(studentQuantity, other.studentQuantity);
 	}

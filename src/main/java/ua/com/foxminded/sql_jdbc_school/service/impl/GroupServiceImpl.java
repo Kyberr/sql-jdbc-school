@@ -13,9 +13,9 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
+import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
 
-public class GroupServiceImpl implements GroupService<List<GroupDTO>, Integer> {
+public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
 	private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "
@@ -31,17 +31,17 @@ public class GroupServiceImpl implements GroupService<List<GroupDTO>, Integer> {
     }
     
     @Override
-    public List<GroupDTO> findGroupsWithLessOrEqualStudents(Integer studentQuantity) 
+    public List<GroupDto> findGroupsWithLessOrEqualStudents(Integer studentQuantity) 
             throws ServiceException {
         try {
             List<GroupEntity> groups = groupDAO.readGroupsWithLessOrEqualStudents(studentQuantity);
             List<StudentEntity> students = studentDAO.getAll();
-            List<GroupDTO> groupDTO = new ArrayList<>();
+            List<GroupDto> groupDTO = new ArrayList<>();
             groups.stream().forEach((group) -> {
             	long studentsInGroup = students.stream()
             			.filter((student) -> student.getGroupId() == group.getGroupId())
             			.count();
-            	groupDTO.add(new GroupDTO(group.getGroupId(), 
+            	groupDTO.add(new GroupDto(group.getGroupId(), 
             						      group.getGroupName(), 
             						      (int) studentsInGroup));
             });
@@ -53,7 +53,7 @@ public class GroupServiceImpl implements GroupService<List<GroupDTO>, Integer> {
     }
     
     @Override
-    public List<GroupDTO> createGroups() throws ServiceException {
+    public List<GroupDto> createGroups() throws ServiceException {
         try {
             List<String> groupNames = generator.getGroupName();
             List<GroupEntity> groupEntities = groupNames.stream()
@@ -62,7 +62,7 @@ public class GroupServiceImpl implements GroupService<List<GroupDTO>, Integer> {
             groupDAO.insert(groupEntities);
             return groupDAO.getAll()
             			   .stream()
-            			   .map((groupEntity) -> new GroupDTO(groupEntity.getGroupId(), 
+            			   .map((groupEntity) -> new GroupDto(groupEntity.getGroupId(), 
             					   							  groupEntity.getGroupName()))
             			   .collect(Collectors.toList());
         } catch (DAOException e) {

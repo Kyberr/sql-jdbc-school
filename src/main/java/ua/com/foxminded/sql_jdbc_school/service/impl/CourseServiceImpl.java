@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.service;
+package ua.com.foxminded.sql_jdbc_school.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,9 +7,12 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.service.CourseUniversity;
+import ua.com.foxminded.sql_jdbc_school.service.Reader;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 
-public class CourseService implements Course<List<CourseDTO>> {
+public class CourseServiceImpl implements CourseUniversity<List<CourseDTO>> {
 	private static final Logger LOGGER = LogManager.getLogger();
     private static final String COURSE_NAME_LIST_FILENAME = "courseNameList.txt";
     private static final String ERROR_CREATE_COURSES = "The courses creation service doesn't work.";
@@ -17,7 +20,7 @@ public class CourseService implements Course<List<CourseDTO>> {
     private final Reader reader;
     private final CourseDAO courseDAO;
     
-    public CourseService(Reader reader, CourseDAO courseDAO) {
+    public CourseServiceImpl(Reader reader, CourseDAO courseDAO) {
         this.reader = reader;
         this.courseDAO = courseDAO;
     }

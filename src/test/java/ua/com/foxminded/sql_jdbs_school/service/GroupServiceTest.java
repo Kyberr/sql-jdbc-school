@@ -19,8 +19,8 @@ import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
-import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
+import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class GroupServiceTest {
@@ -31,7 +31,7 @@ class GroupServiceTest {
 	private static final Integer STUDENTS_WITH_GROUP_ID = 2;
 	
 	@InjectMocks
-	GroupService groupService;
+	GroupServiceImpl groupService;
 	
 	@Mock
 	GroupDAO groupDaoMock;

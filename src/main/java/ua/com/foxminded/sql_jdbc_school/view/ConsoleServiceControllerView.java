@@ -10,7 +10,7 @@ import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
 
-public class ConsoleMenuView implements MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
+public class ConsoleServiceControllerView implements ServiceControllerView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
                                                  List<StudentDTO>, Integer> {
     
     private static final String START_MESSAGE_FORMAT = "%85s";

@@ -16,10 +16,10 @@ import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentDAO;
-import ua.com.foxminded.sql_jdbc_school.service.CourseUniversity;
+import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
-import ua.com.foxminded.sql_jdbc_school.service.GroupUniversity;
-import ua.com.foxminded.sql_jdbc_school.service.Menu;
+import ua.com.foxminded.sql_jdbc_school.service.GroupService;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceController;
 import ua.com.foxminded.sql_jdbc_school.service.Parser;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
@@ -34,8 +34,8 @@ import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.StudentCourseServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.StudentServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.TableServiceImpl;
-import ua.com.foxminded.sql_jdbc_school.view.ConsoleMenuView;
-import ua.com.foxminded.sql_jdbc_school.view.MenuView;
+import ua.com.foxminded.sql_jdbc_school.view.ConsoleServiceControllerView;
+import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
 
 public class Main {
@@ -54,14 +54,14 @@ public class Main {
         TableService<Integer> tableService = new TableServiceImpl(reader, parser, universityDAO);
         StudentService<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService = 
         		new StudentServiceImpl(reader, generator, studentDAO);
-        CourseUniversity<List<CourseDTO>> courseService = new CourseServiceImpl(reader, courseDAO);
-        GroupUniversity<List<GroupDTO>,Integer> groupService = new GroupServiceImpl(generator, groupDAO, studentDAO);
+        CourseService<List<CourseDTO>> courseService = new CourseServiceImpl(reader, courseDAO);
+        GroupService<List<GroupDTO>,Integer> groupService = new GroupServiceImpl(generator, groupDAO, studentDAO);
         StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
         			  Integer> studentCourseService = new StudentCourseServiceImpl(generator, studentCourseDAO, 
         					  											       studentDAO, courseDAO);
-        MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
-                 Integer> menuView = new ConsoleMenuView();
-        Menu menu = new Menu(tableService, studentService, courseService, groupService, 
+        ServiceControllerView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+                 Integer> menuView = new ConsoleServiceControllerView();
+        ServiceController menu = new ServiceController(tableService, studentService, courseService, groupService, 
                              studentCourseService, menuView);
         
         try {

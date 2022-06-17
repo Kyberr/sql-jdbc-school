@@ -1,6 +1,6 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface MenuView<T, E, S, F, M> {
+public interface ServiceControllerView<T, E, S, F, M> {
     
     public void deleteAnotherStudentFromCourse();
     public void failureStudentFromCourseDeleting();

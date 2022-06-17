@@ -11,11 +11,11 @@ import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
-import ua.com.foxminded.sql_jdbc_school.service.GroupUniversity;
+import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 
-public class GroupServiceImpl implements GroupUniversity<List<GroupDTO>, Integer> {
+public class GroupServiceImpl implements GroupService<List<GroupDTO>, Integer> {
 	private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "

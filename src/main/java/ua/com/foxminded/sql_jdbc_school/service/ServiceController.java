@@ -11,9 +11,9 @@ import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentCourseDTO;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDTO;
-import ua.com.foxminded.sql_jdbc_school.view.MenuView;
+import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
-public class Menu {
+public class ServiceController {
 	private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
     private static final String ERROR_EXECUTE = "The menu execution is failed.";
@@ -28,19 +28,19 @@ public class Menu {
    
     private TableService<Integer> tableService;
     private StudentService<List<StudentDTO>, List<GroupDTO>, String, Integer> studentService;
-    private CourseUniversity<List<CourseDTO>> courseService;
-    private GroupUniversity<List<GroupDTO>, Integer> groupService;
+    private CourseService<List<CourseDTO>> courseService;
+    private GroupService<List<GroupDTO>, Integer> groupService;
     private StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>,
                                  Integer> studentCourseService;
-    private MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+    private ServiceControllerView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                      Integer> menuView;
-    public Menu(TableService<Integer> tableService, StudentService<List<StudentDTO>, List<GroupDTO>, 
+    public ServiceController(TableService<Integer> tableService, StudentService<List<StudentDTO>, List<GroupDTO>, 
                 String, Integer> studentService,
-                CourseUniversity<List<CourseDTO>> courseService, GroupUniversity<List<GroupDTO>, 
+                CourseService<List<CourseDTO>> courseService, GroupService<List<GroupDTO>, 
                        Integer> groupService,
                 StudentCourseService<List<StudentDTO>, List<CourseDTO>, List<StudentCourseDTO>, 
                               Integer> studentCourseService,
-                MenuView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
+                ServiceControllerView<List<GroupDTO>, List<CourseDTO>, List<StudentCourseDTO>, List<StudentDTO>, 
                          Integer> menuView) {
         this.tableService = tableService;
         this.studentService = studentService;

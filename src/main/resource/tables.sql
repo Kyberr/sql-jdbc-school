@@ -1,3 +1,4 @@
+-- create database university owner university
 drop schema if exists department cascade;
 create schema department authorization university;
 

@@ -15,7 +15,7 @@ import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 public class ServiceController {
 	private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
-    private static final String ERROR_EXECUTE = "The menu execution is failed.";
+    private static final String ERROR_EXECUTE = "The ServiceController execution is failed.";
     private static final String WORD_EXIT = "exit";
     private static final String EMPTY_STRING = "";
     private static final String WORD_NO = "no";

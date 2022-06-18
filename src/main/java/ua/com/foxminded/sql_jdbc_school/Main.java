@@ -16,7 +16,6 @@ import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceController;
-import ua.com.foxminded.sql_jdbc_school.service.Parser;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
@@ -34,7 +33,6 @@ public class Main {
 
     public static void main(String[] args) {
         Reader reader = new Reader();
-        Parser parser = new Parser();
         Generator generator = new Generator();
         ConnectionDAOFactory universityConnectionDAOFactory = new UniversityConnectionDAOFactory();
         CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory);
@@ -46,12 +44,12 @@ public class Main {
         GroupService<List<GroupDto>,Integer> groupService = new GroupServiceImpl(generator, groupDAO, studentDAO);
         ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 
                  			  Integer> serviceControllerView = new ConsoleServiceControllerView();
-        ServiceController menu = new ServiceController(studentService, courseService, groupService, 
-        											   serviceControllerView);
+        ServiceController serviceController = new ServiceController(studentService, courseService, groupService, 
+        											   				serviceControllerView);
         
         try {
-            menu.bootstrap();
-            menu.execute();
+            serviceController.bootstrap();
+            serviceController.execute();
         } catch (Exception e) {
             LOGGER.error("Error", e);
         }

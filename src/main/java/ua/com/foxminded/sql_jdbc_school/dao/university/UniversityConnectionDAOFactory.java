@@ -13,9 +13,9 @@ public class UniversityConnectionDAOFactory implements ConnectionDAOFactory {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String PROPERTIES_FILE_NAME = "db.properties";
-    private static final String DB_URL = "UniversityDatabaseURL";
-    private static final String USER_NAME = "UniversityUser";
-    private static final String USER_PASS = "UniversityPassword";
+    private static final String DB_URL = "universityDatabaseURL";
+    private static final String USER_NAME = "universityUser";
+    private static final String USER_PASS = "universityPassword";
     private static final String ERROR_CONNECT = "The database connection is failure."; 
     
     public Connection createConnection() throws DAOException {

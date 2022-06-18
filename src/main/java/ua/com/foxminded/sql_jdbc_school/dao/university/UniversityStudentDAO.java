@@ -22,9 +22,13 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 public class UniversityStudentDAO implements StudentDAO {
     
 	private static final Logger LOGGER = LogManager.getLogger();
+	
+	private static final String ERROR_GET_STUDENTS_HAVING_COURSE = "Receiving students have been added "
+																 + "to courses is failed.";
+	private static final String GET_STUDENTS_HAVING_COURSE = "getStudentsHavingCouse";
 	private static final String ERROR_ADD_STUDENT_TO_COURSE = "The student has not been added to the course";
 	private static final String ADD_STUDENT_TO_COURSE = "addStudentToCourse";
-	private static final String QUERIES_FILE_NAME = "student-queries.properties";
+	private static final String SQL_QUERIES_FILENAME = "student-queries.properties";
 	private static final String SELECT_STUDENTS_WITH_GROUP = "selectStudentsWithGroup";
 	private static final String SELECT_STUDENT = "selectStudent";
 	private static final String DELETE_STUDENT = "deleteStudent";
@@ -49,10 +53,34 @@ public class UniversityStudentDAO implements StudentDAO {
 	}
     
     @Override
+    public List<StudentEntity> getStudentsHavingCouse() throws DAOException {
+        try (Connection con = universityConnectionDAOFactory.createConnection();
+             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
+            		 .getInstance(SQL_QUERIES_FILENAME)
+            		 .getProperty(GET_STUDENTS_HAVING_COURSE));
+             ResultSet resultSet = statement.executeQuery();) {
+            
+            List<StudentEntity> studentsHavingCourse = new ArrayList<>();
+            
+            while (resultSet.next()) {
+                studentsHavingCourse.add(new StudentEntity((Integer) resultSet.getObject(STUDENT_ID),
+                                                           (Integer) resultSet.getObject(GROUP_ID),
+                                                           resultSet.getString(FIRST_NAME),
+                                                           resultSet.getString(LAST_NAME)));
+            }
+            
+            return studentsHavingCourse;
+        } catch (DAOException | SQLException e) {
+        	LOGGER.error(ERROR_GET_STUDENTS_HAVING_COURSE, e);
+            throw new DAOException(ERROR_GET_STUDENTS_HAVING_COURSE, e);
+        }
+    }
+    
+    @Override
     public int addStudentToCourse(StudentEntity student, CourseEntity course) throws DAOException {
     	try(Connection con = universityConnectionDAOFactory.createConnection();
     	    PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
-    	    		.getInstance(QUERIES_FILE_NAME).getProperty(ADD_STUDENT_TO_COURSE))) {
+    	    		.getInstance(SQL_QUERIES_FILENAME).getProperty(ADD_STUDENT_TO_COURSE))) {
     		
     		con.setAutoCommit(false);
     		Savepoint save1 = con.setSavepoint();
@@ -89,7 +117,7 @@ public class UniversityStudentDAO implements StudentDAO {
     public List<StudentEntity> getStudentsHavingGroupId() throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENTS_WITH_GROUP));
+            		 .getInstance(SQL_QUERIES_FILENAME).getProperty(SELECT_STUDENTS_WITH_GROUP));
              ResultSet resultSet = statement.executeQuery();) {
             
             List<StudentEntity> studentsHavingGroupId = new ArrayList<>();
@@ -112,7 +140,7 @@ public class UniversityStudentDAO implements StudentDAO {
     public StudentEntity getById(int studentId) throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_STUDENT));) {
+            		 .getInstance(SQL_QUERIES_FILENAME).getProperty(SELECT_STUDENT));) {
 
             StudentEntity student = null;
             statement.setInt(1, studentId);
@@ -136,7 +164,7 @@ public class UniversityStudentDAO implements StudentDAO {
     public int deleteById(int studentId) throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME).getProperty(DELETE_STUDENT))) {
+            		 .getInstance(SQL_QUERIES_FILENAME).getProperty(DELETE_STUDENT))) {
             
             statement.setInt(1, studentId);
             return statement.executeUpdate();
@@ -150,7 +178,7 @@ public class UniversityStudentDAO implements StudentDAO {
     public Integer insert(List<StudentEntity> studentEntities) throws DAOException {
         try(Connection con = universityConnectionDAOFactory.createConnection();
             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		.getInstance(QUERIES_FILE_NAME).getProperty(INSERT_STUDENTS));) {
+            		.getInstance(SQL_QUERIES_FILENAME).getProperty(INSERT_STUDENTS));) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
             int status = 0;
@@ -189,7 +217,7 @@ public class UniversityStudentDAO implements StudentDAO {
         try(Connection con = universityConnectionDAOFactory.createConnection();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
-            		.getInstance(QUERIES_FILE_NAME).getProperty(SELECT_ALL));) {
+            		.getInstance(SQL_QUERIES_FILENAME).getProperty(SELECT_ALL));) {
             List<StudentEntity> students = new ArrayList<>();
             
             while(resultSet.next()) {
@@ -209,7 +237,7 @@ public class UniversityStudentDAO implements StudentDAO {
     public int update(List<StudentEntity> students) throws DAOException {
         try(Connection con = universityConnectionDAOFactory.createConnection();
             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		.getInstance(QUERIES_FILE_NAME).getProperty(UPDATE))) {
+            		.getInstance(SQL_QUERIES_FILENAME).getProperty(UPDATE))) {
             con.setAutoCommit(false);
             Savepoint save1 = con.setSavepoint();
             int status = 0;

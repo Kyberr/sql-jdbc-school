@@ -3,7 +3,6 @@ package ua.com.foxminded.sql_jdbc_school.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
@@ -13,11 +12,9 @@ import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentCourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
-import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.StudentCourseService;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
 
 public class StudentCourseServiceImpl implements StudentCourseService<List<StudentDto>, 
@@ -26,7 +23,6 @@ public class StudentCourseServiceImpl implements StudentCourseService<List<Stude
                                                            Integer> {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
-    private static final String ERROR_GET_ALL = "Getting all of the students from the database failed.";
     private static final String ERROR_GET_STUDENTS_OF_COURSE = "The getting students of specified course failed.";
     private static final String ERROR_ADD_STUDENT = "Adding the student to the course failed.";
     private static final int BAD_STATUS = 0;
@@ -43,25 +39,6 @@ public class StudentCourseServiceImpl implements StudentCourseService<List<Stude
 	}
     
     @Override 
-    public List<StudentDto> getAllStudentCourse() throws ServiceException {
-        try {
-            return studentCourseDAO.getAll()
-            					   .parallelStream()
-            					   .map((entity) -> new StudentDto(entity.getStudentId(), 
-            													         entity.getGroupId(), 
-            													         entity.getFirstName(), 
-            													         entity.getLastName(), 
-            													         entity.getCourseId(), 
-            													         entity.getCourseName(), 
-            													         entity.getCourseDescription()))
-            					   .collect(Collectors.toList());
-        } catch (Exception e) {
-        	LOGGER.error(ERROR_GET_ALL, e);
-            throw new ServiceException(ERROR_GET_ALL, e);
-        }
-    }
-    
-    @Override 
     public Integer addStudentToCourse(Integer studentId, Integer courseId) 
             throws ServiceException {
         try {
@@ -71,7 +48,7 @@ public class StudentCourseServiceImpl implements StudentCourseService<List<Stude
                 return BAD_STATUS;
             } else {
                 StudentEntity student = studentDAO.getById(studentId);
-                CourseEntity course = courseDAO.read(courseId);
+                CourseEntity course = courseDAO.getCourseById(courseId);
                 List<StudentCourseEntity> studentCourseEntityList = new ArrayList<>();
                 studentCourseEntityList.add(new StudentCourseEntity(student.getStudentId(), 
                                                                     student.getGroupId(), 

@@ -19,6 +19,8 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 public class UniversityCourseDAO implements CourseDAO {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String ERROR_GET_COURSES_OF_STUDENT = "Get courses of a student is failed.";
+	private static final String GET_COURSES_OF_STUDENT = "getCoursesOfStudentById";
 	private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "Getting all the student course "
 			 													 + "relations from the database failed.";
 	private static final String DELETE_STUDENT_FROM_COURSE = "deleteStudentFromCourse";
@@ -29,6 +31,7 @@ public class UniversityCourseDAO implements CourseDAO {
     private static final String COURSE_ID = "course_id";
     private static final String COURSE_NAME = "course_name";
     private static final String COURSE_DESC = "course_description";
+    private static final String ERROR_RESULTSET = "ResultSet is not closed.";
     private static final String ERROR_GET_COURSE = "The getting of the course from the database is failed.";
     private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
@@ -38,6 +41,40 @@ public class UniversityCourseDAO implements CourseDAO {
     public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
 		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
 	}
+    
+    @Override
+    public List<CourseEntity> getCoursesOfStudentById(int studentId) throws DAOException {
+    	ResultSet resultSet = null;
+    	
+    	try (Connection con = universityConnectionDAOFactory.createConnection();
+    		 PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
+    				 .getInstance(QUERIES_FILENAME)
+					 .getProperty(GET_COURSES_OF_STUDENT));	) {
+    		
+    		List<CourseEntity> coursesOfstudent = new ArrayList<>();
+    		prStatement.setInt(1, studentId);
+    		resultSet = prStatement.executeQuery();
+    		
+    		while(resultSet.next()) {
+    			coursesOfstudent.add(new CourseEntity(resultSet.getInt(COURSE_ID),
+    												  resultSet.getString(COURSE_NAME),
+    												  resultSet.getString(COURSE_DESC)));
+    		}
+    		
+    		return coursesOfstudent;
+    	} catch (DAOException | SQLException e) {
+    		LOGGER.error(ERROR_GET_COURSES_OF_STUDENT, e);
+    		throw new DAOException(ERROR_GET_COURSES_OF_STUDENT, e);
+    	} finally {
+    		try {
+    			if (resultSet != null) {
+    				resultSet.close();
+    			}
+    		} catch (SQLException e) {
+    			LOGGER.error(ERROR_RESULTSET, e);
+    		}
+    	}
+    }
     
     @Override
     public int deleteStudentFromCourse(int studentId, int courseId) throws DAOException {
@@ -56,25 +93,35 @@ public class UniversityCourseDAO implements CourseDAO {
     }
 
 	@Override
-    public CourseEntity read(int courseId) throws DAOException {
-        try (Connection con = universityConnectionDAOFactory.createConnection();
+    public CourseEntity getCourseById(int courseId) throws DAOException {
+		ResultSet resultSet = null;
+		
+		try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILENAME).getProperty(SELECT_COURSE));) {
             
             CourseEntity course = null;
             statement.setInt(1, courseId);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
                 course = new CourseEntity(resultSet.getInt(COURSE_ID), 
                                           resultSet.getString(COURSE_NAME),
                                           resultSet.getString(COURSE_DESC));
             }
-            resultSet.close();
+            
             return course;
         } catch (DAOException | SQLException e) {
         	LOGGER.error(ERROR_GET_COURSE, e);
             throw new DAOException(ERROR_GET_COURSE, e);
+        } finally {
+        	try {
+    			if (resultSet != null) {
+    				resultSet.close();
+    			}
+    		} catch (SQLException e) {
+    			LOGGER.error(ERROR_RESULTSET, e);
+    		}
         }
     }
     

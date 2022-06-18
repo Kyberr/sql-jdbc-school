@@ -21,14 +21,11 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String QUERIES_FILENAME = "studentCourse-queries.properties";
-    private static final String DELETE_STUDENT_FROM_COURSE = "deleteStudentFromCourse";
     private static final String SELECT_ALL = "selectAll";
     private static final String SELECT_ENTITY = "selectEntity";
     private static final String SELECT_STUDENTS_OF_COURSE = "selectStudentsOfCourse";
     private static final String INSERT = "insert";
     private static final String ERROR_READ_ALL = "Deleting the student from the course is failed.";
-    private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "Getting all the student course "
-    															 + "relations from the database failed.";
     private static final String ERROR_READ = "Receiving the student-course "
                                            + "relation is failed.";
     private static final String ERROR_CREATE = "The student course hasn't been inserted.";
@@ -46,32 +43,7 @@ public class UniversityStudentCourseDAO implements StudentCourseDAO {
     public UniversityStudentCourseDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
 		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
 	}
-
-    @Override
-    public List<StudentCourseEntity> getAll() throws DAOException {
-        try (Connection con = universityConnectionDAOFactory.createConnection();
-             PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILENAME)
-            		 .getProperty(SELECT_ALL));
-             ResultSet resultSet = statement.executeQuery();) {
-            
-            List<StudentCourseEntity> studentCourse = new ArrayList<>();
-            
-            while (resultSet.next()) {
-                studentCourse.add(new StudentCourseEntity((Integer) resultSet.getObject(STUDENT_ID),
-                                                          (Integer) resultSet.getObject(GROUP_ID),
-                                                          resultSet.getString(FIRST_NAME),
-                                                          resultSet.getString(LAST_NAME),
-                                                          (Integer) resultSet.getObject(COURSE_ID),
-                                                          resultSet.getString(COURSE_NAME),
-                                                          resultSet.getString(COURSE_DESC)));
-            }
-            return studentCourse;
-        } catch (DAOException | SQLException e) {
-        	LOGGER.error(ERROR_READ_ALL, e);
-            throw new DAOException(ERROR_READ_ALL, e);
-        }
-    }
+    
     @Override
     public StudentCourseEntity read(int studentId, int courseId) throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();

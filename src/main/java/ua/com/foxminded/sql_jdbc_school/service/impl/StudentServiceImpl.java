@@ -1,6 +1,5 @@
 package ua.com.foxminded.sql_jdbc_school.service.impl;
 
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -10,10 +9,11 @@ import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentCourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
@@ -30,6 +30,10 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 											   			  List<CourseDto>> {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String ERROR_GET_COURSES_OF_STUDENT = "Getting courses of the student "
+															 + "from the database is failed.";
+	private static final String ERROR_GET_ALL = "Getting all of the students from the database is failed.";
+	private static final String ERROR_ADD_STUDENT_TO_COURSE = "The studen has not been added to the course.";
 	private static final int STUDENT_INDEX = 0;
     private static final int COURSE_INDEX = 1;
 	private static final String ERROR_CREATE_STUDENT_COURSE_RELATION = "The relation creation failed.";
@@ -44,12 +48,46 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     private final Reader reader;
     private final Generator generator;
     private final StudentDAO studentDAO;
+    private final CourseDAO courseDAO;
     
-    public StudentServiceImpl(Reader reader, Generator generator, StudentDAO studentDAO) {
+    public StudentServiceImpl(Reader reader, Generator generator, StudentDAO studentDAO, CourseDAO courseDAO) {
 		this.reader = reader;
 		this.generator = generator;
 		this.studentDAO = studentDAO;
+		this.courseDAO = courseDAO;
 	}
+    
+    @Override 
+    public List<StudentDto> getAllStudentsHavingCourse() throws ServiceException {
+    	List<StudentDto> studentCourseRelation = new ArrayList<>();
+    	
+    	try {
+        	List<StudentEntity> studentsHavingCourse = studentDAO.getStudentsHavingCouse();
+        	
+        	studentsHavingCourse.stream().forEach((student) -> {
+        		
+        		try {
+        			courseDAO.getCoursesOfStudentById(student.getStudentId()).stream()
+   				    		.forEach((course) -> studentCourseRelation.add(new StudentDto(
+   				    				student.getStudentId(),
+   				    				student.getGroupId(),
+   				    				student.getFirstName(),
+   				    				student.getLastName(),
+   				    				course.getCourseId(),
+   				    				course.getCourseName(),
+   				    				course.getCourseDescription())));
+        		} catch (DAOException e) {
+        			LOGGER.error(ERROR_GET_COURSES_OF_STUDENT, e);
+        			throw new RuntimeException(ERROR_GET_COURSES_OF_STUDENT, e);
+        		}
+        	});
+        	
+        	return studentCourseRelation;
+        } catch (DAOException e) {
+        	LOGGER.error(ERROR_GET_ALL, e);
+            throw new ServiceException(ERROR_GET_ALL, e);
+        }
+    }
     
     @Override
     public List<StudentDto> assignStudentToCourse(List<StudentDto> studentsHavingGroupId, 
@@ -60,29 +98,22 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     	
         try {
         	studentsHavingCourseId.stream().forEach((student) -> {
-        		
         			try {
-						studentDAO
-						.addStudentToCourse(new StudentEntity(student.getStudentId(), 
-															  student.getGroupId(),
-															  student.getFirstName(),
-															  student.getLastName()), 
-											new CourseEntity(student.getCourseId(), 
-															 student.getCourseName(),
-															 student.getCourseDescription()));
+						studentDAO.addStudentToCourse(new StudentEntity(student.getStudentId(), 
+															  			student.getGroupId(),
+															  			student.getFirstName(),
+															  			student.getLastName()), 
+											          new CourseEntity(student.getCourseId(), 
+											        		  		   student.getCourseName(),
+											        		  		   student.getCourseDescription()));
 					} catch (DAOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						throw new UncheckedIOException(e);
+						LOGGER.error(ERROR_ADD_STUDENT_TO_COURSE, e);
+						throw new RuntimeException(ERROR_ADD_STUDENT_TO_COURSE, e);
 					}
-        		
         	});
         	
             return studentsHavingCourseId;
-        } catch (DAOException e) {
-        	
-        	
-        	
+        } catch (RuntimeException e) {
         	LOGGER.error(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
             throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
         }

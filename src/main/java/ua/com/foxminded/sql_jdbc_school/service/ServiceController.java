@@ -103,7 +103,7 @@ public class ServiceController {
     
     private void removeStudentFromCourse(Scanner scanner) throws ServiceException {
         for (;;) {
-            List<StudentDto> studnetCourse = studentCourseService.getAllStudentCourse();
+            List<StudentDto> studnetCourse = studentCourseService.getAllStudentsHavingCourse();
             menuView.showStudentCourse(studnetCourse);
             menuView.deleteStudentIdFromCourse();
             int studentId = scanOnlyIntInput(scanner);

@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
 import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
 public class ServiceController {
@@ -26,28 +25,21 @@ public class ServiceController {
     private static final int NUMBER_OF_ITEMS = 6;
     private static final int NORMAL_STATUS_OF_ADDING = 1;
    
-    private TableService<Integer> tableService;
-    private StudentService<List<StudentDto>, List<GroupDto>, String, Integer> studentService;
+    private StudentService<List<StudentDto>, List<GroupDto>, String, Integer, List<CourseDto>> studentService;
     private CourseService<List<CourseDto>, Integer> courseService;
     private GroupService<List<GroupDto>, Integer> groupService;
-    private StudentCourseService<List<StudentDto>, List<CourseDto>, List<StudentDto>,
-                                 Integer> studentCourseService;
     private ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 
-                     Integer> menuView;
-    public ServiceController(TableService<Integer> tableService, StudentService<List<StudentDto>, List<GroupDto>, 
-                String, Integer> studentService,
-                CourseService<List<CourseDto>, Integer> courseService, GroupService<List<GroupDto>, 
-                       Integer> groupService,
-                StudentCourseService<List<StudentDto>, List<CourseDto>, List<StudentDto>, 
-                              Integer> studentCourseService,
-                ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 
-                         Integer> menuView) {
-        this.tableService = tableService;
+                     		      Integer> serviceControllerView;
+    public ServiceController(StudentService<List<StudentDto>, List<GroupDto>, String, Integer, 
+    										List<CourseDto>> studentService,
+            CourseService<List<CourseDto>, Integer> courseService, GroupService<List<GroupDto>, 
+            	   		  Integer> groupService,
+            ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 
+                                  Integer> serviceControllerView) {
         this.studentService = studentService;
         this.courseService = courseService;
         this.groupService = groupService;
-        this.studentCourseService = studentCourseService;
-        this.menuView = menuView;
+        this.serviceControllerView = serviceControllerView;
     }
 
     public void execute() throws ServiceException {
@@ -55,7 +47,7 @@ public class ServiceController {
         
         try {
             for ( ; ; ) {
-                menuView.showMenuItems();
+                serviceControllerView.showMenuItems();
                 
                 switch (preventWrongInputOrExit(scanner)) {
                 case 1:
@@ -88,13 +80,11 @@ public class ServiceController {
     
     public void bootstrap() throws ServiceException {
         try {
-            tableService.createTables();
             List<CourseDto> courses = courseService.createCourses();
             studentService.createStudents();
             List<GroupDto> groups = groupService.createGroups();
             List<StudentDto> studentsHavingGroupId = studentService.assignGroup(groups);
-            tableService.createStudentCourseTable();
-            studentCourseService.assignStudentToCourse(studentsHavingGroupId, courses);
+            studentService.assignStudentToCourse(studentsHavingGroupId, courses);
         } catch (ServiceException e) {
         	LOGGER.error(ERROR_BOOTSTRAP, e);
             throw new ServiceException(ERROR_BOOTSTRAP, e);
@@ -103,32 +93,32 @@ public class ServiceController {
     
     private void removeStudentFromCourse(Scanner scanner) throws ServiceException {
         for (;;) {
-            List<StudentDto> studnetCourse = studentCourseService.getAllStudentsHavingCourse();
-            menuView.showStudentCourse(studnetCourse);
-            menuView.deleteStudentIdFromCourse();
+            List<StudentDto> studnetCourse = studentService.getAllStudentsHavingCourse();
+            serviceControllerView.showStudentCourse(studnetCourse);
+            serviceControllerView.deleteStudentIdFromCourse();
             int studentId = scanOnlyIntInput(scanner);
-            menuView.enterCourseId();
+            serviceControllerView.enterCourseId();
             int courseId = scanOnlyIntInput(scanner);
 
-            menuView.confirmStudentDeleting();
+            serviceControllerView.confirmStudentDeleting();
             String yesOrNo = scanOnlyYesOrNo(scanner);
 
             if (yesOrNo.equals(WORD_YES)) {
-                int status = studentCourseService.deleteStudentFromCourse(studentId, courseId);
+                int status = courseService.deleteStudentFromCourse(studentId, courseId);
 
                 if (status == NORMAL_STATUS) {
-                    menuView.successStudentFromCourseDeleting();
-                    menuView.deleteAnotherStudentFromCourse();
+                    serviceControllerView.successStudentFromCourseDeleting();
+                    serviceControllerView.deleteAnotherStudentFromCourse();
                     String keyWord = scanOnlyEmptyStringOrExitWord(scanner);
 
                     if (keyWord.equals(WORD_EXIT)) {
                         break;
                     }
                 } else {
-                    menuView.failureStudentFromCourseDeleting();
+                    serviceControllerView.failureStudentFromCourseDeleting();
                 }
             }
-            menuView.deleteAnotherStudentFromCourse();
+            serviceControllerView.deleteAnotherStudentFromCourse();
             String keyWord = scanOnlyEmptyStringOrExitWord(scanner);
 
             if (keyWord.equals(WORD_EXIT)) {
@@ -140,30 +130,30 @@ public class ServiceController {
     private void addStudentToCourse(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentDto> studentsHaveGroupId = studentService.getStudentsHavingGroupId();
-            menuView.showStudents(studentsHaveGroupId);
+            serviceControllerView.showStudents(studentsHaveGroupId);
             List<CourseDto> allCourses = courseService.getAllCourses();
-            menuView.showCourses(allCourses);
-            menuView.enterStudentId();
+            serviceControllerView.showCourses(allCourses);
+            serviceControllerView.enterStudentId();
             int studentId = scanOnlyIntInput(scanner);
-            menuView.enterCourseId();
+            serviceControllerView.enterCourseId();
             int courseId = scanOnlyIntInput(scanner);
-            menuView.addStudentYesOrNo();
+            serviceControllerView.addStudentYesOrNo();
             String confirm = scanOnlyYesOrNo(scanner);
             int status = 0;
 
             if (confirm.equals(WORD_YES)) {
-                status = studentCourseService.addStudentToCourseById(studentId, courseId);
+                status = studentService.addStudentToCourseById(studentId, courseId);
                 if (status == NORMAL_STATUS_OF_ADDING) {
-                    menuView.studentHasBeenAddedToCourse();
+                    serviceControllerView.studentHasBeenAddedToCourse();
                 } else {
-                    menuView.studentHasNotBeenAddedToCourse();
+                    serviceControllerView.studentHasNotBeenAddedToCourse();
                 }
             } else if (confirm.equals(WORD_NO)) {
                 break first;
             }
 
             for ( ; ; ) {
-                menuView.addStudentToCourseOrReturnMenu();
+                serviceControllerView.addStudentToCourseOrReturnMenu();
                 String input = scanner.nextLine();
                 
                 if (input.equals(EMPTY_STRING)) {
@@ -192,23 +182,23 @@ public class ServiceController {
     private void deleteStudentFromDatabase(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentDto> students = studentService.getAllStudents();
-            menuView.showStudents(students);
-            menuView.enterStudentId();
+            serviceControllerView.showStudents(students);
+            serviceControllerView.enterStudentId();
             int studentId = scanOnlyIntInput(scanner);
-            menuView.confirmStudentDeleting();
+            serviceControllerView.confirmStudentDeleting();
             String keyWord = scanOnlyYesOrNo(scanner);
 
             if (keyWord.equals(WORD_YES)) {
                 int status = studentService.deleteStudent(studentId);
 
                 if (status == NORMAL_STATUS) {
-                    menuView.studentHasBeenDeleted(studentId);
+                    serviceControllerView.studentHasBeenDeleted(studentId);
                 } else {
-                    menuView.studentHasNotBeenDeleted(studentId);
+                    serviceControllerView.studentHasNotBeenDeleted(studentId);
                 }
             }
             for (;;) {
-                menuView.deleteStudentOrReturnMainMenu();
+                serviceControllerView.deleteStudentOrReturnMainMenu();
                 String input = scanner.nextLine();
 
                 if (input.equals(WORD_EXIT)) {
@@ -222,12 +212,12 @@ public class ServiceController {
     
     private void addStudentToDatabase(Scanner scanner) throws ServiceException {
         for ( ; ; ) {
-            menuView.enterLastName();
+            serviceControllerView.enterLastName();
             String lastName = scanner.nextLine();
-            menuView.enterFirstName();
+            serviceControllerView.enterFirstName();
             String firstName = scanner.nextLine();
             enterStudentNameAndAddToDatabase(lastName, firstName, scanner);
-            menuView.addStudentToDatabaseOrReturnMenu();
+            serviceControllerView.addStudentToDatabaseOrReturnMenu();
             String keyWord = scanOnlyEmptyStringOrExitWord(scanner);
             
             if (keyWord.equals(WORD_EXIT)) {
@@ -255,12 +245,12 @@ public class ServiceController {
                                                   String firstName, 
                                                   Scanner scanner) throws ServiceException {
         for (;;) {
-            menuView.addStudentYesOrNo();
+            serviceControllerView.addStudentYesOrNo();
             String input = scanner.nextLine();
             
             if (input.equals(WORD_YES)) {
                 if (studentService.addStudent(lastName, firstName) == NORMAL_STATUS_OF_ADDING) {
-                    menuView.studentHasBeenAddedToDatabase();
+                    serviceControllerView.studentHasBeenAddedToDatabase();
                     break;
                 }
             } else if (input.equals(WORD_NO)) {
@@ -271,36 +261,36 @@ public class ServiceController {
     
     private void findStudentsRelatedToCourse(Scanner couseIdScanner) throws ServiceException {
         List<CourseDto> courses = courseService.getAllCourses();
-        menuView.showCourses(courses);
-        menuView.enterCourseId();
+        serviceControllerView.showCourses(courses);
+        serviceControllerView.enterCourseId();
         Integer courseID = scanOnlyIntInput(couseIdScanner);
-        List<StudentDto> studentCourse = studentCourseService.getStudentsOfCourse(courseID);
-        menuView.showStudentCourse(studentCourse);
+        List<StudentDto> studentCourse = studentService.getStudentsOfCourse(courseID);
+        serviceControllerView.showStudentCourse(studentCourse);
         exitOrReturnMainMenu(couseIdScanner);
     }
     
     private void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) 
             throws ServiceException {
-        menuView.enterNumberOfStudents();
+        serviceControllerView.enterNumberOfStudents();
         List<GroupDto> groups = groupService
                 .findGroupsWithLessOrEqualStudents(scanOnlyIntInput(studentsNumberScanner));
-        menuView.showNumberOfStudentsInGroups(groups);
+        serviceControllerView.showNumberOfStudentsInGroups(groups);
         exitOrReturnMainMenu(studentsNumberScanner);
     }
     
     private void exitOrReturnMainMenu(Scanner scanner) {
-        menuView.returnMainMenuOrExit();
+        serviceControllerView.returnMainMenuOrExit();
         
         while(scanner.hasNextLine()) {
             String input = scanner.nextLine();
             
             if (input.equals(WORD_EXIT)) {
-                menuView.executionHasBeenStopped();
+                serviceControllerView.executionHasBeenStopped();
                 System.exit(NORMAL_DEL_STATUS);
             } else if (input.equals(EMPTY_STRING)) {
                 break;
             } else {
-                menuView.returnMainMenuOrExit();
+                serviceControllerView.returnMainMenuOrExit();
             }
         }
     }
@@ -308,7 +298,7 @@ public class ServiceController {
     private int scanOnlyIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            menuView.showIncorrectInputWarning();
+            serviceControllerView.showIncorrectInputWarning();
         }
         int input = scanner.nextInt();
         scanner.nextLine(); // it is used to clean the buffer from the empty string       
@@ -323,14 +313,14 @@ public class ServiceController {
                 if (scanner.nextLine().equals(WORD_EXIT)) {
                     System.exit(NORMAL_DEL_STATUS);
                 } else {
-                    menuView.showIncorrectInputWarning(); 
+                    serviceControllerView.showIncorrectInputWarning(); 
                 }
             } else {
                 output = scanner.nextInt();
                 scanner.nextLine();
                 
                 if (output == 0 || output > NUMBER_OF_ITEMS) {
-                    menuView.showIncorrectInputWarning();
+                    serviceControllerView.showIncorrectInputWarning();
                 } else {
                     break;
                 }

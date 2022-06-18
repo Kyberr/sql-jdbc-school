@@ -8,10 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
 import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
 import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
 
-public class ConsoleServiceControllerView implements ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, 
-                                                 List<StudentDto>, Integer> {
+public class ConsoleServiceControllerView implements ServiceControllerView<List<GroupDto>, 
+																		   List<CourseDto>, 
+																		   List<StudentDto>, 
+																		   List<StudentDto>, 
+																		   Integer> {
     
     private static final String START_MESSAGE_FORMAT = "%85s";
     private static final String MENU_FORMAT = "%-4s%4s";
@@ -27,14 +29,16 @@ public class ConsoleServiceControllerView implements ServiceControllerView<List<
     
     private static final String ADD_STUDENT_TO_COURSE_OR_RETURN = "Press the \"Enter\" key to add another student or "
             + "write \"exit\" and press the \"Enter\" key to return to the main menu.";
-    private static final String STUDENT_HAS_NOT_BEEN_ADDED_TO_COURSE = "The student has not been added to the course.";
+    private static final String STUDENT_HAS_NOT_BEEN_ADDED_TO_COURSE = "The student has not been "
+    		+ "added to the course.";
     private static final String STUDENT_HAS_BEEN_ADDED_TO_COURSE = "The student has been added to the course.";
     private static final String START_MESSAGE = "Enter the corresponding number or write "
                                               + "\"exit\" and press the \"Enter\" key.\n\n";
     private static final String FIND_GROUPS_WITH_NUMBER_OF_STUDENTS = "Find all groups with a less or equal "
                                                                     + "student count.\n";
     private static final String ONE = "1.";
-    private static final String FIND_STUDENTS_OF_COURSE = "Find all students related to a course with a given name.\n";
+    private static final String FIND_STUDENTS_OF_COURSE = "Find all students related to a course "
+    		+ "with a given name.\n";
     private static final String TWO = "2.";
     private static final String ADD_STUDENT = "Add a new student to the database.\n";
     private static final String THREE = "3.";

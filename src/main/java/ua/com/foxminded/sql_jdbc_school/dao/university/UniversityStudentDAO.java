@@ -22,7 +22,9 @@ import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 public class UniversityStudentDAO implements StudentDAO {
     
 	private static final Logger LOGGER = LogManager.getLogger();
-	
+	private static final String GET_STUDENTS_OF_COURS_BY_ID = "getStudentsOfCourseByID";
+	private static final String ERROR_GET_STUDENTS_OF_COURS_BY_ID = "Getting students of the course by "
+																  + "Id is failed.";
 	private static final String GET_STUDENT_OF_COURSE_BY_ID = "getStudentOfCourseById";
 	private static final String ERROR_GET_STUDENT_OF_COURSE_BY_ID = "Getting the student from "
 																  + "the course by ID is failed.";
@@ -54,6 +56,32 @@ public class UniversityStudentDAO implements StudentDAO {
     public UniversityStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
 		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
 	}
+    
+    @Override
+    public List<StudentEntity> getStudensOfCourseById(Integer courseId) throws DAOException {
+    	ResultSet resultSet = null;
+    	List<StudentEntity> studentsOfcourse = new ArrayList<>();
+    	
+    	try (Connection con = universityConnectionDAOFactory.createConnection();
+    	     PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
+    	    		 .getInstance(SQL_QUERIES_FILENAME)
+    	    		 .getProperty(GET_STUDENTS_OF_COURS_BY_ID));) {
+    		
+    		resultSet = prStatement.executeQuery();
+    		
+    		while (resultSet.next()) {
+    			studentsOfcourse.add(new StudentEntity(resultSet.getInt(STUDENT_ID), 
+    												   resultSet.getInt(GROUP_ID),
+    												   resultSet.getString(FIRST_NAME),
+    												   resultSet.getString(LAST_NAME)));
+    		}
+    		
+    		return studentsOfcourse;
+    	} catch (DAOException | SQLException e) {
+    		LOGGER.error(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
+    		throw new DAOException(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
+    	}
+    }
     
     @Override
     public StudentEntity getStudentOfCourseById(Integer studentId, 

@@ -30,6 +30,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 											   			  List<CourseDto>> {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String ERROR_GET_STUDENTS_OF_COURSE = "Getting students of the course is failed.";
 	private static final String ERROR_ADD_STUDENT_TO_COURSE_BY_ID = "Adding the student to the course failed.";
     private static final int BAD_STATUS = 0;
 	private static final String ERROR_GET_COURSES_OF_STUDENT = "Getting courses of the student "
@@ -58,6 +59,21 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 		this.studentDAO = studentDAO;
 		this.courseDAO = courseDAO;
 	}
+    
+    @Override
+    public List<StudentDto> getStudentsOfCourse(Integer courseId) throws ServiceException {
+    	try {
+    		return studentDAO.getStudensOfCourseById(courseId).parallelStream()
+    				.map((entity) -> new StudentDto(entity.getStudentId(),
+    												entity.getGroupId(), 
+    												entity.getFirstName(), 
+    												entity.getLastName()))
+    				.collect(Collectors.toList());
+    	} catch (DAOException e) {
+    		LOGGER.error(ERROR_GET_STUDENTS_OF_COURSE, e);
+    		throw new ServiceException(ERROR_GET_STUDENTS_OF_COURSE, e);
+    	}
+    }
     
     @Override 
     public Integer addStudentToCourseById(Integer studentId, 

@@ -23,7 +23,7 @@ public class StudentEntity {
 	public StudentEntity(Integer groupId) {
 		this.groupId = groupId;
 	}
-
+	
 	public Integer getStudentId() {
 		return studentId;
 	}

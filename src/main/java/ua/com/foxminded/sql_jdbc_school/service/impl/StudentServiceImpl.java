@@ -30,6 +30,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 											   			  List<CourseDto>> {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String ERROR_ADD_STUDENT_TO_COURSE_BY_ID = "Adding the student to the course failed.";
+    private static final int BAD_STATUS = 0;
 	private static final String ERROR_GET_COURSES_OF_STUDENT = "Getting courses of the student "
 															 + "from the database is failed.";
 	private static final String ERROR_GET_ALL = "Getting all of the students from the database is failed.";
@@ -58,11 +60,34 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 	}
     
     @Override 
+    public Integer addStudentToCourseById(Integer studentId, 
+    									  Integer courseId) throws ServiceException {
+    	int status;
+    	
+    	try {
+    		StudentEntity studentHavingCourse = studentDAO.getStudentOfCourseById(studentId, courseId);
+    		
+    		if (studentHavingCourse != null) {
+    			status = BAD_STATUS;
+    		} else {
+    			StudentEntity student = studentDAO.getStudentById(studentId);
+    			CourseEntity course = courseDAO.getCourseById(courseId);
+    			status = studentDAO.addStudentToCourse(student, course);
+    		}
+    		
+    		return status;
+    	} catch (DAOException e) {
+    		LOGGER.error(ERROR_ADD_STUDENT_TO_COURSE_BY_ID, e);
+    		throw new ServiceException(ERROR_ADD_STUDENT_TO_COURSE_BY_ID, e);
+    	}
+    }
+    
+    @Override 
     public List<StudentDto> getAllStudentsHavingCourse() throws ServiceException {
     	List<StudentDto> studentCourseRelation = new ArrayList<>();
     	
     	try {
-        	List<StudentEntity> studentsHavingCourse = studentDAO.getStudentsHavingCouse();
+        	List<StudentEntity> studentsHavingCourse = studentDAO.getAllStudentsHavingCouse();
         	
         	studentsHavingCourse.stream().forEach((student) -> {
         		

@@ -23,6 +23,9 @@ public class UniversityStudentDAO implements StudentDAO {
     
 	private static final Logger LOGGER = LogManager.getLogger();
 	
+	private static final String GET_STUDENT_OF_COURSE_BY_ID = "getStudentOfCourseById";
+	private static final String ERROR_GET_STUDENT_OF_COURSE_BY_ID = "Getting the student from "
+																  + "the course by ID is failed.";
 	private static final String ERROR_GET_STUDENTS_HAVING_COURSE = "Receiving students have been added "
 																 + "to courses is failed.";
 	private static final String GET_STUDENTS_HAVING_COURSE = "getStudentsHavingCouse";
@@ -53,7 +56,35 @@ public class UniversityStudentDAO implements StudentDAO {
 	}
     
     @Override
-    public List<StudentEntity> getStudentsHavingCouse() throws DAOException {
+    public StudentEntity getStudentOfCourseById(Integer studentId, 
+    											Integer courseId) throws DAOException {
+    	ResultSet resultSet = null;
+    	StudentEntity student = null;
+    	
+    	try (Connection con = universityConnectionDAOFactory.createConnection();
+    		 PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
+    				 .getInstance(SQL_QUERIES_FILENAME)
+    				 .getProperty(GET_STUDENT_OF_COURSE_BY_ID))) {
+    		prStatement.setInt(1, studentId);
+    		prStatement.setInt(2, courseId);
+    		resultSet = prStatement.executeQuery();
+    		
+    		while (resultSet.next()) {
+    			student = new StudentEntity(resultSet.getInt(STUDENT_ID),
+    										resultSet.getInt(GROUP_ID),
+    										resultSet.getString(FIRST_NAME),
+    										resultSet.getString(LAST_NAME));
+    		}
+    		
+    		return student;
+    	} catch (DAOException | SQLException e) {
+    		LOGGER.error(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
+    		throw new DAOException(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
+    	}
+    }
+    
+    @Override
+    public List<StudentEntity> getAllStudentsHavingCouse() throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(SQL_QUERIES_FILENAME)
@@ -137,7 +168,7 @@ public class UniversityStudentDAO implements StudentDAO {
     }
     
     @Override
-    public StudentEntity getById(int studentId) throws DAOException {
+    public StudentEntity getStudentById(int studentId) throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
             		 .getInstance(SQL_QUERIES_FILENAME).getProperty(SELECT_STUDENT));) {

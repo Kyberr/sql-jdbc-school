@@ -152,7 +152,7 @@ public class ServiceController {
             int status = 0;
 
             if (confirm.equals(WORD_YES)) {
-                status = studentCourseService.addStudentToCourse(studentId, courseId);
+                status = studentCourseService.addStudentToCourseById(studentId, courseId);
                 if (status == NORMAL_STATUS_OF_ADDING) {
                     menuView.studentHasBeenAddedToCourse();
                 } else {

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
@@ -14,6 +15,7 @@ import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
 
 public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer> {
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String ERROR_DELETE_ALL_COURSES = "The service of student deletion doesn't work.";
 	private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
              													 + "from the course doesn't work.";
     private static final String COURSE_NAME_LIST_FILENAME = "courseNameList.txt";
@@ -25,6 +27,16 @@ public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer
     public CourseServiceImpl(Reader reader, CourseDAO courseDao) {
         this.reader = reader;
         this.courseDao = courseDao;
+    }
+    
+    @Override
+    public Integer deleteAllCourses() throws ServiceException {
+    	try {
+    		return courseDao.deleteAll(UniversityGenericDAO.COURSES);
+    	} catch (DAOException e) {
+    		LOGGER.error(ERROR_DELETE_ALL_COURSES, e);
+    		throw new ServiceException(ERROR_DELETE_ALL_COURSES, e);
+    	}
     }
     
     @Override

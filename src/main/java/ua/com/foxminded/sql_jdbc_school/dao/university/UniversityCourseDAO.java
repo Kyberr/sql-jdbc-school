@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 
-public class UniversityCourseDAO implements CourseDAO {
+public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> implements CourseDAO {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String ERROR_GET_COURSES_OF_STUDENT = "Get courses of a student is failed.";
@@ -36,13 +37,12 @@ public class UniversityCourseDAO implements CourseDAO {
     private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     private static final Integer BAD_STATUS = 0;
-    private final ConnectionDAOFactory universityConnectionDAOFactory;
     
-    public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
-		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
-	}
+    public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFacotry) {
+    	super(universityConnectionDAOFacotry);
+    }
     
-    @Override
+	@Override
     public List<CourseEntity> getCoursesOfStudentById(int studentId) throws DAOException {
     	ResultSet resultSet = null;
     	

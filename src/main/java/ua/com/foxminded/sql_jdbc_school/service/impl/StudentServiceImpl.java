@@ -271,17 +271,17 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         }
     }
     
-	private List<StudentDto> generateStudentCourseRelation(List<StudentDto> studentsHaveGroupId,
+	private List<StudentDto> generateStudentCourseRelation(List<StudentDto> studentsHavingGroupId,
 			List<CourseDto> courses) {
 		List<List<Integer>> studentCourseIndexRelation = generator
-				.getStudentCourseIndexRelation(studentsHaveGroupId.size(), courses.size());
+				.getStudentCourseIndexRelation(studentsHavingGroupId.size(), courses.size());
 
 		try (Stream<List<Integer>> indexRelationStream = studentCourseIndexRelation.stream()) {
 			return indexRelationStream.map((indexRelation) -> new StudentDto(
-							studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
-							studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
-							studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),
-							studentsHaveGroupId.get(indexRelation.get(STUDENT_INDEX)).getLastName(),
+							studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
+							studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
+							studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),
+							studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getLastName(),
 							courses.get(indexRelation.get(COURSE_INDEX)).getCourseId(),
 							courses.get(indexRelation.get(COURSE_INDEX)).getCourseName(),
 							courses.get(indexRelation.get(COURSE_INDEX)).getCourseDescription()))

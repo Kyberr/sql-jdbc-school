@@ -56,6 +56,12 @@ public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> im
 		super(universityConnectionDAOFactory);
 	}
     
+    public int someMethod() throws SQLException {
+    	UniversityConnectionPool pool = UniversityConnectionPool.create("url", "user", "pass");
+    	Connection con = pool.getConnection();
+    }
+    
+    /*
     @Override
     public List<StudentEntity> getStudensOfCourseById(Integer courseId) throws DAOException {
     	ResultSet resultSet = null;
@@ -81,6 +87,7 @@ public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> im
     		throw new DAOException(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
     	}
     }
+    */
     
     @Override
     public StudentEntity getStudentOfCourseById(Integer studentId, 

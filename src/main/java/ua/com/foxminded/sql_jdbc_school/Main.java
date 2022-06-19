@@ -29,7 +29,7 @@ import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
 
 public class Main {
-    private static final Logger LOGGER = LogManager.getLogger(Main.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
         Reader reader = new Reader();

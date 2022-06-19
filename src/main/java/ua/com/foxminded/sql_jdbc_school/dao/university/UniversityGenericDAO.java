@@ -22,7 +22,7 @@ public abstract class UniversityGenericDAO<T> implements GenericDAO<T, Integer, 
 	
 	ConnectionDAOFactory universityConnectionDAOFactory;
 	
-	public UniversityGenericDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+	protected UniversityGenericDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
 		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
 	}
 

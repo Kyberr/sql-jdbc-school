@@ -15,7 +15,7 @@ import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
 
 public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer> {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final String ERROR_DELETE_ALL_COURSES = "The service of student deletion doesn't work.";
+	private static final String ERROR_DELETE_ALL_COURSES = "The service of course deletion doesn't work.";
 	private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
              													 + "from the course doesn't work.";
     private static final String COURSE_NAME_LIST_FILENAME = "courseNameList.txt";

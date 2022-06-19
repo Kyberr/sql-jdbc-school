@@ -15,6 +15,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
@@ -30,6 +31,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 											   			  List<CourseDto>> {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String ERROR_DELETE_STUDENTS = "The service of students deletion is failed.";
 	private static final String ERROR_GET_STUDENTS_OF_COURSE = "Getting students of the course is failed.";
 	private static final String ERROR_ADD_STUDENT_TO_COURSE_BY_ID = "Adding the student to the course failed.";
     private static final int BAD_STATUS = 0;
@@ -59,6 +61,18 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 		this.studentDAO = studentDAO;
 		this.courseDAO = courseDAO;
 	}
+    
+    @Override
+    public Integer deleteAllStudents() throws ServiceException {
+    	int status = 0;
+    	try {
+    		status = studentDAO.deleteAll(UniversityGenericDAO.STUDENTS);
+    	} catch (DAOException e) {
+    		LOGGER.error(ERROR_DELETE_STUDENTS, e);
+    		throw new ServiceException(ERROR_DELETE_STUDENTS, e);
+    	}
+    	return status;
+    }
     
     @Override
     public List<StudentDto> getStudentsOfCourse(Integer courseId) throws ServiceException {

@@ -80,6 +80,9 @@ public class ServiceController {
     
     public void bootstrap() throws ServiceException {
         try {
+        	studentService.deleteAllStudents();
+        	groupService.deleteAllGroups();
+        	courseService.deleteAllCourses();
             List<CourseDto> courses = courseService.createCourses();
             studentService.createStudents();
             List<GroupDto> groups = groupService.createGroups();

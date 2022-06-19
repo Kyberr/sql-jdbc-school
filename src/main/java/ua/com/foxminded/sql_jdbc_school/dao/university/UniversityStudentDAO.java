@@ -19,7 +19,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
-public class UniversityStudentDAO implements StudentDAO {
+public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> implements StudentDAO {
     
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String GET_STUDENTS_OF_COURS_BY_ID = "getStudentsOfCourseByID";
@@ -51,10 +51,9 @@ public class UniversityStudentDAO implements StudentDAO {
     private static final String ERROR_GET_STUDENT = "Getting the student data failed.";
     private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
                                                                  + "group ID failed.";
-    private final ConnectionDAOFactory universityConnectionDAOFactory;
     
     public UniversityStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
-		this.universityConnectionDAOFactory = universityConnectionDAOFactory;
+		super(universityConnectionDAOFactory);
 	}
     
     @Override

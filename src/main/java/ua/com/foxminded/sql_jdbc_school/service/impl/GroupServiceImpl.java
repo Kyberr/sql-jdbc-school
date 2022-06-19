@@ -10,6 +10,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
@@ -17,6 +18,7 @@ import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
 
 public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String ERROR_DELETE_ALL_GROUPS = "The service of groups deletion is failed.";
     private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "
             + "less or equal to the specified number of students is failed. ";
@@ -28,6 +30,18 @@ public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
         this.generator = generator;
         this.groupDAO = groupDAO;
         this.studentDAO = studentDAO;
+    }
+    
+    @Override
+    public Integer deleteAllGroups() throws ServiceException {
+    	int status = 0;
+    	try {
+    		status = studentDAO.deleteAll(UniversityGenericDAO.GROUPS);
+    	} catch (DAOException e) {
+    		LOGGER.error(ERROR_DELETE_ALL_GROUPS, e);
+    		throw new ServiceException(ERROR_DELETE_ALL_GROUPS, e);
+    	}
+    	return status;
     }
     
     @Override

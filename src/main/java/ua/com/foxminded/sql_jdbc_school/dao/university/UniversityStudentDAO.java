@@ -16,6 +16,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 
@@ -51,17 +52,14 @@ public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> im
     private static final String ERROR_GET_STUDENT = "Getting the student data failed.";
     private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
                                                                  + "group ID failed.";
+    private ConnectionPool connectionPool;
     
-    public UniversityStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+    public UniversityStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory, 
+    							ConnectionPool connectionPool) {
 		super(universityConnectionDAOFactory);
+		this.connectionPool = connectionPool;
 	}
     
-    public int someMethod() throws SQLException {
-    	UniversityConnectionPool pool = UniversityConnectionPool.create("url", "user", "pass");
-    	Connection con = pool.getConnection();
-    }
-    
-    /*
     @Override
     public List<StudentEntity> getStudensOfCourseById(Integer courseId) throws DAOException {
     	ResultSet resultSet = null;
@@ -87,7 +85,6 @@ public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> im
     		throw new DAOException(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
     	}
     }
-    */
     
     @Override
     public StudentEntity getStudentOfCourseById(Integer studentId, 
@@ -143,6 +140,13 @@ public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> im
     
     @Override
     public int addStudentToCourse(StudentEntity student, CourseEntity course) throws DAOException {
+    	try {
+    		Connection con = connectionPool.getConnection();
+    		
+    	}
+    	
+    	
+    	
     	try(Connection con = universityConnectionDAOFactory.createConnection();
     	    PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
     	    		.getInstance(SQL_QUERIES_FILENAME).getProperty(ADD_STUDENT_TO_COURSE))) {

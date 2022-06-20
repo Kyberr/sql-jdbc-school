@@ -1,5 +1,6 @@
 package ua.com.foxminded.sql_jdbc_school.dao;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,9 +23,9 @@ public class ConnectionPool {
 		this.maxPoolSize = maxPoolSize;
 	}
 	
-	public synchronized Connection getConnection() throws DAOException, 
-														  SQLException, 
-														  InterruptedException {
+	public synchronized Connection getConnection() throws SQLException, 
+														  InterruptedException, 
+														  IOException {
 		Connection con;
 		
 		if (availablePool.isEmpty()) {
@@ -67,7 +68,8 @@ public class ConnectionPool {
 		}
 	}
 	
-	private Connection createConnection(ConnectionDAOFactory connectionFactory) throws DAOException {
+	private Connection createConnection(ConnectionDAOFactory connectionFactory) throws IOException, 
+																					   SQLException {
 		return connectionFactory.createConnection();
 	}
 }

@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
@@ -31,35 +32,39 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
 											   			  List<CourseDto>> {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final String ERROR_DELETE_STUDENTS = "The service of students deletion is failed.";
-	private static final String ERROR_GET_STUDENTS_OF_COURSE = "Getting students of the course is failed.";
+	private static final String CLOSE_CONNECTIONS_OF_POOL_ERROR = "The close connection operation failed.";
+	private static final String ERROR_DELETE_STUDENTS = "The service of students deletion failed.";
+	private static final String ERROR_GET_STUDENTS_OF_COURSE = "Getting students of the course failed.";
 	private static final String ERROR_ADD_STUDENT_TO_COURSE_BY_ID = "Adding the student to the course failed.";
     private static final int BAD_STATUS = 0;
 	private static final String ERROR_GET_COURSES_OF_STUDENT = "Getting courses of the student "
-															 + "from the database is failed.";
-	private static final String ERROR_GET_ALL = "Getting all of the students from the database is failed.";
+															 + "from the database failed.";
+	private static final String ERROR_GET_ALL = "Getting all of the students from the database failed.";
 	private static final String ERROR_ADD_STUDENT_TO_COURSE = "The studen has not been added to the course.";
 	private static final int STUDENT_INDEX = 0;
     private static final int COURSE_INDEX = 1;
 	private static final String ERROR_CREATE_STUDENT_COURSE_RELATION = "The relation creation failed.";
 	private static final String FIST_NAME_FILENAME = "firstNameList.txt";
     private static final String LAST_NAME_FILENAME = "lastNameList.txt";
-    private static final String ERROR_CREATE_STUDENTS = "The student addition service to the database fails.";
-    private static final String ERROR_ASSIGN_GROUP = "The assining group to students is failed.";
-    private static final String ERROR_ADD_STUDENT = "The student adding to the database is failed.";
-    private static final String ERROR_GET_ALL_STUDENT = "Getting students from the database is failed.";
-    private static final String ERROR_DELETE_STUDENT = "The deletion of the student from the database is failed.";
-    private static final String ERROR_GET_STUDENTS_WITH_GROUP = "Getting students that have group ID is failed.";
+    private static final String ERROR_CREATE_STUDENTS = "The student addition service to the database failed.";
+    private static final String ERROR_ASSIGN_GROUP = "The assining group to students failed.";
+    private static final String ERROR_ADD_STUDENT = "The student adding to the database failed.";
+    private static final String ERROR_GET_ALL_STUDENT = "Getting students from the database failed.";
+    private static final String ERROR_DELETE_STUDENT = "The deletion of the student from the database failed.";
+    private static final String ERROR_GET_STUDENTS_WITH_GROUP = "Getting students that have group ID failed.";
     private final Reader reader;
     private final Generator generator;
     private final StudentDAO studentDAO;
     private final CourseDAO courseDAO;
+    private final ConnectionPool connectionPool;
     
-    public StudentServiceImpl(Reader reader, Generator generator, StudentDAO studentDAO, CourseDAO courseDAO) {
+    public StudentServiceImpl(Reader reader, Generator generator, StudentDAO studentDAO, 
+    						  CourseDAO courseDAO, ConnectionPool connectionPool) {
 		this.reader = reader;
 		this.generator = generator;
 		this.studentDAO = studentDAO;
 		this.courseDAO = courseDAO;
+		this.connectionPool = connectionPool;
 	}
     
     @Override
@@ -141,6 +146,12 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (DAOException e) {
         	LOGGER.error(ERROR_GET_ALL, e);
             throw new ServiceException(ERROR_GET_ALL, e);
+        } finally {
+        	try {
+        		connectionPool.closeConnectionsOfPool();
+        	} catch (DAOException e) {
+        		LOGGER.error(CLOSE_CONNECTIONS_OF_POOL_ERROR, e);
+        	}
         }
     }
     
@@ -171,6 +182,12 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (RuntimeException e) {
         	LOGGER.error(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
             throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
+        } finally {
+        	try {
+        		connectionPool.closeConnectionsOfPool();
+        	} catch (DAOException e) {
+        		LOGGER.error(CLOSE_CONNECTIONS_OF_POOL_ERROR, e);
+        	}
         }
     }
     

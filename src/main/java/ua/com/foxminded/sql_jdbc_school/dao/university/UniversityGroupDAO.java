@@ -1,5 +1,6 @@
 package ua.com.foxminded.sql_jdbc_school.dao.university;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,7 +52,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
                                         resultSet.getString(GROUP_NAME)));
             }
             return result;
-        } catch (DAOException | ClassCastException | NumberFormatException | SQLException e) {
+        } catch (ClassCastException | NumberFormatException | SQLException | IOException e) {
         	LOGGER.error(ERROR_GET_LESS_OR_EQUAL_STUD, e);
             throw new DAOException (ERROR_GET_LESS_OR_EQUAL_STUD, e);
         }
@@ -71,7 +72,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
                                         resultSet.getString(GROUP_NAME)));
             }
             return result;
-        } catch (DAOException | SQLException e) {
+        } catch (SQLException | IOException e) {
         	LOGGER.error(ERROR_GET_ALL_GROUP, e);
             throw new DAOException(ERROR_GET_ALL_GROUP, e);
         }
@@ -79,7 +80,6 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
     
     @Override
     public Integer insert(List<GroupEntity> groups) throws DAOException {
-
         try (Connection connection = universityConnectionDAOFactory.createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(INSERT))) {
@@ -100,7 +100,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
                 connection.rollback(save1);
                 throw new SQLException(e);
             }
-        } catch (DAOException | SQLException e) {
+        } catch (SQLException | IOException e) {
         	LOGGER.error(ERROR_INSERT_GROUP, e);
             throw new DAOException(ERROR_INSERT_GROUP, e);
         }

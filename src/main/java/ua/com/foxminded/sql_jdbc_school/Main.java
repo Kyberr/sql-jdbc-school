@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
@@ -35,11 +36,12 @@ public class Main {
         Reader reader = new Reader();
         Generator generator = new Generator();
         ConnectionDAOFactory universityConnectionDAOFactory = new UniversityConnectionDAOFactory();
+        ConnectionPool connectionPool = new ConnectionPool(universityConnectionDAOFactory);
         CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory);
-        StudentDAO studentDAO = new UniversityStudentDAO(universityConnectionDAOFactory);
+        StudentDAO studentDAO = new UniversityStudentDAO(universityConnectionDAOFactory, connectionPool);
         GroupDAO groupDAO = new UniversityGroupDAO(universityConnectionDAOFactory);
         StudentService<List<StudentDto>, List<GroupDto>, String, Integer, List<CourseDto>> studentService = 
-        		new StudentServiceImpl(reader, generator, studentDAO, courseDAO);
+        		new StudentServiceImpl(reader, generator, studentDAO, courseDAO, connectionPool);
         CourseService<List<CourseDto>, Integer> courseService = new CourseServiceImpl(reader, courseDAO);
         GroupService<List<GroupDto>,Integer> groupService = new GroupServiceImpl(generator, groupDAO, studentDAO);
         ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 

@@ -267,7 +267,7 @@ public class ServiceController {
         serviceControllerView.showCourses(courses);
         serviceControllerView.enterCourseId();
         Integer courseID = scanOnlyIntInput(couseIdScanner);
-        List<StudentDto> studentCourse = studentService.getStudentsOfCourse(courseID);
+        List<StudentDto> studentCourse = studentService.getStudentsOfCourseById(courseID);
         serviceControllerView.showStudentCourse(studentCourse);
         exitOrReturnMainMenu(couseIdScanner);
     }

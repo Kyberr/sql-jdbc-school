@@ -71,6 +71,7 @@ public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> im
     	    		 .getInstance(SQL_QUERIES_FILENAME)
     	    		 .getProperty(GET_STUDENTS_OF_COURS_BY_ID));) {
     		
+    		prStatement.setInt(1, courseId);
     		resultSet = prStatement.executeQuery();
     		
     		while (resultSet.next()) {

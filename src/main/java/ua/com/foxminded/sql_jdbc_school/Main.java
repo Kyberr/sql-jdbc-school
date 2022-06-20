@@ -37,7 +37,7 @@ public class Main {
         Generator generator = new Generator();
         ConnectionDAOFactory universityConnectionDAOFactory = new UniversityConnectionDAOFactory();
         ConnectionPool connectionPool = new ConnectionPool(universityConnectionDAOFactory);
-        CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory);
+        CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory, connectionPool);
         StudentDAO studentDAO = new UniversityStudentDAO(universityConnectionDAOFactory, connectionPool);
         GroupDAO groupDAO = new UniversityGroupDAO(universityConnectionDAOFactory);
         StudentService<List<StudentDto>, List<GroupDto>, String, Integer, List<CourseDto>> studentService = 

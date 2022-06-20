@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
@@ -38,30 +39,40 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
     private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     private static final Integer BAD_STATUS = 0;
+    private ConnectionPool connectionPool;
     
-    public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFacotry) {
+    public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFacotry, 
+    						   ConnectionPool connectionPool) {
     	super(universityConnectionDAOFacotry);
+    	this.connectionPool = connectionPool;
     }
     
 	@Override
     public List<CourseEntity> getCoursesOfStudentById(int studentId) throws DAOException {
-    	ResultSet resultSet = null;
+		Connection con = null;
+		ResultSet resultSet = null;
+    	List<CourseEntity> coursesOfstudent = new ArrayList<>();
     	
-    	try (Connection con = universityConnectionDAOFactory.createConnection();
-    		 PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
-    				 .getInstance(SQL_QUERIES_FILENAME)
-					 .getProperty(GET_COURSES_OF_STUDENT));	) {
+		try {
+    		con = connectionPool.getConnection();
     		
-    		List<CourseEntity> coursesOfstudent = new ArrayList<>();
-    		prStatement.setInt(1, studentId);
-    		resultSet = prStatement.executeQuery();
-    		
-    		while(resultSet.next()) {
-    			coursesOfstudent.add(new CourseEntity(resultSet.getInt(COURSE_ID),
-    												  resultSet.getString(COURSE_NAME),
-    												  resultSet.getString(COURSE_DESC)));
+    		try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
+    					.getInstance(SQL_QUERIES_FILENAME)
+    					.getProperty(GET_COURSES_OF_STUDENT));) {
+    			
+    			
+    			
+    			prStatement.setInt(1, studentId);
+        		resultSet = prStatement.executeQuery();
+        		
+        		while(resultSet.next()) {
+        			coursesOfstudent.add(new CourseEntity(resultSet.getInt(COURSE_ID),
+        												  resultSet.getString(COURSE_NAME),
+        												  resultSet.getString(COURSE_DESC)));
+        		}
     		}
     		
+    		connectionPool.releaseConnection(con);
     		return coursesOfstudent;
     	} catch (SQLException | IOException e) {
     		LOGGER.error(ERROR_GET_COURSES_OF_STUDENT, e);
@@ -74,8 +85,8 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
     		} catch (SQLException e) {
     			LOGGER.error(ERROR_RESULTSET, e);
     		}
-    	}
-    }
+		} 
+	}
     
     @Override
     public int deleteStudentFromCourse(int studentId, int courseId) throws DAOException {

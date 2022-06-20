@@ -24,7 +24,7 @@ public class ConsoleServiceControllerView implements ServiceControllerView<List<
     private static final String STUDENT_COURSES_FORMAT = "| %-10s| %-9s| %-10s| %-10s| %-9s| %-23s| %-18s|\n";
     private static final String STUDENTS_FORMAT = "| %-10s| %-11s| %-11s| %-8s|\n";
     private static final String STUDENT_HAS_BEEN_DELETED_FORMAT = "The student with ID %s has been deleted.\n"; 
-    private static final String STUDENT_HAS_NOT_BEEN_DELETED_FORMAT = "There is not a student with "
+    private static final String STUDENT_HAS_NOT_BEEN_DELETED_FORMAT = "There is no student with "
                                                                     + "ID %s in the database.\n"; 
     
     private static final String ADD_STUDENT_TO_COURSE_OR_RETURN = "Press the \"Enter\" key to add another student or "

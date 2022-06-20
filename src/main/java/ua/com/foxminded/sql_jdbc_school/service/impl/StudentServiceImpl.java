@@ -80,7 +80,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
     
     @Override
-    public List<StudentDto> getStudentsOfCourse(Integer courseId) throws ServiceException {
+    public List<StudentDto> getStudentsOfCourseById(Integer courseId) throws ServiceException {
     	try {
     		return studentDAO.getStudensOfCourseById(courseId).parallelStream()
     				.map((entity) -> new StudentDto(entity.getStudentId(),
@@ -107,7 +107,12 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     		} else {
     			StudentEntity student = studentDAO.getStudentById(studentId);
     			CourseEntity course = courseDAO.getCourseById(courseId);
-    			status = studentDAO.addStudentToCourse(student, course);
+    			
+    			if ((student == null) || (course == null)) {
+    				status = BAD_STATUS;
+    			} else {
+    				status = studentDAO.addStudentToCourse(student, course);
+    			}
     		}
     		
     		return status;

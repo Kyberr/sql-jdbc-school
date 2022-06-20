@@ -1,71 +1,79 @@
 package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 
 public class UniversityConnectionPool implements ConnectionPool {
-	private static int INITIAL_POOL_SIZE = 10;
-	private String url;
-	private String user;
-	private String password;
-	private List<Connection> connectionPool;
-	private List<Connection> usedConnections = new ArrayList<>();
+	private static final int CON_TIMEOUT = 3;
+	private static final int ONE = 1;
 	
-	public UniversityConnectionPool(String url, String user, String password, List<Connection> connectionPool) {
-		this.url = url;
-		this.user = user;
-		this.password = password;
-		this.connectionPool = connectionPool;
+	private int maxPoolSize;
+	
+	private List<Connection> availablePool = new ArrayList<>();
+	private List<Connection> inUsePool = new ArrayList<>();
+	private UniversityConnectionDAOFactory connectionFactory;
+	
+	public UniversityConnectionPool(UniversityConnectionDAOFactory connectionFactory, int maxPoolSize) {
+		this.connectionFactory = connectionFactory;
+		this.maxPoolSize = maxPoolSize;
 	}
-
-	public static UniversityConnectionPool create(String url, 
-												  String user, 
-												  String password) throws SQLException {
-		List<Connection> pool = new ArrayList<>(INITIAL_POOL_SIZE);
+	
+	@Override
+	public synchronized Connection getConnection() throws DAOException, 
+														  SQLException, 
+														  InterruptedException {
+		Connection con;
 		
-		for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
-			pool.add(createConnection(url, user, password));
+		if (availablePool.isEmpty()) {
+			if(inUsePool.size() < maxPoolSize) {
+				con = createConnection(connectionFactory);
+				inUsePool.add(con);
+				return con;
+			} else {
+				while(inUsePool.size() >= maxPoolSize) {
+					wait();
+				}
+				
+				con = availablePool.remove(availablePool.size() - ONE);
+				
+				if (con == null) {
+					con = createConnection(connectionFactory);
+					inUsePool.add(con);
+				} else if (!con.isValid(CON_TIMEOUT)) {
+					con.close();
+					con = createConnection(connectionFactory);
+					inUsePool.add(con);
+				}
+				
+				return con;
+			}
+		} else {
+			return availablePool.remove(availablePool.size() - ONE);
 		}
-		
-		return new UniversityConnectionPool(url, user, password, pool);
 	}
 	
 	@Override
-	public Connection getConnection() {
-		Connection connection = connectionPool.remove(connectionPool.size() - 1);
-		usedConnections.add(connection);
-		return connection;
+	public synchronized void releaseConnection(Connection con) {
+		inUsePool.remove(availablePool.size() - ONE);
+		availablePool.add(con);
+		notify();
 	}
 	
 	@Override
-	public boolean releaseConnection(Connection connection) {
-		connectionPool.add(connection);
-		return usedConnections.remove(connection);
+	public void closeConnectionsOfPool() throws SQLException {
+		for(Connection con : availablePool) {
+			con.close();
+		}
 	}
 	
-	private static Connection createConnection(String url, 
-											   String user, 
-											   String password) throws SQLException {
-		return DriverManager.getConnection(url, user, password);
+	private Connection createConnection(UniversityConnectionDAOFactory connectionFactory) throws DAOException {
+		return connectionFactory.createConnection();
 	}
 	
-	@Override
-	public String getUrl() {
-		return url;
-	}
-	
-	@Override
-	public String getUser() {
-		return user;
-	}
 
-	@Override	
-	public String getPassword() {
-		return password;
-	}
 }

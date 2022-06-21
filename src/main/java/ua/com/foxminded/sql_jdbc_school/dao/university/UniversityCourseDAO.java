@@ -60,8 +60,6 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
     					.getInstance(SQL_QUERIES_FILENAME)
     					.getProperty(GET_COURSES_OF_STUDENT));) {
     			
-    			
-    			
     			prStatement.setInt(1, studentId);
         		resultSet = prStatement.executeQuery();
         		

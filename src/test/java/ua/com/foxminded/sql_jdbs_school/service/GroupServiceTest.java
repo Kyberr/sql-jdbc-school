@@ -53,7 +53,7 @@ class GroupServiceTest {
 		students.add(new StudentEntity(GROUP_ID_2));
 		students.add(new StudentEntity(GROUP_ID_3));
 		
-		when(groupDaoMock.readGroupsWithLessOrEqualStudents(any(Integer.class))).thenReturn(groups);
+		when(groupDaoMock.getGroupsHavingLessOrEqualStudents(any(Integer.class))).thenReturn(groups);
 		when(studentDaoMock.getAll()).thenReturn(students);
 		int expectedResult = STUDENTS_WITH_GROUP_ID;
 		assertEquals(expectedResult, groupService.findGroupsWithLessOrEqualStudents(ANY_NUMBER).size());

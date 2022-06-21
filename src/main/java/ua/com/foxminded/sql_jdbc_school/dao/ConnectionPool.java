@@ -15,7 +15,7 @@ public class ConnectionPool {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String GET_CONNECTION_ERROR = "The getting connection operation failed.";
 	private static final String CLOSE_CONNECTION_ERROR = "The close connection operation failed.";
-	private static final int CON_TIMEOUT = 3;
+	private static final int CON_TIMEOUT = 1;
 	private static final int ONE = 1;
 	private static final int MAX_POOL_SIZE = 10;
 	

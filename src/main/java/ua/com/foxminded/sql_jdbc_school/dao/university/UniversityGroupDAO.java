@@ -23,7 +23,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String QUERIES_FILE_NAME = "group-queries.properties";
-	private static final String SELECT_INCLUSIVE_LESS_STUDENTS = "selectInclusiveLessStudents";
+	private static final String SELECT_INCLUSIVE_LESS_STUDENTS = "getGroupsHavingLessOrEqualStudents";
 	private static final String SELECT_ALL = "selectAll";
     private static final String INSERT = "insert";
     private static final String GROUP_ID = "group_id";
@@ -39,7 +39,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
 	}
 
 	@Override
-    public List<GroupEntity> readGroupsWithLessOrEqualStudents (int students) throws DAOException {
+    public List<GroupEntity> getGroupsHavingLessOrEqualStudents (int students) throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(String.format(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), students));

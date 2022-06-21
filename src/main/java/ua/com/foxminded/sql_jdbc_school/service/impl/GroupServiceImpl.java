@@ -48,7 +48,7 @@ public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
     public List<GroupDto> findGroupsWithLessOrEqualStudents(Integer studentQuantity) 
             throws ServiceException {
         try {
-            List<GroupEntity> groups = groupDAO.readGroupsWithLessOrEqualStudents(studentQuantity);
+            List<GroupEntity> groups = groupDAO.getGroupsHavingLessOrEqualStudents(studentQuantity);
             List<StudentEntity> students = studentDAO.getAll();
             List<GroupDto> groupDTO = new ArrayList<>();
             groups.stream().forEach((group) -> {

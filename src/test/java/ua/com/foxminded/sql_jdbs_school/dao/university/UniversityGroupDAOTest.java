@@ -52,7 +52,7 @@ class UniversityGroupDAOTest {
 	private static final String TEST_DATA_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-data.sql";
 	private static final String END_LINE = "\n";
 	private static final String TEST_TABLES_SCRIPT_PATH = "D:/repository/SqlJdbcSchool/"
-														+ "src/main/resource/test-tables.sql";
+														+ "src/main/resource/test-scheme.sql";
 	private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/"
 												  + "src/main/resource/test-db.properties";
 	private static final String DB_URL = "databaseURL";

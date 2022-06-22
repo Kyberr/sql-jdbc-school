@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.service.impl;
+package ua.com.foxminded.sql_jdbc_school.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,20 +10,16 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.dao.university.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
-import ua.com.foxminded.sql_jdbc_school.service.Generator;
-import ua.com.foxminded.sql_jdbc_school.service.Reader;
-import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.service.StudentService;
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
+import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
+import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 
 public class StudentServiceImpl implements StudentService<List<StudentDto>,
 											   			  List<GroupDto>, 

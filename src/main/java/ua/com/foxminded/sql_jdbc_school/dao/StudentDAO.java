@@ -2,8 +2,8 @@ package ua.com.foxminded.sql_jdbc_school.dao;
 
 import java.util.List;
 
-import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 
 public interface StudentDAO extends GenericDAO<StudentEntity, Integer, String> {
     

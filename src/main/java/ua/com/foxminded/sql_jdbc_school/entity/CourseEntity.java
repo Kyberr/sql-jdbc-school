@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.entities;
+package ua.com.foxminded.sql_jdbc_school.entity;
 
 import java.util.Objects;
 

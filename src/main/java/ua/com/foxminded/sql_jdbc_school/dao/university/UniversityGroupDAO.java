@@ -17,7 +17,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
+import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 
 public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implements GroupDAO {
 	

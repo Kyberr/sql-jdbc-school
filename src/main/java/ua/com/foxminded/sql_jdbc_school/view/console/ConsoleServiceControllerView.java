@@ -1,13 +1,14 @@
-package ua.com.foxminded.sql_jdbc_school.view;
+package ua.com.foxminded.sql_jdbc_school.view.console;
 
 import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
+import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
+import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
 public class ConsoleServiceControllerView implements ServiceControllerView<List<GroupDto>, 
 																		   List<CourseDto>, 

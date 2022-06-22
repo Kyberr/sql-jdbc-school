@@ -5,28 +5,28 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
-import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.university.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
+import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
+import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
+import ua.com.foxminded.sql_jdbc_school.service.CourseServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
+import ua.com.foxminded.sql_jdbc_school.service.GroupServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceController;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
-import ua.com.foxminded.sql_jdbc_school.service.impl.CourseServiceImpl;
-import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
-import ua.com.foxminded.sql_jdbc_school.service.impl.StudentServiceImpl;
-import ua.com.foxminded.sql_jdbc_school.view.ConsoleServiceControllerView;
+import ua.com.foxminded.sql_jdbc_school.service.StudentServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
+import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleServiceControllerView;
 
 
 public class Main {

@@ -17,9 +17,8 @@ import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 
 public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> implements StudentDAO {
     

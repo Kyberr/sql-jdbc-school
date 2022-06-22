@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.service.impl;
+package ua.com.foxminded.sql_jdbc_school.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +8,10 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.GroupEntity;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
-import ua.com.foxminded.sql_jdbc_school.service.Generator;
-import ua.com.foxminded.sql_jdbc_school.service.GroupService;
-import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
+import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
+import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
+import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 
 public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
 	private static final Logger LOGGER = LogManager.getLogger();

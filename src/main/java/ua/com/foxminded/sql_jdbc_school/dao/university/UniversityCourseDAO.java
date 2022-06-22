@@ -13,11 +13,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
-import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 
 public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> implements CourseDAO {
 	

@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao;
+package ua.com.foxminded.sql_jdbc_school.dao.university;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -9,7 +9,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.dao.ConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.university.ConnectionPool;
 
 public class ConnectionPool {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -18,6 +20,8 @@ public class ConnectionPool {
 	private static final int CON_TIMEOUT = 1;
 	private static final int ONE = 1;
 	private static final int MAX_POOL_SIZE = 10;
+	private boolean wakeFlag;
+	private boolean suspendFlag;
 	
 	private List<Connection> availablePool = new ArrayList<>();
 	private List<Connection> inUsePool = new ArrayList<>();
@@ -29,24 +33,15 @@ public class ConnectionPool {
 	
 	public synchronized Connection getConnection() throws SQLException, 
 														  IOException {
+		suspendFlag = false;
+		wakeFlag = false;
 		Connection con = null;
 		
-		if (availablePool.isEmpty()) {
-			if(inUsePool.size() < MAX_POOL_SIZE) {
-				con = createConnection(connectionFactory);
-				inUsePool.add(con);
-				return con;
-			} else {
-				try {
-					while(availablePool.isEmpty()) {
-						wait();
-					}
-				} catch (InterruptedException e) {
-					LOGGER.error(GET_CONNECTION_ERROR, e);
-					Thread.currentThread().interrupt();
-				}
-			}
-		} else {
+		if (availablePool.isEmpty() && (inUsePool.size() < MAX_POOL_SIZE)) {
+			con = createConnection(connectionFactory);
+			inUsePool.add(con);
+			return con;
+		} else if (!availablePool.isEmpty()) {
 			con = availablePool.remove(availablePool.size() - ONE);
 			inUsePool.add(con);
 			
@@ -58,14 +53,33 @@ public class ConnectionPool {
 				con = createConnection(connectionFactory);
 				inUsePool.add(con);
 			}
+		} else {
+			try {
+				while(availablePool.isEmpty()) {
+					suspendFlag = true;
+					wait();
+					wakeFlag = true;
+				}
+			} catch (InterruptedException e) {
+				LOGGER.error(GET_CONNECTION_ERROR, e);
+				Thread.currentThread().interrupt();
+			}
 		}
+
 		return con;
 	}
 	
 	public synchronized void releaseConnection(Connection con) {
 		inUsePool.remove(inUsePool.size() - ONE);
 		availablePool.add(con);
-		notifyAll();
+		
+		if (!availablePool.isEmpty()) {
+			if (suspendFlag) {
+				while (!wakeFlag) {
+					notifyAll();
+				}
+			}
+		}
 	}
 	
 	public void closeConnectionsOfPool() throws DAOException {

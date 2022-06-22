@@ -7,9 +7,9 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.GroupDto;
-import ua.com.foxminded.sql_jdbc_school.service.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
+import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
+import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
 import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
 public class ServiceController {

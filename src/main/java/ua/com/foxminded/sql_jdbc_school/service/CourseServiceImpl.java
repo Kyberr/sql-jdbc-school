@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.service.impl;
+package ua.com.foxminded.sql_jdbc_school.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,12 +6,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.entities.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
-import ua.com.foxminded.sql_jdbc_school.service.CourseService;
-import ua.com.foxminded.sql_jdbc_school.service.Reader;
-import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.service.dto.CourseDto;
+import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
+import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 
 public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer> {
 	private static final Logger LOGGER = LogManager.getLogger();

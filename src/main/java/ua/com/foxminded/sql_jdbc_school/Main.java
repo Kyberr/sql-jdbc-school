@@ -6,9 +6,9 @@ import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPoolImpl;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGroupDAO;
@@ -36,7 +36,7 @@ public class Main {
         Reader reader = new Reader();
         Generator generator = new Generator();
         ConnectionDAOFactory universityConnectionDAOFactory = new UniversityConnectionDAOFactory();
-        UniversityDAOConnectionPool connectionPool = new UniversityDAOConnectionPool(universityConnectionDAOFactory);
+        DAOConnectionPoolImpl connectionPool = new DAOConnectionPoolImpl(universityConnectionDAOFactory);
         CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory, connectionPool);
         StudentDAO studentDAO = new UniversityStudentDAO(universityConnectionDAOFactory, connectionPool);
         GroupDAO groupDAO = new UniversityGroupDAO(universityConnectionDAOFactory);

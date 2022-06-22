@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPoolImpl;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
@@ -37,10 +38,10 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
     private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     private static final Integer BAD_STATUS = 0;
-    private UniversityDAOConnectionPool connectionPool;
+    private DAOConnectionPoolImpl connectionPool;
     
     public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFacotry, 
-    						   UniversityDAOConnectionPool connectionPool) {
+    						   DAOConnectionPoolImpl connectionPool) {
     	super(universityConnectionDAOFacotry);
     	this.connectionPool = connectionPool;
     }

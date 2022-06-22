@@ -74,7 +74,8 @@ class UniversityGroupDAOTest {
 			testDbPoperites.load(testDbInput);
 			
 			try (Connection con = DriverManager.getConnection(testDbPoperites.getProperty(DB_URL),
-					testDbPoperites.getProperty(USER_NAME), testDbPoperites.getProperty(USER_PASS));
+					                                          testDbPoperites.getProperty(USER_NAME), 
+					                                          testDbPoperites.getProperty(USER_PASS));
 					Statement statement = con.createStatement();) {
 
 				Path tableScriptPath = Paths.get(TEST_TABLES_SCRIPT_PATH);

@@ -24,7 +24,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String QUERIES_FILE_NAME = "group-queries.properties";
 	private static final String SELECT_INCLUSIVE_LESS_STUDENTS = "getGroupsHavingLessOrEqualStudents";
-	private static final String SELECT_ALL = "selectAll";
+	private static final String SELECT_ALL = "getAll";
     private static final String INSERT = "insert";
     private static final String GROUP_ID = "group_id";
     private static final String GROUP_NAME = "group_name";
@@ -42,7 +42,8 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
     public List<GroupEntity> getGroupsHavingLessOrEqualStudents (int students) throws DAOException {
         try (Connection con = universityConnectionDAOFactory.createConnection();
              PreparedStatement statement = con.prepareStatement(String.format(DAOPropertiesCache
-            		 .getInstance(QUERIES_FILE_NAME).getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), students));
+            		 .getInstance(QUERIES_FILE_NAME)
+            		 .getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), students));
              ResultSet resultSet = statement.executeQuery();) {
             
             List<GroupEntity> result = new ArrayList<>();
@@ -81,7 +82,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
     @Override
     public Integer insert(List<GroupEntity> groups) throws DAOException {
         try (Connection connection = universityConnectionDAOFactory.createConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
+             PreparedStatement prStatement = connection.prepareStatement(DAOPropertiesCache
             		 .getInstance(QUERIES_FILE_NAME).getProperty(INSERT))) {
             
             connection.setAutoCommit(false);
@@ -90,8 +91,8 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
            
             try {
                 for (GroupEntity group : groups) {
-                    preparedStatement.setString(1, group.getGroupName());
-                    status = preparedStatement.executeUpdate();
+                    prStatement.setString(1, group.getGroupName());
+                    status = prStatement.executeUpdate();
                 }
                 
                 connection.commit();

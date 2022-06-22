@@ -38,10 +38,10 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
     private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     private static final Integer BAD_STATUS = 0;
-    private ConnectionPool connectionPool;
+    private UniversityConnectionPool connectionPool;
     
     public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFacotry, 
-    						   ConnectionPool connectionPool) {
+    						   UniversityConnectionPool connectionPool) {
     	super(universityConnectionDAOFacotry);
     	this.connectionPool = connectionPool;
     }

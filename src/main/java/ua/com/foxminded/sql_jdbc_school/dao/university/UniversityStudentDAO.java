@@ -52,10 +52,10 @@ public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> im
     private static final String ERROR_GET_STUDENT = "Getting the student data failed.";
     private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
                                                                  + "group ID failed.";
-    private ConnectionPool connectionPool;
+    private UniversityConnectionPool connectionPool;
     
     public UniversityStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory, 
-    							ConnectionPool connectionPool) {
+    							UniversityConnectionPool connectionPool) {
 		super(universityConnectionDAOFactory);
 		this.connectionPool = connectionPool;
 	}

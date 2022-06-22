@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.university.ConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionPool;
 
-public class ConnectionPool {
+public class UniversityConnectionPool {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String GET_CONNECTION_ERROR = "The getting connection operation failed.";
 	private static final String CLOSE_CONNECTION_ERROR = "The close connection operation failed.";
@@ -27,7 +27,7 @@ public class ConnectionPool {
 	private List<Connection> inUsePool = new ArrayList<>();
 	private ConnectionDAOFactory connectionFactory;
 	
-	public ConnectionPool(ConnectionDAOFactory connectionFactory) {
+	public UniversityConnectionPool(ConnectionDAOFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
 	}
 	

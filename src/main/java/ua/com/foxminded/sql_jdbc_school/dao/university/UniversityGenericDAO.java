@@ -39,7 +39,7 @@ public abstract class UniversityGenericDAO<T> implements GenericDAO<T, Integer, 
 			
 		} catch (SQLException | DAOException e) {
 			LOGGER.error(ERROR_DELETE_ALL, e);
-			new DAOException(ERROR_DELETE_ALL, e);
+			throw new DAOException(ERROR_DELETE_ALL, e);
 		}
 		return status;
 	}

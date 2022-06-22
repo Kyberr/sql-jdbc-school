@@ -29,9 +29,12 @@ import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentDAO;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityStudentDAOTest {
-	private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-db.properties";
-	private static final String TEST_TABLES_SCRIPT_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-tables.sql";
-	private static final String TEST_DATA_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-data.sql";
+	private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/"
+												  + "src/main/resource/test-db.properties";
+	private static final String TEST_TABLES_SCRIPT_PATH = "D:/repository/SqlJdbcSchool/"
+														+ "src/main/resource/test-tables.sql";
+	private static final String TEST_DATA_PATH = "D:/repository/SqlJdbcSchool/"
+											   + "src/main/resource/test-data.sql";
 	private static final String DB_URL = "databaseURL";
     private static final String USER_NAME = "databaseUser";
     private static final String USER_PASS = "databaseUserPassword";

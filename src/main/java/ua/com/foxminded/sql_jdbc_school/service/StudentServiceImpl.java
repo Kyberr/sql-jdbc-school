@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
 import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
@@ -52,10 +52,10 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     private final Generator generator;
     private final StudentDAO studentDAO;
     private final CourseDAO courseDAO;
-    private final UniversityConnectionPool connectionPool;
+    private final UniversityDAOConnectionPool connectionPool;
     
     public StudentServiceImpl(Reader reader, Generator generator, StudentDAO studentDAO, 
-    						  CourseDAO courseDAO, UniversityConnectionPool connectionPool) {
+    						  CourseDAO courseDAO, UniversityDAOConnectionPool connectionPool) {
 		this.reader = reader;
 		this.generator = generator;
 		this.studentDAO = studentDAO;

@@ -1,6 +1,5 @@
 package ua.com.foxminded.sql_jdbc_school.dao.university;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,10 +37,10 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
     private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     private static final Integer BAD_STATUS = 0;
-    private UniversityConnectionPool connectionPool;
+    private UniversityDAOConnectionPool connectionPool;
     
     public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFacotry, 
-    						   UniversityConnectionPool connectionPool) {
+    						   UniversityDAOConnectionPool connectionPool) {
     	super(universityConnectionDAOFacotry);
     	this.connectionPool = connectionPool;
     }
@@ -71,7 +70,7 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
     		
     		connectionPool.releaseConnection(con);
     		return coursesOfstudent;
-    	} catch (SQLException | IOException e) {
+    	} catch (DAOException | SQLException e) {
     		LOGGER.error(ERROR_GET_COURSES_OF_STUDENT, e);
     		throw new DAOException(ERROR_GET_COURSES_OF_STUDENT, e);
     	} finally {
@@ -95,7 +94,7 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);
             return statement.executeUpdate();
-        } catch (SQLException | IOException e) {
+        } catch (DAOException | SQLException e) {
         	LOGGER.error(ERROR_DELETE_STUDENT_FROM_COURSE, e);
             throw new DAOException(ERROR_DELETE_STUDENT_FROM_COURSE, e);
         }
@@ -120,7 +119,7 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
             }
             
             return course;
-        } catch (SQLException | IOException e) {
+        } catch (SQLException | DAOException e) {
         	LOGGER.error(ERROR_GET_COURSE, e);
             throw new DAOException(ERROR_GET_COURSE, e);
         } finally {
@@ -149,7 +148,7 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
                                           			resultSet.getString(COURSE_DESC)));
             }
             return courseEntities;
-        } catch (SQLException | IOException e) {
+        } catch (SQLException | DAOException e) {
         	LOGGER.error(ERROR_GET_ALL_COURSES, e);
             throw new DAOException(ERROR_GET_ALL_COURSES, e);
             
@@ -185,7 +184,7 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
 
                 throw new SQLException(e);
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException | DAOException e) {
         	LOGGER.error(ERROR_CREATE, e);
             throw new DAOException(ERROR_CREATE, e);
         }

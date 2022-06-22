@@ -8,7 +8,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGroupDAO;
@@ -36,7 +36,7 @@ public class Main {
         Reader reader = new Reader();
         Generator generator = new Generator();
         ConnectionDAOFactory universityConnectionDAOFactory = new UniversityConnectionDAOFactory();
-        UniversityConnectionPool connectionPool = new UniversityConnectionPool(universityConnectionDAOFactory);
+        UniversityDAOConnectionPool connectionPool = new UniversityDAOConnectionPool(universityConnectionDAOFactory);
         CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory, connectionPool);
         StudentDAO studentDAO = new UniversityStudentDAO(universityConnectionDAOFactory, connectionPool);
         GroupDAO groupDAO = new UniversityGroupDAO(universityConnectionDAOFactory);

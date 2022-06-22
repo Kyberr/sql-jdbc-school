@@ -1,6 +1,5 @@
 package ua.com.foxminded.sql_jdbc_school.dao.university;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,7 +52,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
                                         resultSet.getString(GROUP_NAME)));
             }
             return result;
-        } catch (ClassCastException | NumberFormatException | SQLException | IOException e) {
+        } catch (ClassCastException | SQLException | DAOException e) {
         	LOGGER.error(ERROR_GET_LESS_OR_EQUAL_STUD, e);
             throw new DAOException (ERROR_GET_LESS_OR_EQUAL_STUD, e);
         }
@@ -73,7 +72,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
                                         resultSet.getString(GROUP_NAME)));
             }
             return result;
-        } catch (SQLException | IOException e) {
+        } catch (SQLException | DAOException e) {
         	LOGGER.error(ERROR_GET_ALL_GROUP, e);
             throw new DAOException(ERROR_GET_ALL_GROUP, e);
         }
@@ -101,7 +100,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
                 connection.rollback(save1);
                 throw new SQLException(e);
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException | DAOException e) {
         	LOGGER.error(ERROR_INSERT_GROUP, e);
             throw new DAOException(ERROR_INSERT_GROUP, e);
         }

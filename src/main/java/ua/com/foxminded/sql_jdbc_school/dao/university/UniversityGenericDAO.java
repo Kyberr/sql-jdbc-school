@@ -1,6 +1,5 @@
 package ua.com.foxminded.sql_jdbc_school.dao.university;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -38,7 +37,7 @@ public abstract class UniversityGenericDAO<T> implements GenericDAO<T, Integer, 
 			
 			status = prStatement.executeUpdate();
 			
-		} catch (SQLException | IOException e) {
+		} catch (SQLException | DAOException e) {
 			LOGGER.error(ERROR_DELETE_ALL, e);
 			new DAOException(ERROR_DELETE_ALL, e);
 		}

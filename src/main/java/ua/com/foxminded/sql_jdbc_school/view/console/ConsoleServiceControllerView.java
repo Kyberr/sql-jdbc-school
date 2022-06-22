@@ -70,7 +70,7 @@ public class ConsoleServiceControllerView implements ServiceControllerView<List<
     private static final String FAILURE_STUDENT_FROM_COURSE_DELETING = "There is no such student in the course.";
     private static final String SUCCESS_STUDENT_FROM_COURSE_DELETING = "The student has been deleted from the course.";
     private static final String EXECUTION_HAS_BEEN_STOPPED = "The program execution has been stopped.";
-    private static final String ENTER_LAST_NAME = "Enter a last name of the student adding:";
+    private static final String ENTER_LAST_NAME = "Enter the last name of the student adding:";
     private static final String ENTER_FIRST_NAME = "Enter a first name of the student adding:";
     private static final String ADD_STUDENT_YES_OR_NO = "To confirm the student adding, write \"yes\" or \"no\" "
                                                       + "and press the \"Enter\" key:";

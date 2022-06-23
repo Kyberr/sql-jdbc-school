@@ -50,7 +50,7 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
                 waitFreeConnection();
                 con = getConnection();
             }
-        } catch (DAOException | SQLException | InterruptedException e) {
+        } catch (SQLException | InterruptedException e) {
             LOGGER.error(GET_CONNECTION_ERROR, e);
             Thread.currentThread().interrupt();
             throw new DAOException(GET_CONNECTION_ERROR, e);

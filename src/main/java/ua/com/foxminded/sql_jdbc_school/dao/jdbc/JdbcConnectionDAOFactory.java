@@ -28,7 +28,7 @@ public class JdbcConnectionDAOFactory implements ConnectionDAOFactory {
                                                                  .getProperty(USER_NAME),
                                                DAOPropertiesCache.getInstance(DB_PROP_FILENAME)
                                                                  .getProperty(USER_PASS));
-        } catch (SQLException | DAOException e) {
+        } catch (SQLException e) {
             LOGGER.error(CREATE_CONNECTION, e);
             throw new DAOException(CREATE_CONNECTION, e);
         }

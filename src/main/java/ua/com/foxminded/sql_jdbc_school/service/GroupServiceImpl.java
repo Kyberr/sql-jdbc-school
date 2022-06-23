@@ -14,8 +14,8 @@ import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 
 public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
-	private static final Logger LOGGER = LogManager.getLogger();
-	private static final String ERROR_DELETE_ALL_GROUPS = "The service of groups deletion is failed.";
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static final String ERROR_DELETE_ALL_GROUPS = "The service of groups deletion is failed.";
     private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "
             + "less or equal to the specified number of students is failed. ";
@@ -28,56 +28,54 @@ public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
         this.groupDAO = groupDAO;
         this.studentDAO = studentDAO;
     }
-    
+
     @Override
     public Integer deleteAllGroups() throws ServiceException {
-    	int status = 0;
-    	try {
-    		status = studentDAO.deleteAll(UniversityGenericDAO.GROUPS);
-    	} catch (DAOException e) {
-    		LOGGER.error(ERROR_DELETE_ALL_GROUPS, e);
-    		throw new ServiceException(ERROR_DELETE_ALL_GROUPS, e);
-    	}
-    	return status;
+        int status = 0;
+        try {
+            status = studentDAO.deleteAll(UniversityGenericDAO.GROUPS);
+        } catch (DAOException e) {
+            LOGGER.error(ERROR_DELETE_ALL_GROUPS, e);
+            throw new ServiceException(ERROR_DELETE_ALL_GROUPS, e);
+        }
+        return status;
     }
-    
+
     @Override
-    public List<GroupDto> findGroupsWithLessOrEqualStudents(Integer studentQuantity) 
-            throws ServiceException {
+    public List<GroupDto> findGroupsWithLessOrEqualStudents(Integer studentQuantity) throws ServiceException {
         try {
             List<GroupEntity> groups = groupDAO.getGroupsHavingLessOrEqualStudents(studentQuantity);
             List<StudentEntity> students = studentDAO.getAll();
             List<GroupDto> groupDTO = new ArrayList<>();
             groups.stream().forEach((group) -> {
-            	long studentsInGroup = students.stream()
-            			.filter((student) -> student.getGroupId() == group.getGroupId())
-            			.count();
-            	groupDTO.add(new GroupDto(group.getGroupId(), 
-            						      group.getGroupName(), 
-            						      (int) studentsInGroup));
+                long studentsInGroup = students.stream()
+                        .filter((student) -> student.getGroupId() == group.getGroupId())
+                        .count();
+                groupDTO.add(new GroupDto(group.getGroupId(), 
+                                          group.getGroupName(), 
+                                          (int) studentsInGroup));
             });
-            return groupDTO;		
+            return groupDTO;
         } catch (DAOException e) {
-        	LOGGER.error(ERROR_FIND_LESS_OR_EQUALS, e);
-            throw new ServiceException (ERROR_FIND_LESS_OR_EQUALS, e); 
+            LOGGER.error(ERROR_FIND_LESS_OR_EQUALS, e);
+            throw new ServiceException(ERROR_FIND_LESS_OR_EQUALS, e);
         }
     }
-    
+
     @Override
     public List<GroupDto> createGroups() throws ServiceException {
         try {
             List<String> groupNames = generator.getGroupName();
-            List<GroupEntity> groupEntities = groupNames.stream()
-            				          					.map((line) -> new GroupEntity(null, line))
-            				          					.collect(Collectors.toList());
+            List<GroupEntity> groupEntities = groupNames.stream().map((line) -> new GroupEntity(null, line))
+                                                        .collect(Collectors.toList());
             groupDAO.insert(groupEntities);
             return groupDAO.getAll()
-            			   .stream()
-            			   .map((groupEntity) -> new GroupDto(groupEntity.getGroupId(), 
-            					   							  groupEntity.getGroupName()))
-            			   .collect(Collectors.toList());
+                           .stream()
+                           .map((groupEntity) -> new GroupDto(groupEntity.getGroupId(), 
+                                                              groupEntity.getGroupName()))
+                           .collect(Collectors.toList());
         } catch (DAOException e) {
-        	LOGGER.error(ERROR_CREATE_GROUPS, e);
+            LOGGER.error(ERROR_CREATE_GROUPS, e);
             throw new ServiceException(ERROR_CREATE_GROUPS, e);
         }
     }

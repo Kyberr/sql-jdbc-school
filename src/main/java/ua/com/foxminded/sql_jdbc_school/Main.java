@@ -28,7 +28,6 @@ import ua.com.foxminded.sql_jdbc_school.service.StudentServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleServiceControllerView;
 
-
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -40,15 +39,28 @@ public class Main {
         CourseDAO courseDAO = new UniversityCourseDAO(universityConnectionDAOFactory, connectionPool);
         StudentDAO studentDAO = new UniversityStudentDAO(universityConnectionDAOFactory, connectionPool);
         GroupDAO groupDAO = new UniversityGroupDAO(universityConnectionDAOFactory);
-        StudentService<List<StudentDto>, List<GroupDto>, String, Integer, List<CourseDto>> studentService = 
-        		new StudentServiceImpl(reader, generator, studentDAO, courseDAO, connectionPool);
+        StudentService<List<StudentDto>, 
+                       List<GroupDto>, 
+                       String, Integer, 
+                       List<CourseDto>> studentService = new StudentServiceImpl(reader, 
+                                                                                generator, 
+                                                                                studentDAO, 
+                                                                                courseDAO, 
+                                                                                connectionPool);
         CourseService<List<CourseDto>, Integer> courseService = new CourseServiceImpl(reader, courseDAO);
-        GroupService<List<GroupDto>,Integer> groupService = new GroupServiceImpl(generator, groupDAO, studentDAO);
-        ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 
-                 			  Integer> serviceControllerView = new ConsoleServiceControllerView();
-        ServiceController serviceController = new ServiceController(studentService, courseService, groupService, 
-        											   				serviceControllerView);
-        
+        GroupService<List<GroupDto>, Integer> groupService = new GroupServiceImpl(generator, 
+                                                                                  groupDAO, 
+                                                                                  studentDAO);
+        ServiceControllerView<List<GroupDto>, 
+                              List<CourseDto>, 
+                              List<StudentDto>, 
+                              List<StudentDto>, 
+                              Integer> serviceControllerView = new ConsoleServiceControllerView();
+        ServiceController serviceController = new ServiceController(studentService, 
+                                                                    courseService, 
+                                                                    groupService,
+                                                                    serviceControllerView);
+
         try {
             serviceController.bootstrap();
             serviceController.execute();

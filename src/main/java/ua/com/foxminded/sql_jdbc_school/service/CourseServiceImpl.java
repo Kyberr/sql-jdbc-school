@@ -11,73 +11,73 @@ import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 
 public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer> {
-	private static final Logger LOGGER = LogManager.getLogger();
-	private static final String ERROR_DELETE_ALL_COURSES = "The service of course deletion doesn't work.";
-	private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
-             													 + "from the course doesn't work.";
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static final String ERROR_DELETE_ALL_COURSES = "The service of course deletion doesn't work.";
+    private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
+                                                                 + "from the course doesn't work.";
     private static final String COURSE_NAME_LIST_FILENAME = "courseNameList.txt";
     private static final String ERROR_CREATE_COURSES = "The courses creation service doesn't work.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all courses service doesn't work.";
     private final Reader reader;
     private final CourseDAO courseDao;
-    
+
     public CourseServiceImpl(Reader reader, CourseDAO courseDao) {
         this.reader = reader;
         this.courseDao = courseDao;
     }
-    
+
     @Override
     public Integer deleteAllCourses() throws ServiceException {
-    	try {
-    		return courseDao.deleteAll(UniversityGenericDAO.COURSES);
-    	} catch (DAOException e) {
-    		LOGGER.error(ERROR_DELETE_ALL_COURSES, e);
-    		throw new ServiceException(ERROR_DELETE_ALL_COURSES, e);
-    	}
+        try {
+            return courseDao.deleteAll(UniversityGenericDAO.COURSES);
+        } catch (DAOException e) {
+            LOGGER.error(ERROR_DELETE_ALL_COURSES, e);
+            throw new ServiceException(ERROR_DELETE_ALL_COURSES, e);
+        }
     }
-    
+
     @Override
     public Integer deleteStudentFromCourse(Integer studentId, Integer courseId) throws ServiceException {
         try {
             return courseDao.deleteStudentFromCourse(studentId, courseId);
         } catch (DAOException e) {
-        	LOGGER.error(ERROR_DELETE_STUDENT_FROM_COURSE, e);
+            LOGGER.error(ERROR_DELETE_STUDENT_FROM_COURSE, e);
             throw new ServiceException(ERROR_DELETE_STUDENT_FROM_COURSE, e);
         }
     }
-    
+
     @Override
     public List<CourseDto> createCourses() throws ServiceException {
         try {
             List<String> coursesList = reader.read(COURSE_NAME_LIST_FILENAME);
             List<CourseEntity> courseEntities = coursesList.parallelStream()
-            											   .map((courseName) -> new CourseEntity(courseName))
-            											   .collect(Collectors.toList());
+                    .map((courseName) -> new CourseEntity(courseName))
+                    .collect(Collectors.toList());
             courseDao.insert(courseEntities);
             return courseDao.getAll()
-            				.parallelStream()
-            				.map((entity) -> new CourseDto(entity.getCourseId(), 
-            						                       entity.getCourseName(), 
-            						                       entity.getCourseDescription()))
-            				.collect(Collectors.toList());
+                            .parallelStream()
+                            .map((entity) -> new CourseDto(entity.getCourseId(),
+                                                           entity.getCourseName(), 
+                                                           entity.getCourseDescription()))
+                            .collect(Collectors.toList());
         } catch (ServiceException | DAOException e) {
-        	LOGGER.error(ERROR_CREATE_COURSES, e);
+            LOGGER.error(ERROR_CREATE_COURSES, e);
             throw new ServiceException(ERROR_CREATE_COURSES, e);
         }
     }
-    
+
     @Override
     public List<CourseDto> getAllCourses() throws ServiceException {
-    	try {
+        try {
             return courseDao.getAll()
-            			    .stream()
-            			    .map((entity) -> new CourseDto(entity.getCourseId(), 
-            				   	  						   entity.getCourseName(), 
-            				   	  						   entity.getCourseDescription()))
-            			    .collect(Collectors.toList());
+                            .stream()
+                            .map((entity) -> new CourseDto(entity.getCourseId(),
+                                                           entity.getCourseName(), 
+                                                           entity.getCourseDescription()))
+                            .collect(Collectors.toList());
         } catch (DAOException e) {
-        	LOGGER.error(ERROR_GET_ALL_COURSES, e);
-            throw new ServiceException (ERROR_GET_ALL_COURSES, e);
+            LOGGER.error(ERROR_GET_ALL_COURSES, e);
+            throw new ServiceException(ERROR_GET_ALL_COURSES, e);
         }
     }
 }

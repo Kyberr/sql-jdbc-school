@@ -10,7 +10,7 @@ public class StudentDto {
     Integer courseId;
     String courseName;
     String courseDescription;
-    
+
     public StudentDto(Integer studentId, Integer groupId, String firstName, String lastName, Integer courseId,
             String courseName, String courseDescription) {
         this.studentId = studentId;
@@ -21,20 +21,20 @@ public class StudentDto {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
     }
-    
+
     public StudentDto(Integer studentId, Integer groupId, String firstName, String lastName) {
         this.studentId = studentId;
         this.groupId = groupId;
         this.firstName = firstName;
         this.lastName = lastName;
     }
-    
-    public StudentDto(String firstName, String lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
 
-	public Integer getStudentId() {
+    public StudentDto(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Integer getStudentId() {
         return studentId;
     }
 
@@ -94,7 +94,7 @@ public class StudentDto {
     public int hashCode() {
         return Objects.hash(courseDescription, courseId, courseName, lastName, firstName, studentId);
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -104,11 +104,11 @@ public class StudentDto {
         if (getClass() != obj.getClass())
             return false;
         StudentDto other = (StudentDto) obj;
-        return Objects.equals(courseDescription, other.courseDescription) && Objects.equals(courseName, other.courseName)
-                && Objects.equals(courseId, other.courseId) && Objects.equals(lastName, other.lastName) 
-                && Objects.equals(firstName, other.firstName) && Objects.equals(groupId, other.groupId) 
-                && Objects.equals(studentId, other.studentId);
-                    
+        return Objects.equals(courseDescription, other.courseDescription)
+                && Objects.equals(courseName, other.courseName) && Objects.equals(courseId, other.courseId)
+                && Objects.equals(lastName, other.lastName) && Objects.equals(firstName, other.firstName)
+                && Objects.equals(groupId, other.groupId) && Objects.equals(studentId, other.studentId);
+
     }
 
     @Override

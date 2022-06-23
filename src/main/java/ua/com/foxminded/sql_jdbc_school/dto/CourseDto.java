@@ -6,7 +6,7 @@ public class CourseDto {
     private Integer courseId;
     private String courseName;
     private String courseDescription;
-    
+
     public CourseDto(Integer courseId, String courseName, String courseDescription) {
         this.courseId = courseId;
         this.courseName = courseName;

@@ -12,25 +12,25 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 
 public class UniversityConnectionDAOFactory implements ConnectionDAOFactory {
-    
+
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CREATE_CONNECTION = "The connect creation failed.";
     private static final String DB_PROP_FILENAME = "db.properties";
     private static final String DB_URL = "universityDatabaseURL";
     private static final String USER_NAME = "universityUser";
     private static final String USER_PASS = "universityPassword";
-    
+
     public Connection createConnection() throws DAOException {
-    	try {
+        try {
             return DriverManager.getConnection(DAOPropertiesCache.getInstance(DB_PROP_FILENAME)
-            													 .getProperty(DB_URL), 
-            								   DAOPropertiesCache.getInstance(DB_PROP_FILENAME)
-            								   					 .getProperty(USER_NAME),
-            								   DAOPropertiesCache.getInstance(DB_PROP_FILENAME)
-            								   					 .getProperty(USER_PASS));
-    	} catch (SQLException | DAOException e) {
-    		LOGGER.error(CREATE_CONNECTION, e);
-    		throw new DAOException(CREATE_CONNECTION, e);
-    	}
+                                                                 .getProperty(DB_URL),
+                                               DAOPropertiesCache.getInstance(DB_PROP_FILENAME)
+                                                                 .getProperty(USER_NAME),
+                                               DAOPropertiesCache.getInstance(DB_PROP_FILENAME)
+                                                                 .getProperty(USER_PASS));
+        } catch (SQLException | DAOException e) {
+            LOGGER.error(CREATE_CONNECTION, e);
+            throw new DAOException(CREATE_CONNECTION, e);
+        }
     }
 }

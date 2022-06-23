@@ -13,7 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
 import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
 public class ServiceController {
-	private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
     private static final String ERROR_EXECUTE = "The ServiceController execution is failed.";
     private static final String WORD_EXIT = "exit";
@@ -24,18 +24,27 @@ public class ServiceController {
     private static final int NORMAL_DEL_STATUS = 0;
     private static final int NUMBER_OF_ITEMS = 6;
     private static final int NORMAL_STATUS_OF_ADDING = 1;
-   
+
     private StudentService<List<StudentDto>, List<GroupDto>, String, Integer, List<CourseDto>> studentService;
     private CourseService<List<CourseDto>, Integer> courseService;
     private GroupService<List<GroupDto>, Integer> groupService;
-    private ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 
-                     		      Integer> serviceControllerView;
-    public ServiceController(StudentService<List<StudentDto>, List<GroupDto>, String, Integer, 
-    										List<CourseDto>> studentService,
-            CourseService<List<CourseDto>, Integer> courseService, GroupService<List<GroupDto>, 
-            	   		  Integer> groupService,
-            ServiceControllerView<List<GroupDto>, List<CourseDto>, List<StudentDto>, List<StudentDto>, 
-                                  Integer> serviceControllerView) {
+    private ServiceControllerView<List<GroupDto>, 
+                                  List<CourseDto>, 
+                                  List<StudentDto>, 
+                                  List<StudentDto>, 
+                                  Integer> serviceControllerView;
+
+    public ServiceController(StudentService<List<StudentDto>, 
+                                            List<GroupDto>, 
+                                            String, Integer, 
+                                            List<CourseDto>> studentService,
+                             CourseService<List<CourseDto>, Integer> courseService, 
+                             GroupService<List<GroupDto>, Integer> groupService,
+                             ServiceControllerView<List<GroupDto>, 
+                                                   List<CourseDto>, 
+                                                   List<StudentDto>, 
+                                                   List<StudentDto>, 
+                                                   Integer> serviceControllerView) {
         this.studentService = studentService;
         this.courseService = courseService;
         this.groupService = groupService;
@@ -44,11 +53,11 @@ public class ServiceController {
 
     public void execute() throws ServiceException {
         Scanner scanner = new Scanner(System.in);
-        
+
         try {
-            for ( ; ; ) {
+            for (;;) {
                 serviceControllerView.showMenuItems();
-                
+
                 switch (preventWrongInputOrExit(scanner)) {
                 case 1:
                     findGroupsWithLessOrEqualStudents(scanner);
@@ -66,34 +75,34 @@ public class ServiceController {
                     addStudentToCourse(scanner);
                     break;
                 case 6:
-                    removeStudentFromCourse(scanner); 
+                    removeStudentFromCourse(scanner);
                     break;
                 }
             }
         } catch (ServiceException | NoSuchElementException | IllegalStateException e) {
-        	LOGGER.error(ERROR_EXECUTE, e);
+            LOGGER.error(ERROR_EXECUTE, e);
             throw new ServiceException(ERROR_EXECUTE, e);
         } finally {
             scanner.close();
         }
     }
-    
+
     public void bootstrap() throws ServiceException {
         try {
-        	studentService.deleteAllStudents();
-        	groupService.deleteAllGroups();
-        	courseService.deleteAllCourses();
+            studentService.deleteAllStudents();
+            groupService.deleteAllGroups();
+            courseService.deleteAllCourses();
             List<CourseDto> courses = courseService.createCourses();
             studentService.createStudents();
             List<GroupDto> groups = groupService.createGroups();
             List<StudentDto> studentsHavingGroupId = studentService.assignGroup(groups);
             studentService.assignStudentToCourse(studentsHavingGroupId, courses);
         } catch (ServiceException e) {
-        	LOGGER.error(ERROR_BOOTSTRAP, e);
+            LOGGER.error(ERROR_BOOTSTRAP, e);
             throw new ServiceException(ERROR_BOOTSTRAP, e);
         }
     }
-    
+
     private void removeStudentFromCourse(Scanner scanner) throws ServiceException {
         for (;;) {
             List<StudentDto> studnetCourse = studentService.getAllStudentsHavingCourse();
@@ -129,7 +138,7 @@ public class ServiceController {
             }
         }
     }
-    
+
     private void addStudentToCourse(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentDto> studentsHaveGroupId = studentService.getStudentsHavingGroupId();
@@ -155,10 +164,10 @@ public class ServiceController {
                 break first;
             }
 
-            for ( ; ; ) {
+            for (;;) {
                 serviceControllerView.addStudentToCourseOrReturnMenu();
                 String input = scanner.nextLine();
-                
+
                 if (input.equals(EMPTY_STRING)) {
                     continue first;
                 } else if (input.equals(WORD_EXIT)) {
@@ -167,10 +176,10 @@ public class ServiceController {
             }
         }
     }
-    
+
     private String scanOnlyYesOrNo(Scanner scanner) {
         String confirm = "";
-        
+
         for (;;) {
             confirm = scanner.nextLine();
 
@@ -181,7 +190,7 @@ public class ServiceController {
             }
         }
     }
-    
+
     private void deleteStudentFromDatabase(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentDto> students = studentService.getAllStudents();
@@ -212,9 +221,9 @@ public class ServiceController {
             }
         }
     }
-    
+
     private void addStudentToDatabase(Scanner scanner) throws ServiceException {
-        for ( ; ; ) {
+        for (;;) {
             serviceControllerView.enterLastName();
             String lastName = scanner.nextLine();
             serviceControllerView.enterFirstName();
@@ -222,18 +231,18 @@ public class ServiceController {
             enterStudentNameAndAddToDatabase(lastName, firstName, scanner);
             serviceControllerView.addStudentToDatabaseOrReturnMenu();
             String keyWord = scanOnlyEmptyStringOrExitWord(scanner);
-            
+
             if (keyWord.equals(WORD_EXIT)) {
                 break;
             }
         }
     }
-    
+
     private String scanOnlyEmptyStringOrExitWord(Scanner scanner) {
         String keyWord = "";
-        for ( ; ; ) {
+        for (;;) {
             String input = scanner.nextLine();
-            
+
             if (input.equals(EMPTY_STRING)) {
                 break;
             } else if (input.equals(WORD_EXIT)) {
@@ -243,14 +252,13 @@ public class ServiceController {
         }
         return keyWord;
     }
-    
-    private void enterStudentNameAndAddToDatabase(String lastName, 
-                                                  String firstName, 
-                                                  Scanner scanner) throws ServiceException {
+
+    private void enterStudentNameAndAddToDatabase(String lastName, String firstName, Scanner scanner)
+            throws ServiceException {
         for (;;) {
             serviceControllerView.addStudentYesOrNo();
             String input = scanner.nextLine();
-            
+
             if (input.equals(WORD_YES)) {
                 if (studentService.addStudent(lastName, firstName) == NORMAL_STATUS_OF_ADDING) {
                     serviceControllerView.studentHasBeenAddedToDatabase();
@@ -261,7 +269,7 @@ public class ServiceController {
             }
         }
     }
-    
+
     private void findStudentsRelatedToCourse(Scanner couseIdScanner) throws ServiceException {
         List<CourseDto> courses = courseService.getAllCourses();
         serviceControllerView.showCourses(courses);
@@ -271,22 +279,21 @@ public class ServiceController {
         serviceControllerView.showStudentCourse(studentCourse);
         exitOrReturnMainMenu(couseIdScanner);
     }
-    
-    private void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) 
-            throws ServiceException {
+
+    private void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) throws ServiceException {
         serviceControllerView.enterNumberOfStudents();
         List<GroupDto> groups = groupService
                 .findGroupsWithLessOrEqualStudents(scanOnlyIntInput(studentsNumberScanner));
         serviceControllerView.showNumberOfStudentsInGroups(groups);
         exitOrReturnMainMenu(studentsNumberScanner);
     }
-    
+
     private void exitOrReturnMainMenu(Scanner scanner) {
         serviceControllerView.returnMainMenuOrExit();
-        
-        while(scanner.hasNextLine()) {
+
+        while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
-            
+
             if (input.equals(WORD_EXIT)) {
                 serviceControllerView.executionHasBeenStopped();
                 System.exit(NORMAL_DEL_STATUS);
@@ -297,31 +304,31 @@ public class ServiceController {
             }
         }
     }
-    
+
     private int scanOnlyIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
             serviceControllerView.showIncorrectInputWarning();
         }
         int input = scanner.nextInt();
-        scanner.nextLine(); // it is used to clean the buffer from the empty string       
+        scanner.nextLine(); // it is used to clean the buffer from the empty string
         return input;
     }
-    
+
     private int preventWrongInputOrExit(Scanner scanner) {
         int output = 0;
-        
-        for ( ; ; ) {
+
+        for (;;) {
             if (!scanner.hasNextInt()) {
                 if (scanner.nextLine().equals(WORD_EXIT)) {
                     System.exit(NORMAL_DEL_STATUS);
                 } else {
-                    serviceControllerView.showIncorrectInputWarning(); 
+                    serviceControllerView.showIncorrectInputWarning();
                 }
             } else {
                 output = scanner.nextInt();
                 scanner.nextLine();
-                
+
                 if (output == 0 || output > NUMBER_OF_ITEMS) {
                     serviceControllerView.showIncorrectInputWarning();
                 } else {

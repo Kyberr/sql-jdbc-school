@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.service;
+package ua.com.foxminded.sql_jdbc_school.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,13 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
 import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.service.Generator;
+import ua.com.foxminded.sql_jdbc_school.service.GroupService;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
 public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -33,7 +36,7 @@ public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
     public Integer deleteAllGroups() throws ServiceException {
         int status = 0;
         try {
-            status = studentDAO.deleteAll(UniversityGenericDAO.GROUPS);
+            status = studentDAO.deleteAll(JdbcGenericDAO.GROUPS);
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_ALL_GROUPS, e);
             throw new ServiceException(ERROR_DELETE_ALL_GROUPS, e);

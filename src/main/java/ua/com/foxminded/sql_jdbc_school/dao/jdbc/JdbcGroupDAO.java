@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,7 +18,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 
-public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implements GroupDAO {
+public class JdbcGroupDAO extends JdbcGenericDAO<GroupEntity> implements GroupDAO {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String QUERIES_FILE_NAME = "group-queries.properties";
@@ -32,7 +32,7 @@ public class UniversityGroupDAO extends UniversityGenericDAO<GroupEntity> implem
     private static final String ERROR_GET_LESS_OR_EQUAL_STUD = "Getting the groups with a less or "
             + "equal number of students is failed.";
 
-    public UniversityGroupDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+    public JdbcGroupDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
         super(universityConnectionDAOFactory);
     }
 

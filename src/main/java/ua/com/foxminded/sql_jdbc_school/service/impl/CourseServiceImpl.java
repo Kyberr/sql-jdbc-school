@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.service;
+package ua.com.foxminded.sql_jdbc_school.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,9 +6,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.service.CourseService;
+import ua.com.foxminded.sql_jdbc_school.service.Reader;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
 public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -29,7 +32,7 @@ public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer
     @Override
     public Integer deleteAllCourses() throws ServiceException {
         try {
-            return courseDao.deleteAll(UniversityGenericDAO.COURSES);
+            return courseDao.deleteAll(JdbcGenericDAO.COURSES);
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_ALL_COURSES, e);
             throw new ServiceException(ERROR_DELETE_ALL_COURSES, e);

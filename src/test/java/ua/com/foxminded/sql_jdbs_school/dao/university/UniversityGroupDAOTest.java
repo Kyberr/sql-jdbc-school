@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGroupDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGroupDAO;
 import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,7 +60,7 @@ class UniversityGroupDAOTest {
     private static final String USER_PASS = "databaseUserPassword";
     
 	@InjectMocks
-	UniversityGroupDAO universityGroupDao;
+	JdbcGroupDAO universityGroupDao;
 	
 	@Mock
 	ConnectionDAOFactory universityConnectionDaoFactory;

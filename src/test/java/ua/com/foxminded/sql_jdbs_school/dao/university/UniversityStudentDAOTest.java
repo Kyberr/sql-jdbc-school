@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityStudentDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityStudentDAOTest {
@@ -42,7 +42,7 @@ class UniversityStudentDAOTest {
     private static final Integer STUDENT_QUANTITY_HAVING_GROUP_ID = 5;
     
     @InjectMocks
-    UniversityStudentDAO universityStudentDao;
+    JdbcStudentDAO universityStudentDao;
     
     @Mock
     ConnectionDAOFactory universityConnectionDaoFactory;

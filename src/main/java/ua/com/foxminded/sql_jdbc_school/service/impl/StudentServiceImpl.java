@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.service;
+package ua.com.foxminded.sql_jdbc_school.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +11,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPoolImpl;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.university.UniversityGenericDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
 import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
 import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.service.Generator;
+import ua.com.foxminded.sql_jdbc_school.service.Reader;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
+import ua.com.foxminded.sql_jdbc_school.service.StudentService;
 
 public class StudentServiceImpl implements StudentService<List<StudentDto>, 
                                                           List<GroupDto>, 
@@ -52,13 +56,13 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     private final Generator generator;
     private final StudentDAO studentDAO;
     private final CourseDAO courseDAO;
-    private final DAOConnectionPoolImpl connectionPool;
+    private final JdbcDAOConnectionPool connectionPool;
 
     public StudentServiceImpl(Reader reader, 
                               Generator generator, 
                               StudentDAO studentDAO, 
                               CourseDAO courseDAO,
-                              DAOConnectionPoolImpl connectionPool) {
+                              JdbcDAOConnectionPool connectionPool) {
         this.reader = reader;
         this.generator = generator;
         this.studentDAO = studentDAO;
@@ -71,7 +75,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         int status = 0;
         
         try {
-            status = studentDAO.deleteAll(UniversityGenericDAO.STUDENTS);
+            status = studentDAO.deleteAll(JdbcGenericDAO.STUDENTS);
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_STUDENTS, e);
             throw new ServiceException(ERROR_DELETE_STUDENTS, e);

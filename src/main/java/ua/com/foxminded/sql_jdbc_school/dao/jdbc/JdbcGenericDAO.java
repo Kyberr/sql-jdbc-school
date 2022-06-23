@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.GenericDAO;
 
-public abstract class UniversityGenericDAO<T> implements GenericDAO<T, Integer, String> {
+public abstract class JdbcGenericDAO<T> implements GenericDAO<T, Integer, String> {
     public static final String STUDENTS = "students";
     public static final String COURSES = "courses";
     public static final String GROUPS = "groups";
@@ -22,7 +22,7 @@ public abstract class UniversityGenericDAO<T> implements GenericDAO<T, Integer, 
 
     ConnectionDAOFactory universityConnectionDAOFactory;
 
-    protected UniversityGenericDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
+    protected JdbcGenericDAO(ConnectionDAOFactory universityConnectionDAOFactory) {
         this.universityConnectionDAOFactory = universityConnectionDAOFactory;
     }
 

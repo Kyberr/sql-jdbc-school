@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +11,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 
-public class UniversityConnectionDAOFactory implements ConnectionDAOFactory {
+public class JdbcConnectionDAOFactory implements ConnectionDAOFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CREATE_CONNECTION = "The connect creation failed.";

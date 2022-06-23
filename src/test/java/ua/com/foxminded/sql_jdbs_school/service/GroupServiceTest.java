@@ -19,8 +19,8 @@ import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
-import ua.com.foxminded.sql_jdbc_school.service.GroupServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
+import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class GroupServiceTest {

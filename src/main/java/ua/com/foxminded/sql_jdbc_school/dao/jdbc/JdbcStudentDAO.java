@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,14 +13,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPoolImpl;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 
-public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> implements StudentDAO {
+public class JdbcStudentDAO extends JdbcGenericDAO<StudentEntity> implements StudentDAO {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String GET_STUDENTS_OF_COURS_BY_ID = "getStudentsOfCourseByID";
@@ -52,10 +51,10 @@ public class UniversityStudentDAO extends UniversityGenericDAO<StudentEntity> im
     private static final String ERROR_GET_STUDENT = "Getting the student data failed.";
     private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
                                                                  + "group ID failed.";
-    private DAOConnectionPoolImpl connectionPool;
+    private JdbcDAOConnectionPool connectionPool;
 
-    public UniversityStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory,
-                                DAOConnectionPoolImpl connectionPool) {
+    public JdbcStudentDAO(ConnectionDAOFactory universityConnectionDAOFactory,
+                                JdbcDAOConnectionPool connectionPool) {
         super(universityConnectionDAOFactory);
         this.connectionPool = connectionPool;
     }

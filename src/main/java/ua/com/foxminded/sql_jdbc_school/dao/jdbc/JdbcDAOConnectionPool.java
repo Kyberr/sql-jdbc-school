@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao;
+package ua.com.foxminded.sql_jdbc_school.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,9 +8,12 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPoolImpl;
+import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
 
-public class DAOConnectionPoolImpl implements DAOConnectionPool {
+public class JdbcDAOConnectionPool implements DAOConnectionPool {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String GET_CONNECTION_ERROR = "The getting connection failed.";
     private static final String WAIT_FREE_CONNECTION_ERROR = "The thread waiting for the "
@@ -26,7 +29,7 @@ public class DAOConnectionPoolImpl implements DAOConnectionPool {
     private List<Connection> inUsePool = new ArrayList<>();
     private ConnectionDAOFactory connectionFactory;
 
-    public DAOConnectionPoolImpl(ConnectionDAOFactory connectionFactory) {
+    public JdbcDAOConnectionPool(ConnectionDAOFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 

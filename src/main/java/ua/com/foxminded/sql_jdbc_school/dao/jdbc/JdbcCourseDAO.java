@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.dao.university;
+package ua.com.foxminded.sql_jdbc_school.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,12 +13,11 @@ import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPoolImpl;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 
-public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> implements CourseDAO {
+public class JdbcCourseDAO extends JdbcGenericDAO<CourseEntity> implements CourseDAO {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_GET_COURSES_OF_STUDENT = "Get courses of a student is failed.";
@@ -38,10 +37,10 @@ public class UniversityCourseDAO extends UniversityGenericDAO<CourseEntity> impl
     private static final String ERROR_CREATE = "The insertion of the courses to the database is failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all data from the database is failed.";
     private static final Integer BAD_STATUS = 0;
-    private DAOConnectionPoolImpl connectionPool;
+    private JdbcDAOConnectionPool connectionPool;
 
-    public UniversityCourseDAO(ConnectionDAOFactory universityConnectionDAOFacotry,
-                               DAOConnectionPoolImpl connectionPool) {
+    public JdbcCourseDAO(ConnectionDAOFactory universityConnectionDAOFacotry,
+                               JdbcDAOConnectionPool connectionPool) {
         super(universityConnectionDAOFacotry);
         this.connectionPool = connectionPool;
     }

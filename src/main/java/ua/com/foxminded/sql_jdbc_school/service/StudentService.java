@@ -10,7 +10,7 @@ public interface StudentService<T, S, E, F, K> {
 
     public T getAllStudentsHavingCourse() throws ServiceException;
 
-    public T assignStudentToCourse(T students, K courses) throws ServiceException;
+    public T assignCourseToStudent(T students, K courses) throws ServiceException;
 
     public T getStudentsHavingGroupId() throws ServiceException;
 
@@ -22,5 +22,5 @@ public interface StudentService<T, S, E, F, K> {
 
     public T createStudents() throws ServiceException;
 
-    public T assignGroup(S groups) throws ServiceException;
+    public T assignGroupToStudent(S groups) throws ServiceException;
 }

@@ -8,20 +8,20 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
-public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer> {
+public class CourseServiceImpl implements CourseService<List<CourseModel>, Integer> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CLOSE_CONNECTION_POOL_ERROR = "The closing opreation of connections "
                                                             + "in the pool failed.";
     private static final String ERROR_DELETE_ALL_COURSES = "The service of course deletion doesn't work.";
     private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
                                                                  + "from the course doesn't work.";
-    private static final String COURSE_NAME_LIST_FILENAME = "courseNameList.txt";
+    private static final String COURSE_NAME_LIST_FILENAME = "course-names.txt";
     private static final String ERROR_CREATE_COURSES = "The courses creation service doesn't work.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all courses service doesn't work.";
     
@@ -60,7 +60,7 @@ public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer
     }
 
     @Override
-    public List<CourseDto> createCourses() throws ServiceException {
+    public List<CourseModel> createCourses() throws ServiceException {
         try {
             List<String> coursesList = reader.read(COURSE_NAME_LIST_FILENAME);
             List<CourseEntity> courseEntities = coursesList.parallelStream()
@@ -69,7 +69,7 @@ public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer
             courseDao.insert(courseEntities);
             return courseDao.getAll()
                             .parallelStream()
-                            .map((entity) -> new CourseDto(entity.getCourseId(),
+                            .map((entity) -> new CourseModel(entity.getCourseId(),
                                                            entity.getCourseName(), 
                                                            entity.getCourseDescription()))
                             .collect(Collectors.toList());
@@ -82,11 +82,11 @@ public class CourseServiceImpl implements CourseService<List<CourseDto>, Integer
     }
 
     @Override
-    public List<CourseDto> getAllCourses() throws ServiceException {
+    public List<CourseModel> getAllCourses() throws ServiceException {
         try {
             return courseDao.getAll()
                             .stream()
-                            .map((entity) -> new CourseDto(entity.getCourseId(),
+                            .map((entity) -> new CourseModel(entity.getCourseId(),
                                                            entity.getCourseName(), 
                                                            entity.getCourseDescription()))
                             .collect(Collectors.toList());

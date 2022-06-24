@@ -7,9 +7,9 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
-import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
+import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
+import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
 public class ServiceController {
@@ -25,25 +25,25 @@ public class ServiceController {
     private static final int NUMBER_OF_ITEMS = 6;
     private static final int NORMAL_STATUS_OF_ADDING = 1;
 
-    private StudentService<List<StudentDto>, List<GroupDto>, String, Integer, List<CourseDto>> studentService;
-    private CourseService<List<CourseDto>, Integer> courseService;
-    private GroupService<List<GroupDto>, Integer> groupService;
-    private ServiceControllerView<List<GroupDto>, 
-                                  List<CourseDto>, 
-                                  List<StudentDto>, 
-                                  List<StudentDto>, 
+    private StudentService<List<StudentModel>, List<GroupModel>, String, Integer, List<CourseModel>> studentService;
+    private CourseService<List<CourseModel>, Integer> courseService;
+    private GroupService<List<GroupModel>, Integer> groupService;
+    private ServiceControllerView<List<GroupModel>, 
+                                  List<CourseModel>, 
+                                  List<StudentModel>, 
+                                  List<StudentModel>, 
                                   Integer> serviceControllerView;
 
-    public ServiceController(StudentService<List<StudentDto>, 
-                                            List<GroupDto>, 
+    public ServiceController(StudentService<List<StudentModel>, 
+                                            List<GroupModel>, 
                                             String, Integer, 
-                                            List<CourseDto>> studentService,
-                             CourseService<List<CourseDto>, Integer> courseService, 
-                             GroupService<List<GroupDto>, Integer> groupService,
-                             ServiceControllerView<List<GroupDto>, 
-                                                   List<CourseDto>, 
-                                                   List<StudentDto>, 
-                                                   List<StudentDto>, 
+                                            List<CourseModel>> studentService,
+                             CourseService<List<CourseModel>, Integer> courseService, 
+                             GroupService<List<GroupModel>, Integer> groupService,
+                             ServiceControllerView<List<GroupModel>, 
+                                                   List<CourseModel>, 
+                                                   List<StudentModel>, 
+                                                   List<StudentModel>, 
                                                    Integer> serviceControllerView) {
         this.studentService = studentService;
         this.courseService = courseService;
@@ -92,11 +92,11 @@ public class ServiceController {
             studentService.deleteAllStudents();
             groupService.deleteAllGroups();
             courseService.deleteAllCourses();
-            List<CourseDto> courses = courseService.createCourses();
+            List<CourseModel> courses = courseService.createCourses();
             studentService.createStudents();
-            List<GroupDto> groups = groupService.createGroups();
-            List<StudentDto> studentsHavingGroupId = studentService.assignGroup(groups);
-            studentService.assignStudentToCourse(studentsHavingGroupId, courses);
+            List<GroupModel> groups = groupService.createGroups();
+            List<StudentModel> studentsHavingGroupId = studentService.assignGroupToStudent(groups);
+            studentService.assignCourseToStudent(studentsHavingGroupId, courses);
         } catch (ServiceException e) {
             LOGGER.error(ERROR_BOOTSTRAP, e);
             throw new ServiceException(ERROR_BOOTSTRAP, e);
@@ -105,7 +105,7 @@ public class ServiceController {
 
     private void removeStudentFromCourse(Scanner scanner) throws ServiceException {
         for (;;) {
-            List<StudentDto> studnetCourse = studentService.getAllStudentsHavingCourse();
+            List<StudentModel> studnetCourse = studentService.getAllStudentsHavingCourse();
             serviceControllerView.showStudentCourse(studnetCourse);
             serviceControllerView.deleteStudentIdFromCourse();
             int studentId = scanOnlyIntInput(scanner);
@@ -141,9 +141,9 @@ public class ServiceController {
 
     private void addStudentToCourse(Scanner scanner) throws ServiceException {
         first: for (;;) {
-            List<StudentDto> studentsHaveGroupId = studentService.getStudentsHavingGroupId();
+            List<StudentModel> studentsHaveGroupId = studentService.getStudentsHavingGroupId();
             serviceControllerView.showStudents(studentsHaveGroupId);
-            List<CourseDto> allCourses = courseService.getAllCourses();
+            List<CourseModel> allCourses = courseService.getAllCourses();
             serviceControllerView.showCourses(allCourses);
             serviceControllerView.enterStudentId();
             int studentId = scanOnlyIntInput(scanner);
@@ -193,7 +193,7 @@ public class ServiceController {
 
     private void deleteStudentFromDatabase(Scanner scanner) throws ServiceException {
         first: for (;;) {
-            List<StudentDto> students = studentService.getAllStudents();
+            List<StudentModel> students = studentService.getAllStudents();
             serviceControllerView.showStudents(students);
             serviceControllerView.enterStudentId();
             int studentId = scanOnlyIntInput(scanner);
@@ -271,18 +271,18 @@ public class ServiceController {
     }
 
     private void findStudentsRelatedToCourse(Scanner couseIdScanner) throws ServiceException {
-        List<CourseDto> courses = courseService.getAllCourses();
+        List<CourseModel> courses = courseService.getAllCourses();
         serviceControllerView.showCourses(courses);
         serviceControllerView.enterCourseId();
         Integer courseID = scanOnlyIntInput(couseIdScanner);
-        List<StudentDto> studentCourse = studentService.getStudentsOfCourseById(courseID);
+        List<StudentModel> studentCourse = studentService.getStudentsOfCourseById(courseID);
         serviceControllerView.showStudentCourse(studentCourse);
         exitOrReturnMainMenu(couseIdScanner);
     }
 
     private void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) throws ServiceException {
         serviceControllerView.enterNumberOfStudents();
-        List<GroupDto> groups = groupService
+        List<GroupModel> groups = groupService
                 .findGroupsWithLessOrEqualStudents(scanOnlyIntInput(studentsNumberScanner));
         serviceControllerView.showNumberOfStudentsInGroups(groups);
         exitOrReturnMainMenu(studentsNumberScanner);

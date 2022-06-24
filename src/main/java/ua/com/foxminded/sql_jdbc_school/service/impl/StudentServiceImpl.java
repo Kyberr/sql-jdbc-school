@@ -14,21 +14,21 @@ import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
-import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
+import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
+import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
 
-public class StudentServiceImpl implements StudentService<List<StudentDto>, 
-                                                          List<GroupDto>, 
+public class StudentServiceImpl implements StudentService<List<StudentModel>, 
+                                                          List<GroupModel>, 
                                                           String, 
                                                           Integer, 
-                                                          List<CourseDto>> {
+                                                          List<CourseModel>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CLOSE_CONNECTION_POOL_ERROR = "The closing opreation of connections "
@@ -44,8 +44,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     private static final int STUDENT_INDEX = 0;
     private static final int COURSE_INDEX = 1;
     private static final String ERROR_CREATE_STUDENT_COURSE_RELATION = "The relation creation failed.";
-    private static final String FIST_NAME_FILENAME = "firstNameList.txt";
-    private static final String LAST_NAME_FILENAME = "lastNameList.txt";
+    private static final String FIST_NAME_FILENAME = "student-first-names.txt";
+    private static final String LAST_NAME_FILENAME = "student-last-names.txt";
     private static final String ERROR_CREATE_STUDENTS = "The student addition service to the database failed.";
     private static final String ERROR_ASSIGN_GROUP = "The assining group to students failed.";
     private static final String ERROR_ADD_STUDENT = "The student adding to the database failed.";
@@ -89,10 +89,10 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
 
     @Override
-    public List<StudentDto> getStudentsOfCourseById(Integer courseId) throws ServiceException {
+    public List<StudentModel> getStudentsOfCourseById(Integer courseId) throws ServiceException {
         try {
             return studentDAO.getStudensOfCourseById(courseId).parallelStream()
-                    .map((entity) -> new StudentDto(entity.getStudentId(), 
+                    .map((entity) -> new StudentModel(entity.getStudentId(), 
                                                     entity.getGroupId(), 
                                                     entity.getFirstName(),
                                                     entity.getLastName()))
@@ -134,8 +134,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
 
     @Override
-    public List<StudentDto> getAllStudentsHavingCourse() throws ServiceException {
-        List<StudentDto> studentCourseRelation = new ArrayList<>();
+    public List<StudentModel> getAllStudentsHavingCourse() throws ServiceException {
+        List<StudentModel> studentCourseRelation = new ArrayList<>();
 
         try {
             List<StudentEntity> studentsHavingCourse = studentDAO.getAllStudentsHavingCouse();
@@ -145,7 +145,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
                 try {
                     courseDAO.getCoursesOfStudentById(student.getStudentId())
                              .stream()
-                             .forEach((course) -> studentCourseRelation.add(new StudentDto(
+                             .forEach((course) -> studentCourseRelation.add(new StudentModel(
                                      student.getStudentId(),
                                      student.getGroupId(), 
                                      student.getFirstName(), 
@@ -168,10 +168,10 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
 
     @Override
-    public List<StudentDto> assignStudentToCourse(List<StudentDto> studentsHavingGroupId, 
-                                                  List<CourseDto> courses) throws ServiceException {
+    public List<StudentModel> assignCourseToStudent(List<StudentModel> studentsHavingGroupId, 
+                                                  List<CourseModel> courses) throws ServiceException {
 
-        List<StudentDto> studentsHavingCourseId = generateStudentCourseRelation(studentsHavingGroupId, 
+        List<StudentModel> studentsHavingCourseId = generateStudentCourseRelation(studentsHavingGroupId, 
                                                                                 courses);
 
         try {
@@ -200,11 +200,11 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
 
     @Override
-    public List<StudentDto> getStudentsHavingGroupId() throws ServiceException {
+    public List<StudentModel> getStudentsHavingGroupId() throws ServiceException {
 
         try {
             return studentDAO.getStudentsHavingGroupId().stream()
-                    .map((studentEntity) -> new StudentDto(studentEntity.getStudentId(), 
+                    .map((studentEntity) -> new StudentModel(studentEntity.getStudentId(), 
                                                            studentEntity.getGroupId(),
                                                            studentEntity.getFirstName(), 
                                                            studentEntity.getLastName()))
@@ -230,11 +230,11 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
 
     @Override
-    public List<StudentDto> getAllStudents() throws ServiceException {
+    public List<StudentModel> getAllStudents() throws ServiceException {
         try {
             return studentDAO.getAll()
                              .stream()
-                             .map((studentEntity) -> new StudentDto(studentEntity.getStudentId(),
+                             .map((studentEntity) -> new StudentModel(studentEntity.getStudentId(),
                                                                     studentEntity.getGroupId(), 
                                                                     studentEntity.getFirstName(), 
                                                                     studentEntity.getLastName()))
@@ -250,8 +250,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     @Override
     public Integer addStudent(String lastName, String firstName) throws ServiceException {
         try {
-            List<StudentDto> studentDTOs = new ArrayList<>();
-            studentDTOs.add(new StudentDto(firstName, lastName));
+            List<StudentModel> studentDTOs = new ArrayList<>();
+            studentDTOs.add(new StudentModel(firstName, lastName));
             List<StudentEntity> studentEntities = studentDTOs.stream()
                     .map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
                                                            studentDTO.getLastName()))
@@ -266,7 +266,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
 
     @Override
-    public List<StudentDto> assignGroup(List<GroupDto> groups) throws ServiceException {
+    public List<StudentModel> assignGroupToStudent(List<GroupModel> groups) throws ServiceException {
         try {
             List<StudentEntity> studentEntities = studentDAO.getAll();
             List<Integer> groupSize = generator.getNumberOfStudentsInGroup(studentEntities.size(), 
@@ -285,7 +285,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
                              }));
             studentDAO.update(studentsHavingGroupId);
             return studentsHavingGroupId.stream()
-                                        .map((studentEntity) -> new StudentDto(studentEntity.getStudentId(),
+                                        .map((studentEntity) -> new StudentModel(studentEntity.getStudentId(),
                                                                                studentEntity.getGroupId(), 
                                                                                studentEntity.getFirstName(), 
                                                                                studentEntity.getLastName()))
@@ -299,11 +299,11 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     }
 
     @Override
-    public List<StudentDto> createStudents() throws ServiceException {
+    public List<StudentModel> createStudents() throws ServiceException {
         try {
             List<String> firstNames = reader.read(FIST_NAME_FILENAME);
             List<String> lastNames = reader.read(LAST_NAME_FILENAME);
-            List<StudentDto> studentDTOs = generator.getStudentData(firstNames, lastNames);
+            List<StudentModel> studentDTOs = generator.getStudentData(firstNames, lastNames);
             List<StudentEntity> studentEntities = studentDTOs.stream()
                     .map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
                                                            studentDTO.getLastName()))
@@ -318,14 +318,14 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         }
     }
 
-    private List<StudentDto> generateStudentCourseRelation(List<StudentDto> studentsHavingGroupId,
-                                                           List<CourseDto> courses) {
+    private List<StudentModel> generateStudentCourseRelation(List<StudentModel> studentsHavingGroupId,
+                                                           List<CourseModel> courses) {
         List<List<Integer>> studentCourseIndexRelation = generator
                 .getStudentCourseIndexRelation(studentsHavingGroupId.size(), courses.size());
 
         try (Stream<List<Integer>> indexRelationStream = studentCourseIndexRelation.stream()) {
             return indexRelationStream
-                    .map((indexRelation) -> new StudentDto(
+                    .map((indexRelation) -> new StudentModel(
                             studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
                             studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
                             studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),

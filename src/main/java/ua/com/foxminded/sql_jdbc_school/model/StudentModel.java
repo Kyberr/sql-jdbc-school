@@ -1,8 +1,8 @@
-package ua.com.foxminded.sql_jdbc_school.dto;
+package ua.com.foxminded.sql_jdbc_school.model;
 
 import java.util.Objects;
 
-public class StudentDto {
+public class StudentModel {
     Integer studentId;
     Integer groupId;
     String firstName;
@@ -11,7 +11,7 @@ public class StudentDto {
     String courseName;
     String courseDescription;
 
-    public StudentDto(Integer studentId, Integer groupId, String firstName, String lastName, Integer courseId,
+    public StudentModel(Integer studentId, Integer groupId, String firstName, String lastName, Integer courseId,
             String courseName, String courseDescription) {
         this.studentId = studentId;
         this.groupId = groupId;
@@ -22,14 +22,14 @@ public class StudentDto {
         this.courseDescription = courseDescription;
     }
 
-    public StudentDto(Integer studentId, Integer groupId, String firstName, String lastName) {
+    public StudentModel(Integer studentId, Integer groupId, String firstName, String lastName) {
         this.studentId = studentId;
         this.groupId = groupId;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public StudentDto(String firstName, String lastName) {
+    public StudentModel(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -103,7 +103,7 @@ public class StudentDto {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        StudentDto other = (StudentDto) obj;
+        StudentModel other = (StudentModel) obj;
         return Objects.equals(courseDescription, other.courseDescription)
                 && Objects.equals(courseName, other.courseName) && Objects.equals(courseId, other.courseId)
                 && Objects.equals(lastName, other.lastName) && Objects.equals(firstName, other.firstName)

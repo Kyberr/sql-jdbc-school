@@ -5,15 +5,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
-import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
+import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
+import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
-public class ConsoleServiceControllerView implements ServiceControllerView<List<GroupDto>, 
-                                                                           List<CourseDto>, 
-                                                                           List<StudentDto>, 
-                                                                           List<StudentDto>, 
+public class ConsoleServiceControllerView implements ServiceControllerView<List<GroupModel>, 
+                                                                           List<CourseModel>, 
+                                                                           List<StudentModel>, 
+                                                                           List<StudentModel>, 
                                                                            Integer> {
 
     private static final String START_MESSAGE_FORMAT = "%85s";
@@ -169,7 +169,7 @@ public class ConsoleServiceControllerView implements ServiceControllerView<List<
     }
 
     @Override
-    public void showStudents(List<StudentDto> students) {
+    public void showStudents(List<StudentModel> students) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
 
         if (students.isEmpty()) {
@@ -177,7 +177,7 @@ public class ConsoleServiceControllerView implements ServiceControllerView<List<
         } else {
             AtomicInteger atomicInteger = new AtomicInteger();
             students.parallelStream()
-                    .sorted(Comparator.comparing(StudentDto::getStudentId))
+                    .sorted(Comparator.comparing(StudentModel::getStudentId))
                     .forEachOrdered((student) -> {
                         if (atomicInteger.getAndIncrement() == FIST_LINE) {
                             printWriter.println(new String(new char[STUDENTS_LINE_LENGTH])
@@ -237,7 +237,7 @@ public class ConsoleServiceControllerView implements ServiceControllerView<List<
     }
 
     @Override
-    public void showStudentCourse(List<StudentDto> studentCourseList) {
+    public void showStudentCourse(List<StudentModel> studentCourseList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
 
         if (studentCourseList.isEmpty()) {
@@ -294,11 +294,11 @@ public class ConsoleServiceControllerView implements ServiceControllerView<List<
     }
 
     @Override
-    public void showCourses(List<CourseDto> coursesList) {
+    public void showCourses(List<CourseModel> coursesList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         AtomicInteger atomicInteger = new AtomicInteger();
         coursesList.parallelStream()
-                   .sorted(Comparator.comparing(CourseDto::getCourseId))
+                   .sorted(Comparator.comparing(CourseModel::getCourseId))
                    .forEachOrdered((line) -> {
                        if (atomicInteger.getAndIncrement() == FIST_LINE) {
                            printWriter.format(COURSES_LINE_FORMAT, new String(new char[COURSE_LINE_LENGTH])
@@ -328,7 +328,7 @@ public class ConsoleServiceControllerView implements ServiceControllerView<List<
     }
 
     @Override
-    public void showNumberOfStudentsInGroups(List<GroupDto> groupsList) {
+    public void showNumberOfStudentsInGroups(List<GroupModel> groupsList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
 
         if (groupsList.isEmpty()) {

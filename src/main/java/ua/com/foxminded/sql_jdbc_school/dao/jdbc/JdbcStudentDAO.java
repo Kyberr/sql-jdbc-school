@@ -146,7 +146,7 @@ public class JdbcStudentDAO implements StudentDAO {
             }
             connectionPool.releaseConnection(con);
             return student;
-        } catch (SQLException | DAOException e) {
+        } catch (SQLException e) {
             LOGGER.error(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
             throw new DAOException(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
         } finally {
@@ -394,10 +394,10 @@ public class JdbcStudentDAO implements StudentDAO {
                 try {
                     for (StudentEntity student : students) {
                         statement.setInt(4, student.getStudentId());
-                        statement.setObject(1, student.getGroupId());
+                        statement.setInt(1, student.getGroupId());
                         statement.setString(2, student.getFirstName());
                         statement.setString(3, student.getLastName());
-                        status += statement.executeUpdate();
+                        status = statement.executeUpdate();
                     }
                     con.commit();
                 } catch (SQLException ex) {

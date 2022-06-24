@@ -1,19 +1,19 @@
-package ua.com.foxminded.sql_jdbc_school.dto;
+package ua.com.foxminded.sql_jdbc_school.model;
 
 import java.util.Objects;
 
-public class GroupDto {
+public class GroupModel {
     private Integer groupId;
     private String groupName;
     private Integer studentQuantity;
 
-    public GroupDto(Integer groupId, String groupName, Integer studentQuantity) {
+    public GroupModel(Integer groupId, String groupName, Integer studentQuantity) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.studentQuantity = studentQuantity;
     }
 
-    public GroupDto(Integer groupId, String groupName) {
+    public GroupModel(Integer groupId, String groupName) {
         this.groupId = groupId;
         this.groupName = groupName;
     }
@@ -55,7 +55,7 @@ public class GroupDto {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        GroupDto other = (GroupDto) obj;
+        GroupModel other = (GroupModel) obj;
         return Objects.equals(groupId, other.groupId) && Objects.equals(groupName, other.groupName)
                 && Objects.equals(studentQuantity, other.studentQuantity);
     }

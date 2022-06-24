@@ -1,13 +1,13 @@
-package ua.com.foxminded.sql_jdbc_school.dto;
+package ua.com.foxminded.sql_jdbc_school.model;
 
 import java.util.Objects;
 
-public class CourseDto {
+public class CourseModel {
     private Integer courseId;
     private String courseName;
     private String courseDescription;
 
-    public CourseDto(Integer courseId, String courseName, String courseDescription) {
+    public CourseModel(Integer courseId, String courseName, String courseDescription) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseDescription = courseDescription;
@@ -50,7 +50,7 @@ public class CourseDto {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        CourseDto other = (CourseDto) obj;
+        CourseModel other = (CourseModel) obj;
         return Objects.equals(courseDescription, other.courseDescription) && Objects.equals(courseId, other.courseId)
                 && Objects.equals(courseName, other.courseName);
     }

@@ -14,9 +14,9 @@ import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
-import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
-import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
+import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
+import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
@@ -40,25 +40,25 @@ public class Main {
         CourseDAO courseDAO = new JdbcCourseDAO(jdbcDaoConnectionPool);
         StudentDAO studentDAO = new JdbcStudentDAO(jdbcDaoConnectionPool);
         GroupDAO groupDAO = new JdbcGroupDAO(jdbcDaoConnectionPool);
-        StudentService<List<StudentDto>, 
-                       List<GroupDto>, 
+        StudentService<List<StudentModel>, 
+                       List<GroupModel>, 
                        String, Integer, 
-                       List<CourseDto>> studentService = new StudentServiceImpl(reader, 
-                                                                                generator, 
-                                                                                studentDAO, 
-                                                                                courseDAO, 
-                                                                                jdbcDaoConnectionPool);
-        CourseService<List<CourseDto>, Integer> courseService = new CourseServiceImpl(reader, 
-                                                                                      courseDAO, 
-                                                                                      jdbcDaoConnectionPool);
-        GroupService<List<GroupDto>, Integer> groupService = new GroupServiceImpl(generator, 
-                                                                                  groupDAO, 
+                       List<CourseModel>> studentService = new StudentServiceImpl(reader, 
+                                                                                  generator, 
                                                                                   studentDAO, 
+                                                                                  courseDAO, 
                                                                                   jdbcDaoConnectionPool);
-        ServiceControllerView<List<GroupDto>, 
-                              List<CourseDto>, 
-                              List<StudentDto>, 
-                              List<StudentDto>, 
+        CourseService<List<CourseModel>, Integer> courseService = new CourseServiceImpl(reader, 
+                                                                                        courseDAO, 
+                                                                                        jdbcDaoConnectionPool);
+        GroupService<List<GroupModel>, Integer> groupService = new GroupServiceImpl(generator, 
+                                                                                    groupDAO, 
+                                                                                    studentDAO, 
+                                                                                    jdbcDaoConnectionPool);
+        ServiceControllerView<List<GroupModel>, 
+                              List<CourseModel>, 
+                              List<StudentModel>, 
+                              List<StudentModel>, 
                               Integer> serviceControllerView = new ConsoleServiceControllerView();
         ServiceController serviceController = new ServiceController(studentService, 
                                                                     courseService, 

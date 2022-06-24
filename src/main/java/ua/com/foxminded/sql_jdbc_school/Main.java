@@ -18,7 +18,6 @@ import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
-import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceController;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
@@ -34,7 +33,6 @@ public class Main {
 
     public static void main(String[] args) {
         Reader reader = new Reader();
-        Generator generator = new Generator();
         ConnectionDAOFactory jdbcConnectionDaoFactory = new JdbcConnectionDAOFactory();
         DAOConnectionPool jdbcDaoConnectionPool = new JdbcDAOConnectionPool(jdbcConnectionDaoFactory);
         CourseDAO courseDAO = new JdbcCourseDAO(jdbcDaoConnectionPool);
@@ -44,15 +42,13 @@ public class Main {
                        List<GroupModel>, 
                        String, Integer, 
                        List<CourseModel>> studentService = new StudentServiceImpl(reader, 
-                                                                                  generator, 
                                                                                   studentDAO, 
                                                                                   courseDAO, 
                                                                                   jdbcDaoConnectionPool);
         CourseService<List<CourseModel>, Integer> courseService = new CourseServiceImpl(reader, 
                                                                                         courseDAO, 
                                                                                         jdbcDaoConnectionPool);
-        GroupService<List<GroupModel>, Integer> groupService = new GroupServiceImpl(generator, 
-                                                                                    groupDAO, 
+        GroupService<List<GroupModel>, Integer> groupService = new GroupServiceImpl(groupDAO, 
                                                                                     studentDAO, 
                                                                                     jdbcDaoConnectionPool);
         ServiceControllerView<List<GroupModel>, 

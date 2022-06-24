@@ -21,7 +21,7 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
     private static final String CLOSE_CONNECTION_ERROR = "The close connection operation failed.";
     private static final int CON_TIMEOUT = 1;
     private static final int ONE = 1;
-    private static final int MAX_POOL_SIZE = 10;
+    private static final int MAX_POOL_SIZE = 20;
     private boolean wakeFlag;
     private boolean suspendFlag;
 

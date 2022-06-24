@@ -64,7 +64,7 @@ class GroupServiceTest {
 		List<GroupEntity> groups = new ArrayList<>();
 		groupService.createGroups();
 		InOrder inOrder = Mockito.inOrder(generatorMock, groupDaoMock);
-		inOrder.verify(generatorMock, times(1)).getGroupName();
+		inOrder.verify(generatorMock, times(1)).generateNamesOfGroups();
 		inOrder.verify(groupDaoMock, times(1)).insert(groups);
 	}
 }

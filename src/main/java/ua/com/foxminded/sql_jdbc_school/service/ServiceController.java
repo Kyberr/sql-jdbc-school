@@ -25,7 +25,11 @@ public class ServiceController {
     private static final int NUMBER_OF_ITEMS = 6;
     private static final int NORMAL_STATUS_OF_ADDING = 1;
 
-    private StudentService<List<StudentModel>, List<GroupModel>, String, Integer, List<CourseModel>> studentService;
+    private StudentService<List<StudentModel>, 
+                           List<GroupModel>, 
+                           String, 
+                           Integer, 
+                           List<CourseModel>> studentService;
     private CourseService<List<CourseModel>, Integer> courseService;
     private GroupService<List<GroupModel>, Integer> groupService;
     private ServiceControllerView<List<GroupModel>, 

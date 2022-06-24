@@ -72,7 +72,7 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
     }
 
     @Override
-    public void closeConnectionsOfPool() throws DAOException {
+    public void closeConnections() throws DAOException {
         for (Connection con : availablePool) {
             try {
                 if (con != null) {

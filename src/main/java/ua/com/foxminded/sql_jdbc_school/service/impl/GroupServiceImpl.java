@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
 import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
@@ -18,6 +19,8 @@ import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
 public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String CLOSE_CONNECTION_POOL_ERROR = "The closing opreation of connections "
+                                                                + "in the pool failed.";
     private static final String ERROR_DELETE_ALL_GROUPS = "The service of groups deletion is failed.";
     private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "
@@ -25,23 +28,28 @@ public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
     private final Generator generator;
     private final GroupDAO groupDAO;
     private final StudentDAO studentDAO;
+    private final DAOConnectionPool connectionPool;
 
-    public GroupServiceImpl(Generator generator, GroupDAO groupDAO, StudentDAO studentDAO) {
+    public GroupServiceImpl(Generator generator, GroupDAO groupDAO, StudentDAO studentDAO,
+            DAOConnectionPool connectionPool) {
         this.generator = generator;
         this.groupDAO = groupDAO;
         this.studentDAO = studentDAO;
+        this.connectionPool = connectionPool;
     }
 
     @Override
     public Integer deleteAllGroups() throws ServiceException {
         int status = 0;
         try {
-            status = studentDAO.deleteAll(JdbcGenericDAO.GROUPS);
+            status = studentDAO.deleteAll();
+            return status;
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_ALL_GROUPS, e);
             throw new ServiceException(ERROR_DELETE_ALL_GROUPS, e);
+        } finally {
+            closeConnectionPool();
         }
-        return status;
     }
 
     @Override
@@ -62,6 +70,8 @@ public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
         } catch (DAOException e) {
             LOGGER.error(ERROR_FIND_LESS_OR_EQUALS, e);
             throw new ServiceException(ERROR_FIND_LESS_OR_EQUALS, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -80,6 +90,16 @@ public class GroupServiceImpl implements GroupService<List<GroupDto>, Integer> {
         } catch (DAOException e) {
             LOGGER.error(ERROR_CREATE_GROUPS, e);
             throw new ServiceException(ERROR_CREATE_GROUPS, e);
+        } finally {
+            closeConnectionPool();
         }
+    }
+    
+    private void closeConnectionPool() {
+        try {
+            connectionPool.closeConnections();
+        } catch (DAOException e) {
+            LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
+        } 
     }
 }

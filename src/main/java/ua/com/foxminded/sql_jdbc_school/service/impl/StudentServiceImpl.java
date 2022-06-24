@@ -11,10 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
-import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGenericDAO;
 import ua.com.foxminded.sql_jdbc_school.dto.CourseDto;
 import ua.com.foxminded.sql_jdbc_school.dto.GroupDto;
 import ua.com.foxminded.sql_jdbc_school.dto.StudentDto;
@@ -32,7 +31,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
                                                           List<CourseDto>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final String CLOSE_CONNECTIONS_OF_POOL_ERROR = "The close connection operation failed.";
+    private static final String CLOSE_CONNECTION_POOL_ERROR = "The closing opreation of connections "
+            + "in the pool failed.";
     private static final String ERROR_DELETE_STUDENTS = "The service of students deletion failed.";
     private static final String ERROR_GET_STUDENTS_OF_COURSE = "Getting students of the course failed.";
     private static final String ERROR_ADD_STUDENT_TO_COURSE_BY_ID = "Adding the student to the course failed.";
@@ -52,17 +52,20 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
     private static final String ERROR_GET_ALL_STUDENT = "Getting students from the database failed.";
     private static final String ERROR_DELETE_STUDENT = "The deletion of the student from the database failed.";
     private static final String ERROR_GET_STUDENTS_WITH_GROUP = "Getting students that have group ID failed.";
+   
     private final Reader reader;
     private final Generator generator;
     private final StudentDAO studentDAO;
     private final CourseDAO courseDAO;
-    private final JdbcDAOConnectionPool connectionPool;
+    private final DAOConnectionPool connectionPool;
 
+
+    
     public StudentServiceImpl(Reader reader, 
                               Generator generator, 
                               StudentDAO studentDAO, 
                               CourseDAO courseDAO,
-                              JdbcDAOConnectionPool connectionPool) {
+                              DAOConnectionPool connectionPool) {
         this.reader = reader;
         this.generator = generator;
         this.studentDAO = studentDAO;
@@ -75,12 +78,14 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         int status = 0;
         
         try {
-            status = studentDAO.deleteAll(JdbcGenericDAO.STUDENTS);
+            status = studentDAO.deleteAll();
+            return status;
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_STUDENTS, e);
             throw new ServiceException(ERROR_DELETE_STUDENTS, e);
+        } finally {
+            closeConnectionPool();
         }
-        return status;
     }
 
     @Override
@@ -95,6 +100,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_STUDENTS_OF_COURSE, e);
             throw new ServiceException(ERROR_GET_STUDENTS_OF_COURSE, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -121,6 +128,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_ADD_STUDENT_TO_COURSE_BY_ID, e);
             throw new ServiceException(ERROR_ADD_STUDENT_TO_COURSE_BY_ID, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -154,11 +163,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
             LOGGER.error(ERROR_GET_ALL, e);
             throw new ServiceException(ERROR_GET_ALL, e);
         } finally {
-            try {
-                connectionPool.closeConnectionsOfPool();
-            } catch (DAOException e) {
-                LOGGER.error(CLOSE_CONNECTIONS_OF_POOL_ERROR, e);
-            }
+            closeConnectionPool();
         }
     }
 
@@ -190,11 +195,7 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
             LOGGER.error(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
             throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
         } finally {
-            try {
-                connectionPool.closeConnectionsOfPool();
-            } catch (DAOException e) {
-                LOGGER.error(CLOSE_CONNECTIONS_OF_POOL_ERROR, e);
-            }
+            closeConnectionPool();
         }
     }
 
@@ -211,6 +212,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_STUDENTS_WITH_GROUP, e);
             throw new ServiceException(ERROR_GET_STUDENTS_WITH_GROUP, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -221,6 +224,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_STUDENT, e);
             throw new ServiceException(ERROR_DELETE_STUDENT, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -237,6 +242,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_ALL_STUDENT, e);
             throw new ServiceException(ERROR_GET_ALL_STUDENT, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -253,6 +260,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_ADD_STUDENT, e);
             throw new ServiceException(ERROR_ADD_STUDENT, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -284,6 +293,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_ASSIGN_GROUP, e);
             throw new ServiceException(ERROR_ASSIGN_GROUP, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -302,6 +313,8 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
         } catch (ServiceException | DAOException e) {
             LOGGER.error(ERROR_CREATE_STUDENTS, e);
             throw new ServiceException(ERROR_CREATE_STUDENTS, e);
+        } finally {
+            closeConnectionPool();
         }
     }
 
@@ -322,5 +335,13 @@ public class StudentServiceImpl implements StudentService<List<StudentDto>,
                             courses.get(indexRelation.get(COURSE_INDEX)).getCourseDescription()))
                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         }
+    } 
+    
+    private void closeConnectionPool() {
+        try {
+            connectionPool.closeConnections();
+        } catch (DAOException e) {
+            LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
+        } 
     }
 }

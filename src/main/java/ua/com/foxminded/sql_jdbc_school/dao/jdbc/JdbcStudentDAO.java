@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
@@ -54,17 +55,17 @@ public class JdbcStudentDAO implements StudentDAO {
     private static final String ERROR_GET_STUDENT = "Getting the student data failed.";
     private static final String ERROR_GET_STUDENTS_WITHOUT_GROUP = "Getting the student data, that have no "
                                                                  + "group ID failed.";
-    private JdbcDAOConnectionPool jdbcDaoConnectionPool;
+    private DAOConnectionPool connectionPool;
 
-    public JdbcStudentDAO(JdbcDAOConnectionPool jdbcDaoConnectionPool) {
-        this.jdbcDaoConnectionPool = jdbcDaoConnectionPool;
+    public JdbcStudentDAO(DAOConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
     }
 
     @Override
     public Integer deleteAll() throws DAOException {
         try {
             int status = BAD_STATUS;
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
              
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
@@ -72,7 +73,7 @@ public class JdbcStudentDAO implements StudentDAO {
                 
                 status = prStatement.executeUpdate();
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return status;
         } catch (SQLException e) {
             LOGGER.error(DELETE_ALL_ERROR, e);
@@ -86,7 +87,7 @@ public class JdbcStudentDAO implements StudentDAO {
         List<StudentEntity> studentsOfcourse = new ArrayList<>();
 
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
             
             
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
@@ -103,7 +104,7 @@ public class JdbcStudentDAO implements StudentDAO {
                                                            resultSet.getString(LAST_NAME)));
                 }
             } 
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return studentsOfcourse;
         } catch (SQLException e) {
         LOGGER.error(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
@@ -126,7 +127,7 @@ public class JdbcStudentDAO implements StudentDAO {
         StudentEntity student = null;
 
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
 
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
@@ -143,7 +144,7 @@ public class JdbcStudentDAO implements StudentDAO {
                                                 resultSet.getString(LAST_NAME));
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return student;
         } catch (SQLException | DAOException e) {
             LOGGER.error(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
@@ -162,7 +163,7 @@ public class JdbcStudentDAO implements StudentDAO {
     @Override
     public List<StudentEntity> getAllStudentsHavingCouse() throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
             List<StudentEntity> studentsHavingCourse = new ArrayList<>();
 
             try (PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
@@ -177,7 +178,7 @@ public class JdbcStudentDAO implements StudentDAO {
                                                                resultSet.getString(LAST_NAME)));
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return studentsHavingCourse;
         } catch (SQLException e) {
             LOGGER.error(ERROR_GET_STUDENTS_HAVING_COURSE, e);
@@ -188,7 +189,7 @@ public class JdbcStudentDAO implements StudentDAO {
     @Override
     public int addStudentToCourse(StudentEntity student, CourseEntity course) throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
             int status = 0;
 
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
@@ -208,7 +209,7 @@ public class JdbcStudentDAO implements StudentDAO {
                     prStatement.setObject(7, course.getCourseDescription());
                     status = prStatement.executeUpdate();
                     con.commit();
-                    jdbcDaoConnectionPool.releaseConnection(con);
+                    connectionPool.releaseConnection(con);
                 } catch (SQLException ex) {
                     if (con != null) {
                         try {
@@ -230,7 +231,7 @@ public class JdbcStudentDAO implements StudentDAO {
     @Override
     public List<StudentEntity> getStudentsHavingGroupId() throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
             List<StudentEntity> studentsHavingGroupId = new ArrayList<>();
 
             try (PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
@@ -245,7 +246,7 @@ public class JdbcStudentDAO implements StudentDAO {
                                                                 resultSet.getString(LAST_NAME)));
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return studentsHavingGroupId;
         } catch (SQLException e) {
             LOGGER.error(ERROR_GET_STUDENTS_WITHOUT_GROUP, e);
@@ -259,7 +260,7 @@ public class JdbcStudentDAO implements StudentDAO {
         StudentEntity student = null;
         
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
 
             try (PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
@@ -276,7 +277,7 @@ public class JdbcStudentDAO implements StudentDAO {
                                                 resultSet.getString(LAST_NAME));
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return student;
         } catch (SQLException e) {
             LOGGER.error(ERROR_GET_STUDENT, e);
@@ -295,14 +296,14 @@ public class JdbcStudentDAO implements StudentDAO {
     @Override
     public int deleteById(int studentId) throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
             
             try (PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
                     .getProperty(DELETE_STUDENT));) {
                 
                 statement.setInt(1, studentId);
-                jdbcDaoConnectionPool.releaseConnection(con);
+                connectionPool.releaseConnection(con);
                 return statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -314,7 +315,7 @@ public class JdbcStudentDAO implements StudentDAO {
     @Override
     public Integer insert(List<StudentEntity> studentEntities) throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
             int status = BAD_STATUS;
             
             try (PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
@@ -343,7 +344,7 @@ public class JdbcStudentDAO implements StudentDAO {
                     throw new SQLException(ex);
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return status;
         } catch (SQLException e) {
             LOGGER.error(ERROR_INSERT, e);
@@ -354,7 +355,7 @@ public class JdbcStudentDAO implements StudentDAO {
     @Override
     public List<StudentEntity> getAll() throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
             List<StudentEntity> students = new ArrayList<>();
             
             try (Statement statement = con.createStatement();
@@ -369,7 +370,7 @@ public class JdbcStudentDAO implements StudentDAO {
                                                    resultSet.getString(LAST_NAME)));
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return students;
         } catch (SQLException e) {
             LOGGER.error(ERROR_GET_ALL, e);
@@ -380,7 +381,7 @@ public class JdbcStudentDAO implements StudentDAO {
     @Override
     public int update(List<StudentEntity> students) throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection con = connectionPool.getConnection();
             int status = BAD_STATUS;
             
             try (PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
@@ -410,7 +411,7 @@ public class JdbcStudentDAO implements StudentDAO {
                     throw new SQLException(ex);
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            connectionPool.releaseConnection(con);
             return status;
         } catch (SQLException e) {
             LOGGER.error(ERROR_UDATE, e);

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcConnectionDAOFactory;
@@ -34,11 +35,11 @@ public class Main {
     public static void main(String[] args) {
         Reader reader = new Reader();
         Generator generator = new Generator();
-        ConnectionDAOFactory universityConnectionDAOFactory = new JdbcConnectionDAOFactory();
-        JdbcDAOConnectionPool connectionPool = new JdbcDAOConnectionPool(universityConnectionDAOFactory);
-        CourseDAO courseDAO = new JdbcCourseDAO(universityConnectionDAOFactory, connectionPool);
-        StudentDAO studentDAO = new JdbcStudentDAO(universityConnectionDAOFactory, connectionPool);
-        GroupDAO groupDAO = new JdbcGroupDAO(universityConnectionDAOFactory);
+        ConnectionDAOFactory jdbcConnectionDaoFactory = new JdbcConnectionDAOFactory();
+        DAOConnectionPool jdbcDaoConnectionPool = new JdbcDAOConnectionPool(jdbcConnectionDaoFactory);
+        CourseDAO courseDAO = new JdbcCourseDAO(jdbcDaoConnectionPool);
+        StudentDAO studentDAO = new JdbcStudentDAO(jdbcDaoConnectionPool);
+        GroupDAO groupDAO = new JdbcGroupDAO(jdbcDaoConnectionPool);
         StudentService<List<StudentDto>, 
                        List<GroupDto>, 
                        String, Integer, 
@@ -46,11 +47,14 @@ public class Main {
                                                                                 generator, 
                                                                                 studentDAO, 
                                                                                 courseDAO, 
-                                                                                connectionPool);
-        CourseService<List<CourseDto>, Integer> courseService = new CourseServiceImpl(reader, courseDAO);
+                                                                                jdbcDaoConnectionPool);
+        CourseService<List<CourseDto>, Integer> courseService = new CourseServiceImpl(reader, 
+                                                                                      courseDAO, 
+                                                                                      jdbcDaoConnectionPool);
         GroupService<List<GroupDto>, Integer> groupService = new GroupServiceImpl(generator, 
                                                                                   groupDAO, 
-                                                                                  studentDAO);
+                                                                                  studentDAO, 
+                                                                                  jdbcDaoConnectionPool);
         ServiceControllerView<List<GroupDto>, 
                               List<CourseDto>, 
                               List<StudentDto>, 

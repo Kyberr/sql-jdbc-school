@@ -88,7 +88,6 @@ public class JdbcCourseDAO implements CourseDAO {
                                                           resultSet.getString(COURSE_DESC)));
                 }
             }
-
             jdbcDaoConnectionPool.releaseConnection(con);
             return coursesOfstudent;
         } catch (SQLException e) {

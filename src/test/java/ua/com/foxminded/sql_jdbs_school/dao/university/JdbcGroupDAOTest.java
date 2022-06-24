@@ -37,7 +37,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGroupDAO;
 import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 
 @ExtendWith(MockitoExtension.class)
-class UniversityGroupDAOTest {
+class JdbcGroupDAOTest {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final int INDEX_OF_ELEMENT = 0;
 	private static final int TOTAL_GROUP_QUANTITY = 2;
@@ -52,7 +52,7 @@ class UniversityGroupDAOTest {
 	private static final String TEST_DATA_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-data.sql";
 	private static final String END_LINE = "\n";
 	private static final String TEST_TABLES_SCRIPT_PATH = "D:/repository/SqlJdbcSchool/"
-														+ "src/main/resource/test-scheme.sql";
+														+ "src/main/resource/test-schema.sql";
 	private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/"
 												  + "src/main/resource/test-db.properties";
 	private static final String DB_URL = "databaseURL";

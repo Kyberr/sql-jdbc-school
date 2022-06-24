@@ -17,7 +17,7 @@ import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.impl.CourseServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
-class CourseServiceTest {
+class CourseServiceImlTest {
 	
 	@InjectMocks
 	CourseServiceImpl courseService;

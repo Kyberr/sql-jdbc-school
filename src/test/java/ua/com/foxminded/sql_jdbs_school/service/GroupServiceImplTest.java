@@ -23,7 +23,7 @@ import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
-class GroupServiceTest {
+class GroupServiceImplTest {
 	private static final Integer GROUP_ID_1 = 1;
 	private static final Integer GROUP_ID_2 = 2;
 	private static final Integer GROUP_ID_3 = 3;

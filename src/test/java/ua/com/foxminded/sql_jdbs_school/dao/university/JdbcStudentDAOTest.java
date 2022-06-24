@@ -28,7 +28,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
 
 @ExtendWith(MockitoExtension.class)
-class UniversityStudentDAOTest {
+class JdbcStudentDAOTest {
 	private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/"
 												  + "src/main/resource/test-db.properties";
 	private static final String TEST_TABLES_SCRIPT_PATH = "D:/repository/SqlJdbcSchool/"

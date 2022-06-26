@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
@@ -27,9 +27,9 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
 
     private List<Connection> availablePool = new ArrayList<>();
     private List<Connection> inUsePool = new ArrayList<>();
-    private ConnectionDAOFactory connectionFactory;
+    private DAOConnectionFactory connectionFactory;
 
-    public JdbcDAOConnectionPool(ConnectionDAOFactory connectionFactory) {
+    public JdbcDAOConnectionPool(DAOConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
@@ -72,7 +72,7 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
     }
 
     @Override
-    public void closeConnectionPool() throws DAOException {
+    public void closeConnections() throws DAOException {
         for (Connection con : availablePool) {
             try {
                 if (con != null) {

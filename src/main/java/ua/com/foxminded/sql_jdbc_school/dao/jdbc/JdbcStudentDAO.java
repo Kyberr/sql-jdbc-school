@@ -88,16 +88,17 @@ public class JdbcStudentDAO implements StudentDAO {
             
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(GET_STUDENTS_OF_COURS_BY_ID));
-                 ResultSet resultSet = prStatement.executeQuery();) {
+                    .getProperty(GET_STUDENTS_OF_COURS_BY_ID));) {
                 
                 prStatement.setInt(1, courseId);
-
-                while (resultSet.next()) {
-                    studentsOfcourse.add(new StudentEntity(resultSet.getInt(STUDENT_ID), 
-                                                           resultSet.getInt(GROUP_ID),
-                                                           resultSet.getString(FIRST_NAME), 
-                                                           resultSet.getString(LAST_NAME)));
+                
+                try (ResultSet resultSet = prStatement.executeQuery();) {
+                    while (resultSet.next()) {
+                        studentsOfcourse.add(new StudentEntity(resultSet.getInt(STUDENT_ID), 
+                                                               resultSet.getInt(GROUP_ID),
+                                                               resultSet.getString(FIRST_NAME), 
+                                                               resultSet.getString(LAST_NAME)));
+                    }
                 }
             } 
             connectionPool.releaseConnection(con);
@@ -117,18 +118,20 @@ public class JdbcStudentDAO implements StudentDAO {
 
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(GET_STUDENT_OF_COURSE_BY_ID));
-                 ResultSet resultSet = prStatement.executeQuery();) {
+                    .getProperty(GET_STUDENT_OF_COURSE_BY_ID));) {
 
                 prStatement.setInt(1, studentId);
                 prStatement.setInt(2, courseId);
-
-                while (resultSet.next()) {
-                    student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
-                                                resultSet.getInt(GROUP_ID),
-                                                resultSet.getString(FIRST_NAME), 
-                                                resultSet.getString(LAST_NAME));
+                
+                try (ResultSet resultSet = prStatement.executeQuery();) {
+                    while (resultSet.next()) {
+                        student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
+                                                    resultSet.getInt(GROUP_ID),
+                                                    resultSet.getString(FIRST_NAME), 
+                                                    resultSet.getString(LAST_NAME));
+                    }
                 }
+                
             }
             connectionPool.releaseConnection(con);
             return student;
@@ -241,16 +244,17 @@ public class JdbcStudentDAO implements StudentDAO {
 
             try (PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(SELECT_STUDENT));
-                 ResultSet resultSet = statement.executeQuery();) {
+                    .getProperty(SELECT_STUDENT));) {
                 
                 statement.setInt(1, studentId);
-
-                while (resultSet.next()) {
-                    student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
-                                                (Integer) resultSet.getObject(GROUP_ID),
-                                                resultSet.getString(FIRST_NAME), 
-                                                resultSet.getString(LAST_NAME));
+                
+                try (ResultSet resultSet = statement.executeQuery();) {
+                    while (resultSet.next()) {
+                        student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
+                                                    (Integer) resultSet.getObject(GROUP_ID),
+                                                    resultSet.getString(FIRST_NAME), 
+                                                    resultSet.getString(LAST_NAME));
+                    }
                 }
             }
             connectionPool.releaseConnection(con);

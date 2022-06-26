@@ -75,15 +75,16 @@ public class JdbcCourseDAO implements CourseDAO {
 
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(GET_COURSES_OF_STUDENT));
-                 ResultSet resultSet = prStatement.executeQuery();) {
-
+                    .getProperty(GET_COURSES_OF_STUDENT));) {
+                
                 prStatement.setInt(1, studentId);
-
-                while (resultSet.next()) {
-                    coursesOfstudent.add(new CourseEntity(resultSet.getInt(COURSE_ID), 
-                                                          resultSet.getString(COURSE_NAME),
-                                                          resultSet.getString(COURSE_DESC)));
+                
+                try (ResultSet resultSet = prStatement.executeQuery();) {
+                    while (resultSet.next()) {
+                        coursesOfstudent.add(new CourseEntity(resultSet.getInt(COURSE_ID), 
+                                                              resultSet.getString(COURSE_NAME),
+                                                              resultSet.getString(COURSE_DESC)));
+                    }
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(con);
@@ -123,16 +124,16 @@ public class JdbcCourseDAO implements CourseDAO {
             
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(SELECT_COURSE));
-                 ResultSet resultSet = prStatement.executeQuery();) {
+                    .getProperty(SELECT_COURSE));) {
                 
                 prStatement.setInt(1, courseId);
-               
-
-                while (resultSet.next()) {
-                    course = new CourseEntity(resultSet.getInt(COURSE_ID), 
-                                              resultSet.getString(COURSE_NAME),
-                                              resultSet.getString(COURSE_DESC));
+                
+                try (ResultSet resultSet = prStatement.executeQuery();) {
+                    while (resultSet.next()) {
+                        course = new CourseEntity(resultSet.getInt(COURSE_ID), 
+                                                  resultSet.getString(COURSE_NAME),
+                                                  resultSet.getString(COURSE_DESC));
+                    }
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(con);

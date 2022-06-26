@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
@@ -22,8 +21,6 @@ import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
 public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final String CLOSE_CONNECTION_POOL_ERROR = "The closing opreation of connections "
-                                                                + "in the pool failed.";
     private static final String ERROR_DELETE_ALL_GROUPS = "The service of groups deletion is failed.";
     private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "
@@ -34,12 +31,10 @@ public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer>
     
     private final GroupDAO groupDAO;
     private final StudentDAO studentDAO;
-    private final DAOConnectionPool connectionPool;
 
-    public GroupServiceImpl(GroupDAO groupDAO, StudentDAO studentDAO, DAOConnectionPool connectionPool) {
+    public GroupServiceImpl(GroupDAO groupDAO, StudentDAO studentDAO) {
         this.groupDAO = groupDAO;
         this.studentDAO = studentDAO;
-        this.connectionPool = connectionPool;
     }
 
     @Override
@@ -51,9 +46,7 @@ public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer>
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_ALL_GROUPS, e);
             throw new ServiceException(ERROR_DELETE_ALL_GROUPS, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -76,9 +69,7 @@ public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer>
         } catch (DAOException e) {
             LOGGER.error(ERROR_FIND_LESS_OR_EQUALS, e);
             throw new ServiceException(ERROR_FIND_LESS_OR_EQUALS, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -96,9 +87,7 @@ public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer>
         } catch (DAOException e) {
             LOGGER.error(ERROR_CREATE_GROUPS, e);
             throw new ServiceException(ERROR_CREATE_GROUPS, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
     
     public List<String> generateNamesOfGroups() {
@@ -109,13 +98,5 @@ public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer>
                         .append(new Random().nextInt(SINGLE_DIDGIT_OF_MAX_VALUE))
                         .append(new Random().nextInt(SINGLE_DIDGIT_OF_MAX_VALUE)).toString())
                      .limit(MAX_NUMBER_OF_GROUPS).collect(Collectors.toList());
-    }
-    
-    private void closeConnectionPool() {
-        try {
-            connectionPool.closeConnectionPool();
-        } catch (DAOException e) {
-            LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
-        } 
     }
 }

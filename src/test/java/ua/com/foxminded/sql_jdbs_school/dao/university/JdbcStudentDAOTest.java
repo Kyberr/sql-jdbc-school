@@ -23,7 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
 
@@ -45,7 +45,7 @@ class JdbcStudentDAOTest {
     JdbcStudentDAO universityStudentDao;
     
     @Mock
-    ConnectionDAOFactory universityConnectionDaoFactory;
+    DAOConnectionFactory universityConnectionDaoFactory;
 	
 	@BeforeAll
 	static void init() throws SQLException, DAOException, IOException {

@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
@@ -50,8 +49,6 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
     private static final double ONE_HALF = 0.5;
     private static final double DOUBLE_AMPL_PROBABILITY = 10.0;
     private static final double DOUBLE_PROBABILITY_VALUE = 4.0;
-    private static final String CLOSE_CONNECTION_POOL_ERROR = "The closing opreation of connections "
-            + "in the pool failed.";
     private static final String ERROR_DELETE_STUDENTS = "The service of students deletion failed.";
     private static final String ERROR_GET_STUDENTS_OF_COURSE = "Getting students of the course failed.";
     private static final String ERROR_ADD_STUDENT_TO_COURSE_BY_ID = "Adding the student to the course failed.";
@@ -72,18 +69,13 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
     private final Reader reader;
     private final StudentDAO studentDAO;
     private final CourseDAO courseDAO;
-    private final DAOConnectionPool connectionPool;
-
-
     
     public StudentServiceImpl(Reader reader, 
                               StudentDAO studentDAO, 
-                              CourseDAO courseDAO,
-                              DAOConnectionPool connectionPool) {
+                              CourseDAO courseDAO) {
         this.reader = reader;
         this.studentDAO = studentDAO;
         this.courseDAO = courseDAO;
-        this.connectionPool = connectionPool;
     }
 
     @Override
@@ -96,9 +88,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_STUDENTS, e);
             throw new ServiceException(ERROR_DELETE_STUDENTS, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -119,9 +109,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_STUDENTS_OF_COURSE, e);
             throw new ServiceException(ERROR_GET_STUDENTS_OF_COURSE, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -147,9 +135,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_ADD_STUDENT_TO_COURSE_BY_ID, e);
             throw new ServiceException(ERROR_ADD_STUDENT_TO_COURSE_BY_ID, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -181,9 +167,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_ALL, e);
             throw new ServiceException(ERROR_GET_ALL, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -213,9 +197,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (RuntimeException e) {
             LOGGER.error(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
             throw new ServiceException(ERROR_CREATE_STUDENT_COURSE_RELATION, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -231,9 +213,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_STUDENTS_WITH_GROUP, e);
             throw new ServiceException(ERROR_GET_STUDENTS_WITH_GROUP, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -243,9 +223,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_STUDENT, e);
             throw new ServiceException(ERROR_DELETE_STUDENT, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -261,9 +239,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_ALL_STUDENT, e);
             throw new ServiceException(ERROR_GET_ALL_STUDENT, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -279,9 +255,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_ADD_STUDENT, e);
             throw new ServiceException(ERROR_ADD_STUDENT, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -311,9 +285,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (DAOException e) {
             LOGGER.error(ERROR_ASSIGN_GROUP, e);
             throw new ServiceException(ERROR_ASSIGN_GROUP, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -331,9 +303,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
         } catch (ServiceException | DAOException e) {
             LOGGER.error(ERROR_CREATE_STUDENTS, e);
             throw new ServiceException(ERROR_CREATE_STUDENTS, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
     
     public List<StudentModel> generateStudents(List<String> firstNames, List<String> lastNames) {
@@ -429,13 +399,5 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
             }
         }
         return studentCourseIndexRelation;
-    }
-    
-    private void closeConnectionPool() {
-        try {
-            connectionPool.closeConnectionPool();
-        } catch (DAOException e) {
-            LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
-        } 
     }
 }

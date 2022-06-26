@@ -7,6 +7,11 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
@@ -14,6 +19,7 @@ import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
 
 public class ServiceController {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
     private static final String ERROR_EXECUTE = "The ServiceController execution is failed.";
     private static final String WORD_EXIT = "exit";
@@ -37,6 +43,8 @@ public class ServiceController {
                                   List<StudentModel>, 
                                   List<StudentModel>, 
                                   Integer> serviceControllerView;
+    private DAOConnectionFactory jdbcDaoConnectionFactory = new JdbcDAOConnectionFactory();
+    private DAOConnectionPool jdbcDaoConnectionPool = new JdbcDAOConnectionPool(jdbcDaoConnectionFactory);
 
     public ServiceController(StudentService<List<StudentModel>, 
                                             List<GroupModel>, 
@@ -48,11 +56,15 @@ public class ServiceController {
                                                    List<CourseModel>, 
                                                    List<StudentModel>, 
                                                    List<StudentModel>, 
-                                                   Integer> serviceControllerView) {
+                                                   Integer> serviceControllerView, 
+                             DAOConnectionFactory jdbcDaoConnectionFactory, 
+                             DAOConnectionPool jdbcDaoConnectionPool) {
         this.studentService = studentService;
         this.courseService = courseService;
         this.groupService = groupService;
         this.serviceControllerView = serviceControllerView;
+        this.jdbcDaoConnectionFactory = jdbcDaoConnectionFactory;
+        this.jdbcDaoConnectionPool = jdbcDaoConnectionPool;
     }
 
     public void execute() throws ServiceException {
@@ -299,6 +311,7 @@ public class ServiceController {
             String input = scanner.nextLine();
 
             if (input.equals(WORD_EXIT)) {
+                closeConnectionPool();
                 serviceControllerView.executionHasBeenStopped();
                 System.exit(NORMAL_DEL_STATUS);
             } else if (input.equals(EMPTY_STRING)) {
@@ -307,6 +320,14 @@ public class ServiceController {
                 serviceControllerView.returnMainMenuOrExit();
             }
         }
+    }
+    
+    private void closeConnectionPool() {
+        try {
+            jdbcDaoConnectionPool.closeConnections();
+        } catch (DAOException e) {
+            LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
+        } 
     }
 
     private int scanOnlyIntInput(Scanner scanner) {
@@ -325,6 +346,7 @@ public class ServiceController {
         for (;;) {
             if (!scanner.hasNextInt()) {
                 if (scanner.nextLine().equals(WORD_EXIT)) {
+                    closeConnectionPool();
                     System.exit(NORMAL_DEL_STATUS);
                 } else {
                     serviceControllerView.showIncorrectInputWarning();

@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.foxminded.sql_jdbc_school.dao.ConnectionDAOFactory;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOPropertiesCache;
 
-public class JdbcConnectionDAOFactory implements ConnectionDAOFactory {
+public class JdbcDAOConnectionFactory implements DAOConnectionFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CREATE_CONNECTION = "The connect creation failed.";

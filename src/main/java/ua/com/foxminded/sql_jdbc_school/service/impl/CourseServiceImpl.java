@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
@@ -16,8 +15,6 @@ import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
 public class CourseServiceImpl implements CourseService<List<CourseModel>, Integer> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final String CLOSE_CONNECTION_POOL_ERROR = "The closing opreation of connections "
-                                                            + "in the pool failed.";
     private static final String ERROR_DELETE_ALL_COURSES = "The service of course deletion doesn't work.";
     private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
                                                                  + "from the course doesn't work.";
@@ -27,12 +24,10 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
     
     private final Reader reader;
     private final CourseDAO courseDao;
-    private final DAOConnectionPool connectionPool;
 
-    public CourseServiceImpl(Reader reader, CourseDAO courseDao, DAOConnectionPool connectionPool) {
+    public CourseServiceImpl(Reader reader, CourseDAO courseDao) {
         this.reader = reader;
         this.courseDao = courseDao;
-        this.connectionPool = connectionPool;
     }
 
     @Override
@@ -42,9 +37,7 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_ALL_COURSES, e);
             throw new ServiceException(ERROR_DELETE_ALL_COURSES, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -54,9 +47,7 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_STUDENT_FROM_COURSE, e);
             throw new ServiceException(ERROR_DELETE_STUDENT_FROM_COURSE, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -76,9 +67,7 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
         } catch (ServiceException | DAOException e) {
             LOGGER.error(ERROR_CREATE_COURSES, e);
             throw new ServiceException(ERROR_CREATE_COURSES, e);
-        } finally {
-            closeConnectionPool();
-        }
+        } 
     }
 
     @Override
@@ -93,16 +82,6 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_ALL_COURSES, e);
             throw new ServiceException(ERROR_GET_ALL_COURSES, e);
-        } finally {
-            closeConnectionPool();
-        }
-    }
-    
-    private void closeConnectionPool() {
-        try {
-            connectionPool.closeConnectionPool();
-        } catch (DAOException e) {
-            LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
         } 
     }
 }

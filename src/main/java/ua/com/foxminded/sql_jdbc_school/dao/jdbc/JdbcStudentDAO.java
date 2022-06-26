@@ -23,7 +23,6 @@ public class JdbcStudentDAO implements StudentDAO {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int BAD_STATUS = 0;
-    private static final String RESULTSET_CLOSE_ERROR = "The resultSet closing failed.";
     private static final String DELETE_ALL_ERROR = "Deletion of all students failed.";
     private static final String DELETE_ALL = "deleteAll";
     private static final String GET_STUDENTS_OF_COURS_BY_ID = "getStudentsOfCourseByID";
@@ -83,19 +82,16 @@ public class JdbcStudentDAO implements StudentDAO {
 
     @Override
     public List<StudentEntity> getStudensOfCourseById(Integer courseId) throws DAOException {
-        ResultSet resultSet = null;
-        List<StudentEntity> studentsOfcourse = new ArrayList<>();
-
         try {
+            List<StudentEntity> studentsOfcourse = new ArrayList<>();
             Connection con = connectionPool.getConnection();
-            
             
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(GET_STUDENTS_OF_COURS_BY_ID));) {
+                    .getProperty(GET_STUDENTS_OF_COURS_BY_ID));
+                 ResultSet resultSet = prStatement.executeQuery();) {
                 
                 prStatement.setInt(1, courseId);
-                resultSet = prStatement.executeQuery();
 
                 while (resultSet.next()) {
                     studentsOfcourse.add(new StudentEntity(resultSet.getInt(STUDENT_ID), 
@@ -109,33 +105,23 @@ public class JdbcStudentDAO implements StudentDAO {
         } catch (SQLException e) {
         LOGGER.error(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
         throw new DAOException(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                LOGGER.error(RESULTSET_CLOSE_ERROR, e);
-            }
-        }
+        } 
     }
 
     @Override
     public StudentEntity getStudentOfCourseById(Integer studentId, 
                                                 Integer courseId) throws DAOException {
-        ResultSet resultSet = null;
-        StudentEntity student = null;
-
         try {
+            StudentEntity student = null;
             Connection con = connectionPool.getConnection();
 
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(GET_STUDENT_OF_COURSE_BY_ID));) {
+                    .getProperty(GET_STUDENT_OF_COURSE_BY_ID));
+                 ResultSet resultSet = prStatement.executeQuery();) {
 
                 prStatement.setInt(1, studentId);
                 prStatement.setInt(2, courseId);
-                resultSet = prStatement.executeQuery();
 
                 while (resultSet.next()) {
                     student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
@@ -149,15 +135,7 @@ public class JdbcStudentDAO implements StudentDAO {
         } catch (SQLException e) {
             LOGGER.error(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
             throw new DAOException(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                LOGGER.error(RESULTSET_CLOSE_ERROR, e);
-            }
-        }
+        } 
     }
 
     @Override
@@ -194,7 +172,7 @@ public class JdbcStudentDAO implements StudentDAO {
 
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(ADD_STUDENT_TO_COURSE))) {
+                    .getProperty(ADD_STUDENT_TO_COURSE));) {
 
                 con.setAutoCommit(false);
                 Savepoint save = con.setSavepoint();
@@ -256,19 +234,17 @@ public class JdbcStudentDAO implements StudentDAO {
 
     @Override
     public StudentEntity getStudentById(int studentId) throws DAOException {
-        ResultSet resultSet = null;
-        StudentEntity student = null;
         
         try {
+            StudentEntity student = null;
             Connection con = connectionPool.getConnection();
 
             try (PreparedStatement statement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(SELECT_STUDENT));) {
-
+                    .getProperty(SELECT_STUDENT));
+                 ResultSet resultSet = statement.executeQuery();) {
                 
                 statement.setInt(1, studentId);
-                resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
                     student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
@@ -282,15 +258,7 @@ public class JdbcStudentDAO implements StudentDAO {
         } catch (SQLException e) {
             LOGGER.error(ERROR_GET_STUDENT, e);
             throw new DAOException(ERROR_GET_STUDENT, e);
-        } finally {
-            try {
-                if (resultSet != null) {
-                   resultSet.close(); 
-                }
-            } catch (SQLException e) {
-                LOGGER.error(RESULTSET_CLOSE_ERROR, e);
-            }
-        }
+        } 
     }
 
     @Override

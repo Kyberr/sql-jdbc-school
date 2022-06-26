@@ -47,8 +47,9 @@ public class JdbcGroupDAO implements GroupDAO {
             int status = 0;
             Connection con = jdbcDaoConnectionPool.getConnection();
 
-            try (PreparedStatement prStatement = con
-                    .prepareStatement(DAOPropertiesCache.getInstance(SQL_QUERIES_FILENAME).getProperty(DELETE_ALL));) {
+            try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
+                    .getInstance(SQL_QUERIES_FILENAME)
+                    .getProperty(DELETE_ALL));) {
 
                 status = prStatement.executeUpdate();
             }
@@ -66,9 +67,11 @@ public class JdbcGroupDAO implements GroupDAO {
             Connection con = jdbcDaoConnectionPool.getConnection();
             List<GroupEntity> result = new ArrayList<>();
 
-            try (PreparedStatement statement = con.prepareStatement(String.format(
-                    DAOPropertiesCache.getInstance(SQL_QUERIES_FILENAME).getProperty(SELECT_INCLUSIVE_LESS_STUDENTS),
-                    students)); ResultSet resultSet = statement.executeQuery();) {
+            try (PreparedStatement statement = con.prepareStatement(String
+                    .format(DAOPropertiesCache.getInstance(SQL_QUERIES_FILENAME)
+                                              .getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), 
+                            students)); 
+                 ResultSet resultSet = statement.executeQuery();) {
 
                 while (resultSet.next()) {
                     result.add(

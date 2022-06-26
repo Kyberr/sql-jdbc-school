@@ -433,7 +433,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
     
     private void closeConnectionPool() {
         try {
-            connectionPool.closeConnections();
+            connectionPool.closeConnectionPool();
         } catch (DAOException e) {
             LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
         } 

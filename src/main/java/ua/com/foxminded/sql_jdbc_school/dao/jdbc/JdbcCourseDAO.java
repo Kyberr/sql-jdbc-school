@@ -34,9 +34,8 @@ public class JdbcCourseDAO implements CourseDAO {
     private static final String COURSE_ID = "course_id";
     private static final String COURSE_NAME = "course_name";
     private static final String COURSE_DESC = "course_description";
-    private static final String RESULTSET_ERROR = "ResultSet is not closed.";
     private static final String GET_COURSE_ERROR = "The getting of the course from the database is failed.";
-    private static final String INSERT__ERROR = "The insertion of the courses to the database is failed.";
+    private static final String INSERT_ERROR = "The insertion of the courses to the database is failed.";
     private static final String GET_ALL_COURSES_ERROR = "The getting all data from the database is failed.";
     private static final Integer BAD_STATUS = 0;
     
@@ -69,7 +68,6 @@ public class JdbcCourseDAO implements CourseDAO {
     @Override
     public List<CourseEntity> getCoursesOfStudentById(int studentId) throws DAOException {
         Connection con = null;
-        ResultSet resultSet = null;
         List<CourseEntity> coursesOfstudent = new ArrayList<>();
 
         try {
@@ -77,10 +75,10 @@ public class JdbcCourseDAO implements CourseDAO {
 
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(GET_COURSES_OF_STUDENT));) {
+                    .getProperty(GET_COURSES_OF_STUDENT));
+                 ResultSet resultSet = prStatement.executeQuery();) {
 
                 prStatement.setInt(1, studentId);
-                resultSet = prStatement.executeQuery();
 
                 while (resultSet.next()) {
                     coursesOfstudent.add(new CourseEntity(resultSet.getInt(COURSE_ID), 
@@ -93,15 +91,7 @@ public class JdbcCourseDAO implements CourseDAO {
         } catch (SQLException e) {
             LOGGER.error(GET_COURSES_OF_STUDENT_ERROR, e);
             throw new DAOException(GET_COURSES_OF_STUDENT_ERROR, e);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                LOGGER.error(RESULTSET_ERROR, e);
-            }
-        }
+        } 
     }
 
     @Override
@@ -126,7 +116,6 @@ public class JdbcCourseDAO implements CourseDAO {
 
     @Override
     public CourseEntity getCourseById(int courseId) throws DAOException {
-        ResultSet resultSet = null;
         CourseEntity course = null;
         
         try {
@@ -134,10 +123,11 @@ public class JdbcCourseDAO implements CourseDAO {
             
             try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
-                    .getProperty(SELECT_COURSE));) {
+                    .getProperty(SELECT_COURSE));
+                 ResultSet resultSet = prStatement.executeQuery();) {
                 
                 prStatement.setInt(1, courseId);
-                resultSet = prStatement.executeQuery();
+               
 
                 while (resultSet.next()) {
                     course = new CourseEntity(resultSet.getInt(COURSE_ID), 
@@ -150,15 +140,7 @@ public class JdbcCourseDAO implements CourseDAO {
         } catch (SQLException e) {
             LOGGER.error(GET_COURSE_ERROR, e);
             throw new DAOException(GET_COURSE_ERROR, e);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                LOGGER.error(RESULTSET_ERROR, e);
-            }
-        }
+        } 
     }
 
     @Override
@@ -219,8 +201,8 @@ public class JdbcCourseDAO implements CourseDAO {
             jdbcDaoConnectionPool.releaseConnection(con);
             return status;
         } catch (SQLException e) {
-            LOGGER.error(INSERT__ERROR, e);
-            throw new DAOException(INSERT__ERROR, e);
+            LOGGER.error(INSERT_ERROR, e);
+            throw new DAOException(INSERT_ERROR, e);
         }
     }
 }

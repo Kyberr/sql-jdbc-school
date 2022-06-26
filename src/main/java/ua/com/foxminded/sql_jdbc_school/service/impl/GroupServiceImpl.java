@@ -113,7 +113,7 @@ public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer>
     
     private void closeConnectionPool() {
         try {
-            connectionPool.closeConnections();
+            connectionPool.closeConnectionPool();
         } catch (DAOException e) {
             LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
         } 

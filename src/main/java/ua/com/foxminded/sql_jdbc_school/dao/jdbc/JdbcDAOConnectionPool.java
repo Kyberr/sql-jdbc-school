@@ -18,7 +18,7 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
     private static final String GET_CONNECTION_ERROR = "The getting connection failed.";
     private static final String WAIT_FREE_CONNECTION_ERROR = "The thread waiting for the "
                                                            + "connection has been interrupted.";
-    private static final String CLOSE_CONNECTION_ERROR = "The close connection operation failed.";
+    private static final String CLOSE_CONNECTION_POOL_ERROR = "The close connection operation failed.";
     private static final int CON_TIMEOUT = 1;
     private static final int ONE = 1;
     private static final int MAX_POOL_SIZE = 20;
@@ -72,15 +72,15 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
     }
 
     @Override
-    public void closeConnections() throws DAOException {
+    public void closeConnectionPool() throws DAOException {
         for (Connection con : availablePool) {
             try {
                 if (con != null) {
                     con.close();
                 }
             } catch (SQLException e) {
-                LOGGER.error(CLOSE_CONNECTION_ERROR, e);
-                throw new DAOException(CLOSE_CONNECTION_ERROR, e);
+                LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
+                throw new DAOException(CLOSE_CONNECTION_POOL_ERROR, e);
             }
         }
     }

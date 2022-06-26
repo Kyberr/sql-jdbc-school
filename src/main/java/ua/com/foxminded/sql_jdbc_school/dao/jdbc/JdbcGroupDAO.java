@@ -31,7 +31,8 @@ public class JdbcGroupDAO implements GroupDAO {
     private static final String GROUP_ID = "group_id";
     private static final String GROUP_NAME = "group_name";
     private static final String INSERT_GROUP_ERROR = "The group has not been iserted to the database.";
-    private static final String GET_ALL_GROUP_ERROR = "The getting data from the " + "\"groups\" table is failed.";
+    private static final String GET_ALL_GROUP_ERROR = "The getting data from the " 
+            + "\"groups\" table is failed.";
     private static final String GET_LESS_OR_EQUAL_STUD_ERROR = "Getting the groups with a less or "
             + "equal number of students is failed.";
 

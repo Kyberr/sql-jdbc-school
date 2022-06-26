@@ -14,6 +14,10 @@ public class GroupEntity {
     public GroupEntity(Integer groupId) {
         this.groupId = groupId;
     }
+    
+    public GroupEntity(String groupName) {
+        this.groupName = groupName;
+    }
 
     public Integer getGroupId() {
         return groupId;

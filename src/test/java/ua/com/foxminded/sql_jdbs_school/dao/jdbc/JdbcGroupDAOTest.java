@@ -1,7 +1,6 @@
-package ua.com.foxminded.sql_jdbs_school.dao.university;
+package ua.com.foxminded.sql_jdbs_school.dao.jdbc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
@@ -10,10 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.acl.Group;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,16 +19,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionFactory;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGroupDAO;
@@ -39,15 +33,14 @@ import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 
 @ExtendWith(MockitoExtension.class)
 class JdbcGroupDAOTest {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final int INDEX_OF_ELEMENT = 0;
     private static final int TOTAL_GROUP_QUANTITY = 2;
     private static final int STUDENTS_QUANTITY = 3;
     private static final int GROUP_QUANITY = 2;
-    private static final int GROUP_ID = 10;
-    private static final String GROUP_NAME_COLUMN = "group_name";
-    private static final String GROUP_NAME = "test";
-    private static final String SELECT_QUERY = "iselect * from department.groups where group_name = 'test';";
+    private static final String GET_ISERTED_GROUP = "selectInsertedGroup";
+    private static final String GROUP_NAME = "group_name";
+    private static final String NAME_OF_GROUP = "test";
+    private static final String TEST_GROUP_QUERIES_PATH = "D:/repository/SqlJdbcSchool/src/main/"
+            + "resource/test-group-queries.properties";
     private static final String GROUP_QUERIES_PATH = "D:/repository/SqlJdbcSchool/src/main/"
             + "resource/group-queries.properties";
     private static final String TEST_DATA_PATH = "D:/repository/SqlJdbcSchool/src/main/resource/test-data.sql";
@@ -64,10 +57,10 @@ class JdbcGroupDAOTest {
     JdbcGroupDAO universityGroupDao;
 
     @Mock
-    DAOConnectionPool connectionPoolMock;
+    DAOConnectionPool daoConnectionPoolMock;
 
-    @BeforeAll
-    static void init() throws FileNotFoundException, SQLException, IOException {
+    @BeforeEach
+    void init() throws FileNotFoundException, SQLException, IOException {
 
         try (FileInputStream testDbInput = new FileInputStream(TEST_DB_PROP_PATH);) {
 
@@ -91,7 +84,7 @@ class JdbcGroupDAOTest {
     }
 
     @Test
-    void readGroupsWithLessOrEqualStudents_AnyAcceptableArg_RightStudentQuantity()
+    void readGroupsWithLessOrEqualStudents_AcceptableArg_RightStudentQuantity()
             throws FileNotFoundException, IOException, SQLException, DAOException {
 
         try (FileInputStream testDb = new FileInputStream(TEST_DB_PROP_PATH);
@@ -103,7 +96,7 @@ class JdbcGroupDAOTest {
             try (Connection con = DriverManager.getConnection(properties.getProperty(DB_URL),
                  properties.getProperty(USER_NAME), properties.getProperty(USER_PASS));) {
 
-                when(connectionPoolMock.getConnection()).thenReturn(con);
+                when(daoConnectionPoolMock.getConnection()).thenReturn(con);
                 assertEquals(GROUP_QUANITY,
                              universityGroupDao.getGroupsHavingLessOrEqualStudents(STUDENTS_QUANTITY)
                                                .size());
@@ -112,7 +105,11 @@ class JdbcGroupDAOTest {
     }
 
     @Test
-    void getAll_Call_RightGroupsQuantity() throws FileNotFoundException, IOException, SQLException, DAOException {
+    void getAll_GettingAllDatabaseElements_RightGroupsQuantity() throws FileNotFoundException, 
+                                                                                  IOException, 
+                                                                                  SQLException, 
+                                                                                  DAOException {
+        
         try (FileInputStream testDbProperties = new FileInputStream(TEST_DB_PROP_PATH);) {
 
             Properties properties = new Properties();
@@ -121,49 +118,51 @@ class JdbcGroupDAOTest {
             try (Connection con = DriverManager.getConnection(properties.getProperty(DB_URL),
                     properties.getProperty(USER_NAME), properties.getProperty(USER_PASS));) {
 
-                when(connectionPoolMock.getConnection()).thenReturn(con);
+                when(daoConnectionPoolMock.getConnection()).thenReturn(con);
                 assertEquals(TOTAL_GROUP_QUANTITY, universityGroupDao.getAll().size());
             }
         }
     }
     
     @Test
-    void insert_AcceptableArgument_Success() throws FileNotFoundException, 
-                                                    IOException, 
-                                                    SQLException, 
-                                                    DAOException {
+    void insert_InsertionOfAcceptableArgument_DatabaseHasArgument() throws FileNotFoundException, 
+                                                                IOException, 
+                                                                SQLException, 
+                                                                DAOException {
 
         try (FileInputStream testDbProperites = new FileInputStream(TEST_DB_PROP_PATH);
-                FileInputStream groupQueries = new FileInputStream(GROUP_QUERIES_PATH);) {
+             FileInputStream groupQueries = new FileInputStream(GROUP_QUERIES_PATH);
+             FileInputStream testGroupQueries = new FileInputStream(TEST_GROUP_QUERIES_PATH);) {
 
             Properties properties = new Properties();
             properties.load(testDbProperites);
+            properties.load(testGroupQueries);
 
             try (Connection con = DriverManager.getConnection(properties.getProperty(DB_URL),
-                    properties.getProperty(USER_NAME), properties.getProperty(USER_PASS));
-            // PreparedStatement prStatement =
-            // con.prepareStatement(properties.getProperty(SELECT_QUERY));
-            // ResultSet resultSet = prStatement.executeQuery();
-            ) {
+                                                              properties.getProperty(USER_NAME), 
+                                                              properties.getProperty(USER_PASS));) {
 
                 List<GroupEntity> group = new ArrayList<>();
-                group.add(new GroupEntity(GROUP_ID, GROUP_NAME));
-
-                when(universityConnectionDaoFactory.createConnection()).thenReturn(con);
-                // universityGroupDao.insert(group);
-                assertEquals(1, universityGroupDao.insert(group));
-
-                /*
-                 * List<GroupEntity> result = new ArrayList<>(); ResultSet resultSet =
-                 * prStatement.executeQuery();
-                 * 
-                 * while (resultSet.next()) { result.add(new GroupEntity(GROUP_ID,
-                 * resultSet.getString(GROUP_NAME_COLUMN))); } LOGGER.error(result.toString());
-                 * assertEquals(result.get(INDEX_OF_ELEMENT).getGroupName(),
-                 * group.get(INDEX_OF_ELEMENT).getGroupName());
-                 */
+                group.add(new GroupEntity(NAME_OF_GROUP));
+                when(daoConnectionPoolMock.getConnection()).thenReturn(con);
+                universityGroupDao.insert(group);
+                GroupEntity insertedGroup = null;
+                
+                try (Statement statement = con.createStatement();
+                     ResultSet resultSet = statement.executeQuery(properties
+                             .getProperty(GET_ISERTED_GROUP));) {
+                    
+                    while(resultSet.next()) {
+                        insertedGroup = new GroupEntity(resultSet.getString(GROUP_NAME));
+                    }
+                }
+                assertEquals(NAME_OF_GROUP, insertedGroup.getGroupName());
             }
         }
     }
     
+    @Test
+    void deleteAll_DatabaseAllElementsDeletion_DatabaseHasNoElements () {
+        
+    }
 }

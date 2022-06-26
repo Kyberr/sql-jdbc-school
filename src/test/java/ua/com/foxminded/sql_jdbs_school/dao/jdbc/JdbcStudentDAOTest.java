@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbs_school.dao.university;
+package ua.com.foxminded.sql_jdbs_school.dao.jdbc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;

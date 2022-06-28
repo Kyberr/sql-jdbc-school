@@ -1,6 +1,6 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface ServiceControllerView<T, E, S, F, M> {
+public interface MenuView<T, E, S, F, M> {
 
     public void deleteAnotherStudentFromCourse();
 
@@ -28,31 +28,5 @@ public interface ServiceControllerView<T, E, S, F, M> {
 
     public void showStudents(F students);
 
-    public void studentHasBeenAddedToDatabase();
-
-    public void addStudentToDatabaseOrReturnMenu();
-
-    public void addStudentYesOrNo();
-
-    public void enterFirstName();
-
-    public void enterLastName();
-
-    public void showStudentCourse(S studentCourseList);
-
-    public void executionHasBeenStopped();
-
-    public void returnMainMenuOrExit();
-
-    public void showCourses(E coursesList);
-
-    public void showNumberOfStudentsInGroups(T groupsList);
-
-    public void enterNumberOfStudents();
-
-    public void enterCourseId();
-
     public void showMenuItems();
-
-    public void showIncorrectInputWarning();
 }

@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.service;
+package ua.com.foxminded.sql_jdbc_school.menu;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,9 +15,13 @@ import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
-import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
+import ua.com.foxminded.sql_jdbc_school.service.CourseService;
+import ua.com.foxminded.sql_jdbc_school.service.GroupService;
+import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
+import ua.com.foxminded.sql_jdbc_school.service.StudentService;
+import ua.com.foxminded.sql_jdbc_school.view.MenuView;
 
-public class ServiceController {
+public class Menu {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
@@ -27,7 +31,7 @@ public class ServiceController {
     private static final String WORD_NO = "no";
     private static final String WORD_YES = "yes";
     private static final int NORMAL_STATUS = 1;
-    private static final int NORMAL_DEL_STATUS = 0;
+    private static final int NORMAL_DELETE_STATUS = 0;
     private static final int NUMBER_OF_ITEMS = 6;
     private static final int NORMAL_STATUS_OF_ADDING = 1;
 
@@ -38,7 +42,7 @@ public class ServiceController {
                            List<CourseModel>> studentService;
     private CourseService<List<CourseModel>, Integer> courseService;
     private GroupService<List<GroupModel>, Integer> groupService;
-    private ServiceControllerView<List<GroupModel>, 
+    private MenuView<List<GroupModel>, 
                                   List<CourseModel>, 
                                   List<StudentModel>, 
                                   List<StudentModel>, 
@@ -46,13 +50,13 @@ public class ServiceController {
     private DAOConnectionFactory jdbcDaoConnectionFactory = new JdbcDAOConnectionFactory();
     private DAOConnectionPool jdbcDaoConnectionPool = new JdbcDAOConnectionPool(jdbcDaoConnectionFactory);
 
-    public ServiceController(StudentService<List<StudentModel>, 
+    public Menu(StudentService<List<StudentModel>, 
                                             List<GroupModel>, 
                                             String, Integer, 
                                             List<CourseModel>> studentService,
                              CourseService<List<CourseModel>, Integer> courseService, 
                              GroupService<List<GroupModel>, Integer> groupService,
-                             ServiceControllerView<List<GroupModel>, 
+                             MenuView<List<GroupModel>, 
                                                    List<CourseModel>, 
                                                    List<StudentModel>, 
                                                    List<StudentModel>, 
@@ -238,22 +242,6 @@ public class ServiceController {
         }
     }
 
-    private void addStudentToDatabase(Scanner scanner) throws ServiceException {
-        for (;;) {
-            serviceControllerView.enterLastName();
-            String lastName = scanner.nextLine();
-            serviceControllerView.enterFirstName();
-            String firstName = scanner.nextLine();
-            enterStudentNameAndAddToDatabase(lastName, firstName, scanner);
-            serviceControllerView.addStudentToDatabaseOrReturnMenu();
-            String keyWord = scanOnlyEmptyStringOrExitWord(scanner);
-
-            if (keyWord.equals(WORD_EXIT)) {
-                break;
-            }
-        }
-    }
-
     private String scanOnlyEmptyStringOrExitWord(Scanner scanner) {
         String keyWord = "";
         for (;;) {
@@ -269,75 +257,12 @@ public class ServiceController {
         return keyWord;
     }
 
-    private void enterStudentNameAndAddToDatabase(String lastName, String firstName, Scanner scanner)
-            throws ServiceException {
-        for (;;) {
-            serviceControllerView.addStudentYesOrNo();
-            String input = scanner.nextLine();
-
-            if (input.equals(WORD_YES)) {
-                if (studentService.addStudent(lastName, firstName) == NORMAL_STATUS_OF_ADDING) {
-                    serviceControllerView.studentHasBeenAddedToDatabase();
-                    break;
-                }
-            } else if (input.equals(WORD_NO)) {
-                break;
-            }
-        }
-    }
-
-    private void findStudentsRelatedToCourse(Scanner couseIdScanner) throws ServiceException {
-        List<CourseModel> courses = courseService.getAllCourses();
-        serviceControllerView.showCourses(courses);
-        serviceControllerView.enterCourseId();
-        Integer courseID = scanOnlyIntInput(couseIdScanner);
-        List<StudentModel> studentCourse = studentService.getStudentsOfCourseById(courseID);
-        serviceControllerView.showStudentCourse(studentCourse);
-        exitOrReturnMainMenu(couseIdScanner);
-    }
-
-    private void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) throws ServiceException {
-        serviceControllerView.enterNumberOfStudents();
-        List<GroupModel> groups = groupService
-                .findGroupsWithLessOrEqualStudents(scanOnlyIntInput(studentsNumberScanner));
-        serviceControllerView.showNumberOfStudentsInGroups(groups);
-        exitOrReturnMainMenu(studentsNumberScanner);
-    }
-
-    private void exitOrReturnMainMenu(Scanner scanner) {
-        serviceControllerView.returnMainMenuOrExit();
-
-        while (scanner.hasNextLine()) {
-            String input = scanner.nextLine();
-
-            if (input.equals(WORD_EXIT)) {
-                closeConnectionPool();
-                serviceControllerView.executionHasBeenStopped();
-                System.exit(NORMAL_DEL_STATUS);
-            } else if (input.equals(EMPTY_STRING)) {
-                break;
-            } else {
-                serviceControllerView.returnMainMenuOrExit();
-            }
-        }
-    }
-    
     private void closeConnectionPool() {
         try {
             jdbcDaoConnectionPool.closeConnections();
         } catch (DAOException e) {
             LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
         } 
-    }
-
-    private int scanOnlyIntInput(Scanner scanner) {
-        while (!scanner.hasNextInt()) {
-            scanner.nextLine();
-            serviceControllerView.showIncorrectInputWarning();
-        }
-        int input = scanner.nextInt();
-        scanner.nextLine(); // it is used to clean the buffer from the empty string
-        return input;
     }
 
     private int preventWrongInputOrExit(Scanner scanner) {
@@ -347,7 +272,7 @@ public class ServiceController {
             if (!scanner.hasNextInt()) {
                 if (scanner.nextLine().equals(WORD_EXIT)) {
                     closeConnectionPool();
-                    System.exit(NORMAL_DEL_STATUS);
+                    System.exit(NORMAL_DELETE_STATUS);
                 } else {
                     serviceControllerView.showIncorrectInputWarning();
                 }

@@ -14,19 +14,19 @@ import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
+import ua.com.foxminded.sql_jdbc_school.menu.Menu;
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
-import ua.com.foxminded.sql_jdbc_school.service.ServiceController;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
 import ua.com.foxminded.sql_jdbc_school.service.impl.CourseServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.StudentServiceImpl;
-import ua.com.foxminded.sql_jdbc_school.view.ServiceControllerView;
-import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleServiceControllerView;
+import ua.com.foxminded.sql_jdbc_school.view.MenuView;
+import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleMenuView;
 
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -48,12 +48,12 @@ public class Main {
                                                                                         courseDAO);
         GroupService<List<GroupModel>, Integer> groupService = new GroupServiceImpl(groupDAO, 
                                                                                     studentDAO);
-        ServiceControllerView<List<GroupModel>, 
+        MenuView<List<GroupModel>, 
                               List<CourseModel>, 
                               List<StudentModel>, 
                               List<StudentModel>, 
-                              Integer> serviceControllerView = new ConsoleServiceControllerView();
-        ServiceController serviceController = new ServiceController(studentService, 
+                              Integer> serviceControllerView = new ConsoleMenuView();
+        Menu serviceController = new Menu(studentService, 
                                                                     courseService, 
                                                                     groupService,
                                                                     serviceControllerView,

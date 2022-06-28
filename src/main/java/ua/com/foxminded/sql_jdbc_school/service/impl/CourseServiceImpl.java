@@ -64,7 +64,7 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
                                                            entity.getCourseName(), 
                                                            entity.getCourseDescription()))
                             .collect(Collectors.toList());
-        } catch (ServiceException | DAOException e) {
+        } catch (DAOException e) {
             LOGGER.error(ERROR_CREATE_COURSES, e);
             throw new ServiceException(ERROR_CREATE_COURSES, e);
         } 

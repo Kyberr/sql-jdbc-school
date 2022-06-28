@@ -4,7 +4,7 @@ public interface CourseService<T, E> {
 
     public E deleteAllCourses() throws ServiceException;
 
-    public E deleteStudentFromCourse(E studentId, E courseId) throws ServiceException;
+    public E deleteStudentFromCourseById(E studentId, E courseId) throws ServiceException;
 
     public T createCourses() throws ServiceException;
 

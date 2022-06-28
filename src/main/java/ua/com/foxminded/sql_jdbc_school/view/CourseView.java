@@ -2,13 +2,13 @@ package ua.com.foxminded.sql_jdbc_school.view;
 
 public interface CourseView<E, S> {
     
-    public void failureStudentFromCourseDeleting();
+    public void studentFromCourseDeletingFailed();
     
     public void deleteAnotherStudentFromCourse();
     
     public void successStudentFromCourseDeleting();
     
-    public void deleteStudentIdFromCourse();
+    public void deleteStudentFromCourseById();
     
     public void executionHasBeenStopped();
     
@@ -16,7 +16,7 @@ public interface CourseView<E, S> {
     
     public void showIncorrectInputWarning();
     
-    public void showStudentCourse(S studentCourseList);
+    public void showStudentsOfCourse(S studentCourseList);
     
     public void enterCourseId();
     

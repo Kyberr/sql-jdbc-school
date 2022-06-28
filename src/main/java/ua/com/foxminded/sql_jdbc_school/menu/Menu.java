@@ -30,8 +30,9 @@ public class Menu {
     private DAOConnectionPool daoConnectionPool;
     private MenuView menuView;
 
-    public Menu(CourseMenu courseMenu, GroupMenu groupMenu, StudentMenu studentMenu,
-            DAOConnectionPool daoConnectionPool, MenuView menuView) {
+    public Menu(CourseMenu courseMenu, 
+                GroupMenu groupMenu, 
+                StudentMenu studentMenu, DAOConnectionPool daoConnectionPool, MenuView menuView) {
         this.courseMenu = courseMenu;
         this.groupMenu = groupMenu;
         this.studentMenu = studentMenu;

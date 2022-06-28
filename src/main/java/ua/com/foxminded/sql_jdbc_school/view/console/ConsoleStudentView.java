@@ -150,7 +150,7 @@ public class ConsoleStudentView implements StudentView<List<StudentModel>, Integ
     }
     
     @Override
-    public void addStudentToDatabaseOrReturnMenu() {
+    public void addStudentToDatabaseOrReturnToMenu() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         printWriter.println(ADD_STUDENT_OR_RETURN_MENU);
     }

@@ -41,7 +41,7 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
     }
 
     @Override
-    public Integer deleteStudentFromCourse(Integer studentId, Integer courseId) throws ServiceException {
+    public Integer deleteStudentFromCourseById(Integer studentId, Integer courseId) throws ServiceException {
         try {
             return courseDao.deleteStudentFromCourse(studentId, courseId);
         } catch (DAOException e) {

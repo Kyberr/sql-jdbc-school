@@ -42,7 +42,7 @@ public class ConsoleCourseView implements CourseView<List<CourseModel>, List<Stu
     private static final char HATCH = '-';
     
     @Override
-    public void failureStudentFromCourseDeleting() {
+    public void studentFromCourseDeletingFailed() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         printWriter.println(FAILURE_STUDENT_FROM_COURSE_DELETING);
     }
@@ -60,7 +60,7 @@ public class ConsoleCourseView implements CourseView<List<CourseModel>, List<Stu
     }
     
     @Override
-    public void deleteStudentIdFromCourse() {
+    public void deleteStudentFromCourseById() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         printWriter.println(DELETE_STUDENT_ID_FROM_COURSE);
     }
@@ -90,7 +90,7 @@ public class ConsoleCourseView implements CourseView<List<CourseModel>, List<Stu
     }
     
     @Override
-    public void showStudentCourse(List<StudentModel> studentsOfCourse) {
+    public void showStudentsOfCourse(List<StudentModel> studentsOfCourse) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
 
         if (studentsOfCourse.isEmpty()) {

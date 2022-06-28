@@ -21,31 +21,28 @@ public class CourseMenu {
     
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int NORMAL_STATUS = 1;
+    private static final int NORMAL_EXIT_STATUS = 0;
+    private static final String WORD_EXIT = "exit";
     private static final String WORD_NO = "no";
     private static final String WORD_YES = "yes";
-    private static final String WORD_EXIT = "exit";
-    private static final int NORMAL_DELETE_STATUS = 0;
     private static final String EMPTY_STRING = "";
     private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     
-    StudentView<List<StudentModel>, Integer> studentMenuView;
+    StudentView<List<StudentModel>, Integer> studenView;
     CourseService<List<CourseModel>, Integer> courseService;
-    CourseView<List<CourseModel>, List<StudentModel>> courseMenuView;
+    CourseView<List<CourseModel>, List<StudentModel>> courseView;
     StudentService <List<StudentModel>, List<GroupModel>, String, Integer, List<CourseModel>> studentService;
     DAOConnectionPool daoConnectionPool;
     
-    public CourseMenu(StudentView<List<StudentModel>, Integer> studentMenuView,
+    public CourseMenu(StudentView<List<StudentModel>, Integer> studentView,
                       CourseService<List<CourseModel>, Integer> courseService,
-                      CourseView<List<CourseModel>, List<StudentModel>> courseMenuView,
+                      CourseView<List<CourseModel>, List<StudentModel>> courseView,
                       StudentService<List<StudentModel>, 
-                                     List<GroupModel>, 
-                                     String, 
-                                     Integer, 
-                                     List<CourseModel>> studentService,
+                                     List<GroupModel>, String, Integer, List<CourseModel>> studentService,
                       DAOConnectionPool daoConnectionPool) {
-        this.studentMenuView = studentMenuView;
+        this.studenView = studentView;
         this.courseService = courseService;
-        this.courseMenuView = courseMenuView;
+        this.courseView = courseView;
         this.studentService = studentService;
         this.daoConnectionPool = daoConnectionPool;
     }
@@ -61,30 +58,31 @@ public class CourseMenu {
     public void addStudentToCourse(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentModel> studentsHaveGroupId = studentService.getStudentsHavingGroupId();
-            studentMenuView.showStudents(studentsHaveGroupId);
+            studenView.showStudents(studentsHaveGroupId);
             List<CourseModel> allCourses = courseService.getAllCourses();
-            courseMenuView.showCourses(allCourses);
-            studentMenuView.enterStudentId();
+            courseView.showCourses(allCourses);
+            studenView.enterStudentId();
             int studentId = scanOnlyIntInput(scanner);
-            courseMenuView.enterCourseId();
+            courseView.enterCourseId();
             int courseId = scanOnlyIntInput(scanner);
-            studentMenuView.addStudentYesOrNo();
+            studenView.addStudentYesOrNo();
             String confirm = scanOnlyYesOrNo(scanner);
             int status = 0;
 
             if (confirm.equals(WORD_YES)) {
                 status = studentService.addStudentToCourseById(studentId, courseId);
+                
                 if (status == NORMAL_STATUS) {
-                    studentMenuView.studentHasBeenAddedToCourse();
+                    studenView.studentHasBeenAddedToCourse();
                 } else {
-                    studentMenuView.studentHasNotBeenAddedToCourse();
+                    studenView.studentHasNotBeenAddedToCourse();
                 }
             } else if (confirm.equals(WORD_NO)) {
                 break first;
             }
 
             for (;;) {
-                studentMenuView.addStudentToCourseOrReturnMenu();
+                studenView.addStudentToCourseOrReturnMenu();
                 String input = scanner.nextLine();
 
                 if (input.equals(EMPTY_STRING)) {
@@ -98,33 +96,32 @@ public class CourseMenu {
     
     public void removeStudentFromCourse(Scanner scanner) throws ServiceException {
         for (;;) {
-            List<StudentModel> studnetCourse = studentService.getAllStudentsHavingCourse();
-            courseMenuView.showStudentCourse(studnetCourse);
-            courseMenuView.deleteStudentIdFromCourse();
+            List<StudentModel> studnetsHavingCourse = studentService.getAllStudentsHavingCourse();
+            courseView.showStudentsOfCourse(studnetsHavingCourse);
+            courseView.deleteStudentFromCourseById();
             int studentId = scanOnlyIntInput(scanner);
-            courseMenuView.enterCourseId();
+            courseView.enterCourseId();
             int courseId = scanOnlyIntInput(scanner);
-
-            studentMenuView.confirmStudentDeleting();
+            studenView.confirmStudentDeleting();
             String yesOrNo = scanOnlyYesOrNo(scanner);
 
             if (yesOrNo.equals(WORD_YES)) {
-                int status = courseService.deleteStudentFromCourse(studentId, courseId);
+                int status = courseService.deleteStudentFromCourseById(studentId, courseId);
 
                 if (status == NORMAL_STATUS) {
-                    courseMenuView.successStudentFromCourseDeleting();
-                    courseMenuView.deleteAnotherStudentFromCourse();
-                    String keyWord = scanOnlyEmptyStringOrExitWord(scanner);
+                    courseView.successStudentFromCourseDeleting();
+                    courseView.deleteAnotherStudentFromCourse();
+                    String keyWord = scanOnlyEmptyStringOrWordExit(scanner);
 
                     if (keyWord.equals(WORD_EXIT)) {
                         break;
                     }
                 } else {
-                    courseMenuView.failureStudentFromCourseDeleting();
+                    courseView.studentFromCourseDeletingFailed();
                 }
             }
-            courseMenuView.deleteAnotherStudentFromCourse();
-            String keyWord = scanOnlyEmptyStringOrExitWord(scanner);
+            courseView.deleteAnotherStudentFromCourse();
+            String keyWord = scanOnlyEmptyStringOrWordExit(scanner);
 
             if (keyWord.equals(WORD_EXIT)) {
                 break;
@@ -133,16 +130,16 @@ public class CourseMenu {
     }
     
     public void findStudentsRelatedToCourse(Scanner couseIdScanner) throws ServiceException {
-        List<CourseModel> courses = courseService.getAllCourses();
-        courseMenuView.showCourses(courses);
-        courseMenuView.enterCourseId();
+        List<CourseModel> allCourses = courseService.getAllCourses();
+        courseView.showCourses(allCourses);
+        courseView.enterCourseId();
         Integer courseID = scanOnlyIntInput(couseIdScanner);
-        List<StudentModel> studentCourse = studentService.getStudentsOfCourseById(courseID);
-        courseMenuView.showStudentCourse(studentCourse);
+        List<StudentModel> studentsOfCourse = studentService.getStudentsOfCourseById(courseID);
+        courseView.showStudentsOfCourse(studentsOfCourse);
         exitOrReturnMainMenu(couseIdScanner);
     }
     
-    private String scanOnlyEmptyStringOrExitWord(Scanner scanner) {
+    private String scanOnlyEmptyStringOrWordExit(Scanner scanner) {
         String keyWord = "";
         for (;;) {
             String input = scanner.nextLine();
@@ -174,7 +171,7 @@ public class CourseMenu {
     private int scanOnlyIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            courseMenuView.showIncorrectInputWarning();
+            courseView.showIncorrectInputWarning();
         }
         int input = scanner.nextInt();
         scanner.nextLine(); // it is used to clean the buffer from the empty string
@@ -182,19 +179,19 @@ public class CourseMenu {
     }
     
     private void exitOrReturnMainMenu(Scanner scanner) {
-        courseMenuView.returnMainMenuOrExit();
+        courseView.returnMainMenuOrExit();
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
 
             if (input.equals(WORD_EXIT)) {
                 closeConnectionPool();
-                courseMenuView.executionHasBeenStopped();
-                System.exit(NORMAL_DELETE_STATUS);
+                courseView.executionHasBeenStopped();
+                System.exit(NORMAL_EXIT_STATUS);
             } else if (input.equals(EMPTY_STRING)) {
                 break;
             } else {
-                courseMenuView.returnMainMenuOrExit();
+                courseView.returnMainMenuOrExit();
             }
         }
     }

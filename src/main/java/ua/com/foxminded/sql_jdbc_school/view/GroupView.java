@@ -4,11 +4,11 @@ public interface GroupView<T> {
     
     public void showIncorrectInputWarning();
     
-    public void executionHasBeenStopped();
+    public void programHasBeenStopped();
     
     public void returnMainMenuOrExit();
     
-    public void showNumberOfStudentsInGroups(T groupsList);
+    public void showStudentQuantityOfGroups(T groupsList);
     
-    public void enterNumberOfStudents();
+    public void enterStudentQuantity();
 }

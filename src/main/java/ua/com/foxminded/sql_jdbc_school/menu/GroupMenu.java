@@ -20,14 +20,14 @@ public class GroupMenu {
     private static final String EMPTY_STRING = "";
     private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     
-    GroupView<List<GroupModel>> groupMenuView;
+    GroupView<List<GroupModel>> groupView;
     GroupService<List<GroupModel>, Integer> groupService;
     DAOConnectionPool daoConnectionPool;
     
-    public GroupMenu(GroupView<List<GroupModel>> groupMenuView,
+    public GroupMenu(GroupView<List<GroupModel>> groupView,
                      GroupService<List<GroupModel>, Integer> groupService, 
                      DAOConnectionPool daoConnectionPool) {
-        this.groupMenuView = groupMenuView;
+        this.groupView = groupView;
         this.groupService = groupService;
         this.daoConnectionPool = daoConnectionPool;
     }
@@ -40,28 +40,28 @@ public class GroupMenu {
         groupService.deleteAllGroups();
     }
 
-    public void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) throws ServiceException {
-        groupMenuView.enterNumberOfStudents();
-        int studentQuantity = scanOnlyIntInput(studentsNumberScanner);
+    public void findGroupsWithLessOrEqualStudents(Scanner scanner) throws ServiceException {
+        groupView.enterStudentQuantity();
+        int studentQuantity = scanOnlyIntInput(scanner);
         List<GroupModel> groups = groupService.findGroupsWithLessOrEqualStudents(studentQuantity);
-        groupMenuView.showNumberOfStudentsInGroups(groups);
-        exitOrReturnMainMenu(studentsNumberScanner);
+        groupView.showStudentQuantityOfGroups(groups);
+        exitOrReturnMainMenu(scanner);
     }
     
     private void exitOrReturnMainMenu(Scanner scanner) {
-        groupMenuView.returnMainMenuOrExit();
+        groupView.returnMainMenuOrExit();
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
 
             if (input.equals(WORD_EXIT)) {
                 closeConnectionPool();
-                groupMenuView.executionHasBeenStopped();
+                groupView.programHasBeenStopped();
                 System.exit(NORMAL_DELETE_STATUS);
             } else if (input.equals(EMPTY_STRING)) {
                 break;
             } else {
-                groupMenuView.returnMainMenuOrExit();
+                groupView.returnMainMenuOrExit();
             }
         }
     }
@@ -77,7 +77,7 @@ public class GroupMenu {
     private int scanOnlyIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            groupMenuView.showIncorrectInputWarning();
+            groupView.showIncorrectInputWarning();
         }
         int input = scanner.nextInt();
         scanner.nextLine(); // it is used to clean the buffer from the empty string

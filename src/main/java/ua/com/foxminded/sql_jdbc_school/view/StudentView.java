@@ -26,7 +26,7 @@ public interface StudentView<F, M> {
     
     public void addStudentYesOrNo();
     
-    public void addStudentToDatabaseOrReturnMenu();
+    public void addStudentToDatabaseOrReturnToMenu();
     
     public void enterFirstName();
     

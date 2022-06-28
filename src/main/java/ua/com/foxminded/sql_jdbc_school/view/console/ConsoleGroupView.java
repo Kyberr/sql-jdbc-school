@@ -32,7 +32,7 @@ public class ConsoleGroupView implements GroupView<List<GroupModel>> {
     }
     
     @Override
-    public void executionHasBeenStopped() {
+    public void programHasBeenStopped() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         printWriter.println(EXECUTION_HAS_BEEN_STOPPED);
     }
@@ -44,13 +44,13 @@ public class ConsoleGroupView implements GroupView<List<GroupModel>> {
     }
     
     @Override
-    public void enterNumberOfStudents() {
+    public void enterStudentQuantity() {
         PrintWriter printWriter = new PrintWriter(System.out, true);
         printWriter.println(ENTER_NUMBER_OF_STUDENTS);
     }
     
     @Override
-    public void showNumberOfStudentsInGroups(List<GroupModel> groupsList) {
+    public void showStudentQuantityOfGroups(List<GroupModel> groupsList) {
         PrintWriter printWriter = new PrintWriter(System.out, true);
 
         if (groupsList.isEmpty()) {

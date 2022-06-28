@@ -68,6 +68,7 @@ public class JdbcCourseDAO implements CourseDAO {
     @Override
     public List<CourseEntity> getCoursesOfStudentById(int studentId) throws DAOException {
         Connection connection = null;
+        CourseEntity course = null;
         List<CourseEntity> coursesOfstudent = new ArrayList<>();
 
         try {
@@ -81,9 +82,10 @@ public class JdbcCourseDAO implements CourseDAO {
                 
                 try (ResultSet resultSet = preparedStatement.executeQuery();) {
                     while (resultSet.next()) {
-                        coursesOfstudent.add(new CourseEntity(resultSet.getInt(COURSE_ID), 
-                                                              resultSet.getString(COURSE_NAME),
-                                                              resultSet.getString(COURSE_DESC)));
+                        course = new CourseEntity(resultSet.getInt(COURSE_ID), 
+                                                  resultSet.getString(COURSE_NAME),
+                                                  resultSet.getString(COURSE_DESC));
+                        coursesOfstudent.add(course);
                     }
                 }
             }

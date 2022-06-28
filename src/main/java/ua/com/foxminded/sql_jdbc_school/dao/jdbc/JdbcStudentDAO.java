@@ -83,7 +83,8 @@ public class JdbcStudentDAO implements StudentDAO {
     @Override
     public List<StudentEntity> getStudensOfCourseById(Integer courseId) throws DAOException {
         try {
-            List<StudentEntity> studentsOfcourse = new ArrayList<>();
+            StudentEntity studentHavingCourse = null;
+            List<StudentEntity> studentsHavingCourse = new ArrayList<>();
             Connection connection = jdbcDaoConnectionPool.getConnection();
             
             try (PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
@@ -94,15 +95,16 @@ public class JdbcStudentDAO implements StudentDAO {
                 
                 try (ResultSet resultSet = preparedStatement.executeQuery();) {
                     while (resultSet.next()) {
-                        studentsOfcourse.add(new StudentEntity(resultSet.getInt(STUDENT_ID), 
-                                                               resultSet.getInt(GROUP_ID),
-                                                               resultSet.getString(FIRST_NAME), 
-                                                               resultSet.getString(LAST_NAME)));
+                        studentHavingCourse = new StudentEntity(resultSet.getInt(STUDENT_ID), 
+                                                                resultSet.getInt(GROUP_ID),
+                                                                resultSet.getString(FIRST_NAME), 
+                                                                resultSet.getString(LAST_NAME));
+                        studentsHavingCourse.add(studentHavingCourse);
                     }
                 }
             } 
             jdbcDaoConnectionPool.releaseConnection(connection);
-            return studentsOfcourse;
+            return studentsHavingCourse;
         } catch (SQLException e) {
         LOGGER.error(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
         throw new DAOException(ERROR_GET_STUDENTS_OF_COURS_BY_ID, e);
@@ -113,7 +115,7 @@ public class JdbcStudentDAO implements StudentDAO {
     public StudentEntity getStudentOfCourseById(Integer studentId, 
                                                 Integer courseId) throws DAOException {
         try {
-            StudentEntity student = null;
+            StudentEntity studentHavingCourse = null;
             Connection connection = jdbcDaoConnectionPool.getConnection();
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
@@ -125,16 +127,16 @@ public class JdbcStudentDAO implements StudentDAO {
                 
                 try (ResultSet resultSet = preparedStatement.executeQuery();) {
                     while (resultSet.next()) {
-                        student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
-                                                    resultSet.getInt(GROUP_ID),
-                                                    resultSet.getString(FIRST_NAME), 
-                                                    resultSet.getString(LAST_NAME));
+                        studentHavingCourse = new StudentEntity(resultSet.getInt(STUDENT_ID), 
+                                                                resultSet.getInt(GROUP_ID),
+                                                                resultSet.getString(FIRST_NAME), 
+                                                                resultSet.getString(LAST_NAME));
                     }
                 }
                 
             }
             jdbcDaoConnectionPool.releaseConnection(connection);
-            return student;
+            return studentHavingCourse;
         } catch (SQLException e) {
             LOGGER.error(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
             throw new DAOException(ERROR_GET_STUDENT_OF_COURSE_BY_ID, e);
@@ -145,6 +147,7 @@ public class JdbcStudentDAO implements StudentDAO {
     public List<StudentEntity> getAllStudentsHavingCouse() throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
+            StudentEntity studentHavingCourse = null;
             List<StudentEntity> studentsHavingCourse = new ArrayList<>();
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
@@ -153,10 +156,11 @@ public class JdbcStudentDAO implements StudentDAO {
                  ResultSet resultSet = preparedStatement.executeQuery();) {
 
                 while (resultSet.next()) {
-                    studentsHavingCourse.add(new StudentEntity((Integer) resultSet.getObject(STUDENT_ID),
-                                                               (Integer) resultSet.getObject(GROUP_ID), 
-                                                               resultSet.getString(FIRST_NAME),
-                                                               resultSet.getString(LAST_NAME)));
+                    studentHavingCourse = new StudentEntity(resultSet.getInt(STUDENT_ID),
+                                                            resultSet.getInt(GROUP_ID), 
+                                                            resultSet.getString(FIRST_NAME),
+                                                            resultSet.getString(LAST_NAME));
+                    studentsHavingCourse.add(studentHavingCourse);
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(connection);
@@ -213,6 +217,7 @@ public class JdbcStudentDAO implements StudentDAO {
     public List<StudentEntity> getStudentsHavingGroupId() throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
+            StudentEntity studentHavingGroupId = null;
             List<StudentEntity> studentsHavingGroupId = new ArrayList<>();
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
@@ -221,10 +226,11 @@ public class JdbcStudentDAO implements StudentDAO {
                  ResultSet resultSet = preparedStatement.executeQuery();) {
 
                 while (resultSet.next()) {
-                    studentsHavingGroupId.add(new StudentEntity(resultSet.getInt(STUDENT_ID), 
-                                                                resultSet.getInt(GROUP_ID),
-                                                                resultSet.getString(FIRST_NAME), 
-                                                                resultSet.getString(LAST_NAME)));
+                    studentHavingGroupId = new StudentEntity(resultSet.getInt(STUDENT_ID), 
+                                                             resultSet.getInt(GROUP_ID),
+                                                             resultSet.getString(FIRST_NAME), 
+                                                             resultSet.getString(LAST_NAME));
+                    studentsHavingGroupId.add(studentHavingGroupId);
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(connection);
@@ -251,7 +257,7 @@ public class JdbcStudentDAO implements StudentDAO {
                 try (ResultSet resultSet = preparedStatement.executeQuery();) {
                     while (resultSet.next()) {
                         student = new StudentEntity(resultSet.getInt(STUDENT_ID), 
-                                                    (Integer) resultSet.getObject(GROUP_ID),
+                                                    resultSet.getInt(GROUP_ID),
                                                     resultSet.getString(FIRST_NAME), 
                                                     resultSet.getString(LAST_NAME));
                     }
@@ -299,7 +305,7 @@ public class JdbcStudentDAO implements StudentDAO {
                 
                 try {
                     for (StudentEntity student : studentEntities) {
-                        preparedStatement.setObject(1, student.getGroupId());
+                        preparedStatement.setInt(1, student.getGroupId());
                         preparedStatement.setString(2, student.getFirstName());
                         preparedStatement.setString(3, student.getLastName());
                         status = preparedStatement.executeUpdate();
@@ -328,6 +334,7 @@ public class JdbcStudentDAO implements StudentDAO {
     public List<StudentEntity> getAll() throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
+            StudentEntity student = null;
             List<StudentEntity> students = new ArrayList<>();
             
             try (Statement statement = connection.createStatement();
@@ -336,10 +343,11 @@ public class JdbcStudentDAO implements StudentDAO {
                          .getProperty(SELECT_ALL));) {
 
                 while (resultSet.next()) {
-                    students.add(new StudentEntity((Integer) resultSet.getObject(STUDENT_ID),
-                                                   (Integer) resultSet.getObject(GROUP_ID), 
-                                                   resultSet.getString(FIRST_NAME),
-                                                   resultSet.getString(LAST_NAME)));
+                    student = new StudentEntity(resultSet.getInt(STUDENT_ID),
+                                                resultSet.getInt(GROUP_ID), 
+                                                resultSet.getString(FIRST_NAME),
+                                                resultSet.getString(LAST_NAME));
+                    students.add(student);
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(connection);

@@ -66,7 +66,8 @@ public class JdbcGroupDAO implements GroupDAO {
     public List<GroupEntity> getGroupsHavingLessOrEqualStudents(int students) throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
-            List<GroupEntity> result = new ArrayList<>();
+            GroupEntity group = null;
+            List<GroupEntity> groups = new ArrayList<>();
 
             try (PreparedStatement statement = connection.prepareStatement(String
                     .format(DAOPropertiesCache.getInstance(SQL_QUERIES_FILENAME)
@@ -74,13 +75,13 @@ public class JdbcGroupDAO implements GroupDAO {
                  ResultSet resultSet = statement.executeQuery();) {
 
                 while (resultSet.next()) {
-                    result.add(
-                            new GroupEntity((Integer) resultSet.getObject(GROUP_ID), 
-                                                      resultSet.getString(GROUP_NAME)));
+                    group = new GroupEntity(resultSet.getInt(GROUP_ID), 
+                                            resultSet.getString(GROUP_NAME));
+                    groups.add(group);
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(connection);
-            return result;
+            return groups;
         } catch (ClassCastException | SQLException e) {
             LOGGER.error(GET_LESS_OR_EQUAL_STUD_ERROR, e);
             throw new DAOException(GET_LESS_OR_EQUAL_STUD_ERROR, e);
@@ -91,7 +92,8 @@ public class JdbcGroupDAO implements GroupDAO {
     public List<GroupEntity> getAll() throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
-            List<GroupEntity> students = new ArrayList<>();
+            GroupEntity group = null;
+            List<GroupEntity> groups = new ArrayList<>();
             
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
@@ -99,12 +101,13 @@ public class JdbcGroupDAO implements GroupDAO {
                          .getProperty(SELECT_ALL));) {
 
                 while (resultSet.next()) {
-                    students.add(new GroupEntity(resultSet.getInt(GROUP_ID), 
-                                                 resultSet.getString(GROUP_NAME)));
+                    group = new GroupEntity(resultSet.getInt(GROUP_ID), 
+                                            resultSet.getString(GROUP_NAME));
+                    groups.add(group);
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(connection);
-            return students;
+            return groups;
         } catch (SQLException e) {
             LOGGER.error(GET_ALL_GROUP_ERROR, e);
             throw new DAOException(GET_ALL_GROUP_ERROR, e);

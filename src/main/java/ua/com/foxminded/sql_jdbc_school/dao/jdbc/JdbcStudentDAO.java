@@ -301,7 +301,7 @@ public class JdbcStudentDAO implements StudentDAO {
                 
                 try {
                     for (StudentEntity student : studentEntities) {
-                        preparedStatement.setInt(1, student.getGroupId());
+                        preparedStatement.setObject(1, student.getGroupId());
                         preparedStatement.setString(2, student.getFirstName());
                         preparedStatement.setString(3, student.getLastName());
                         status = preparedStatement.executeUpdate();

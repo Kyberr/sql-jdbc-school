@@ -1,35 +1,13 @@
 package ua.com.foxminded.sql_jdbs_school.dao.jdbc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionFactory;
-import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
-import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
-
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 class JdbcStudentDAOTest {
-	private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/"
+	
+    /*
+    private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/"
 												  + "src/main/resource/test-db.properties";
 	private static final String TEST_TABLES_SCRIPT_PATH = "D:/repository/SqlJdbcSchool/"
 														+ "src/main/resource/test-tables.sql";

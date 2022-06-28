@@ -46,15 +46,15 @@ public class JdbcGroupDAO implements GroupDAO {
     public Integer deleteAll() throws DAOException {
         try {
             int status = 0;
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection connection = jdbcDaoConnectionPool.getConnection();
 
-            try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
+            try (PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
                     .getProperty(DELETE_ALL));) {
 
-                status = prStatement.executeUpdate();
+                status = preparedStatement.executeUpdate();
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            jdbcDaoConnectionPool.releaseConnection(connection);
             return status;
         } catch (SQLException e) {
             LOGGER.error(DELETE_ALL_ERROR, e);
@@ -65,21 +65,21 @@ public class JdbcGroupDAO implements GroupDAO {
     @Override
     public List<GroupEntity> getGroupsHavingLessOrEqualStudents(int students) throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection connection = jdbcDaoConnectionPool.getConnection();
             List<GroupEntity> result = new ArrayList<>();
 
-            try (PreparedStatement statement = con.prepareStatement(String
+            try (PreparedStatement statement = connection.prepareStatement(String
                     .format(DAOPropertiesCache.getInstance(SQL_QUERIES_FILENAME)
-                                              .getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), 
-                            students)); 
+                                              .getProperty(SELECT_INCLUSIVE_LESS_STUDENTS), students)); 
                  ResultSet resultSet = statement.executeQuery();) {
 
                 while (resultSet.next()) {
                     result.add(
-                            new GroupEntity((Integer) resultSet.getObject(GROUP_ID), resultSet.getString(GROUP_NAME)));
+                            new GroupEntity((Integer) resultSet.getObject(GROUP_ID), 
+                                                      resultSet.getString(GROUP_NAME)));
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            jdbcDaoConnectionPool.releaseConnection(connection);
             return result;
         } catch (ClassCastException | SQLException e) {
             LOGGER.error(GET_LESS_OR_EQUAL_STUD_ERROR, e);
@@ -90,10 +90,10 @@ public class JdbcGroupDAO implements GroupDAO {
     @Override
     public List<GroupEntity> getAll() throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection connection = jdbcDaoConnectionPool.getConnection();
             List<GroupEntity> students = new ArrayList<>();
             
-            try (Statement statement = con.createStatement();
+            try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(DAOPropertiesCache
                          .getInstance(SQL_QUERIES_FILENAME)
                          .getProperty(SELECT_ALL));) {
@@ -103,7 +103,7 @@ public class JdbcGroupDAO implements GroupDAO {
                                                  resultSet.getString(GROUP_NAME)));
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            jdbcDaoConnectionPool.releaseConnection(connection);
             return students;
         } catch (SQLException e) {
             LOGGER.error(GET_ALL_GROUP_ERROR, e);
@@ -114,28 +114,28 @@ public class JdbcGroupDAO implements GroupDAO {
     @Override
     public Integer insert(List<GroupEntity> groups) throws DAOException {
         try {
-            Connection con = jdbcDaoConnectionPool.getConnection();
+            Connection connection = jdbcDaoConnectionPool.getConnection();
             int status = BAD_STATUS;
 
-            try (PreparedStatement prStatement = con.prepareStatement(DAOPropertiesCache
+            try (PreparedStatement preparedStatement = connection.prepareStatement(DAOPropertiesCache
                     .getInstance(SQL_QUERIES_FILENAME)
                     .getProperty(INSERT));) {
 
-                con.setAutoCommit(false);
-                Savepoint save = con.setSavepoint();
+                connection.setAutoCommit(false);
+                Savepoint save = connection.setSavepoint();
 
                 try {
                     for (GroupEntity group : groups) {
-                        prStatement.setString(1, group.getGroupName());
-                        status = prStatement.executeUpdate();
+                        preparedStatement.setString(1, group.getGroupName());
+                        status = preparedStatement.executeUpdate();
                     }
-                    con.commit();
+                    connection.commit();
                 } catch (SQLException e) {
-                    con.rollback(save);
+                    connection.rollback(save);
                     throw new SQLException(e);
                 }
             }
-            jdbcDaoConnectionPool.releaseConnection(con);
+            jdbcDaoConnectionPool.releaseConnection(connection);
             return status;
         } catch (SQLException e) {
             LOGGER.error(INSERT_GROUP_ERROR, e);

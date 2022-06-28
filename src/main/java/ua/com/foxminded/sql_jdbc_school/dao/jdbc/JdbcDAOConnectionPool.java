@@ -37,32 +37,31 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
     public synchronized Connection getConnection() throws DAOException {
         suspendFlag = false;
         wakeFlag = false;
-        Connection con = null;
+        Connection connection = null;
 
         try {
             if (availablePool.isEmpty() && (inUsePool.size() < MAX_POOL_SIZE)) {
-                con = connectionFactory.createConnection();
-                inUsePool.add(con);
-                return con;
+                connection = connectionFactory.createConnection();
+                inUsePool.add(connection);
+                return connection;
             } else if (!availablePool.isEmpty()) {
-                con = getConnectionFromPool();
+                connection = getConnectionFromPool();
             } else {
                 waitFreeConnection();
-                con = getConnection();
+                connection = getConnection();
             }
         } catch (SQLException | InterruptedException e) {
             LOGGER.error(GET_CONNECTION_ERROR, e);
             Thread.currentThread().interrupt();
             throw new DAOException(GET_CONNECTION_ERROR, e);
         }
-
-        return con;
+        return connection;
     }
 
     @Override
-    public synchronized void releaseConnection(Connection con) {
+    public synchronized void releaseConnection(Connection connection) {
         inUsePool.remove(inUsePool.size() - ONE);
-        availablePool.add(con);
+        availablePool.add(connection);
 
         if (!availablePool.isEmpty() && suspendFlag) {
             while (!wakeFlag) {
@@ -73,10 +72,10 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
 
     @Override
     public void closeConnections() throws DAOException {
-        for (Connection con : availablePool) {
+        for (Connection connection : availablePool) {
             try {
-                if (con != null) {
-                    con.close();
+                if (connection != null) {
+                    connection.close();
                 }
             } catch (SQLException e) {
                 LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
@@ -100,18 +99,17 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
     }
 
     private Connection getConnectionFromPool() throws DAOException, SQLException {
-        Connection con = availablePool.remove(availablePool.size() - ONE);
-        inUsePool.add(con);
+        Connection connection = availablePool.remove(availablePool.size() - ONE);
+        inUsePool.add(connection);
 
-        if (con == null) {
-            con = connectionFactory.createConnection();
-            inUsePool.add(con);
-        } else if (!con.isValid(CON_TIMEOUT)) {
-            con.close();
-            con = connectionFactory.createConnection();
-            inUsePool.add(con);
+        if (connection == null) {
+            connection = connectionFactory.createConnection();
+            inUsePool.add(connection);
+        } else if (!connection.isValid(CON_TIMEOUT)) {
+            connection.close();
+            connection = connectionFactory.createConnection();
+            inUsePool.add(connection);
         }
-
-        return con;
+        return connection;
     }
 }

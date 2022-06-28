@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
-import ua.com.foxminded.sql_jdbc_school.view.GroupMenuView;
+import ua.com.foxminded.sql_jdbc_school.view.GroupView;
 
-public class ConsoleGroupMenuView implements GroupMenuView<List<GroupModel>> {
+public class ConsoleGroupView implements GroupView<List<GroupModel>> {
     
     private static final String INCORRECT_INPUT = "The input must be the number of the corresponding value.\n";
     private static final String EXECUTION_HAS_BEEN_STOPPED = "The program execution has been stopped.";

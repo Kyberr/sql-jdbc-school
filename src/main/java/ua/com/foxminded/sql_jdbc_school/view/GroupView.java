@@ -1,6 +1,6 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface GroupMenuView<T> {
+public interface GroupView<T> {
     
     public void showIncorrectInputWarning();
     

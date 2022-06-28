@@ -14,7 +14,10 @@ import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
+import ua.com.foxminded.sql_jdbc_school.menu.CourseMenu;
+import ua.com.foxminded.sql_jdbc_school.menu.GroupMenu;
 import ua.com.foxminded.sql_jdbc_school.menu.Menu;
+import ua.com.foxminded.sql_jdbc_school.menu.StudentMenu;
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
@@ -25,8 +28,14 @@ import ua.com.foxminded.sql_jdbc_school.service.StudentService;
 import ua.com.foxminded.sql_jdbc_school.service.impl.CourseServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.StudentServiceImpl;
+import ua.com.foxminded.sql_jdbc_school.view.CourseView;
+import ua.com.foxminded.sql_jdbc_school.view.GroupView;
 import ua.com.foxminded.sql_jdbc_school.view.MenuView;
+import ua.com.foxminded.sql_jdbc_school.view.StudentView;
+import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleCourseView;
+import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleGroupView;
 import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleMenuView;
+import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleStudentView;
 
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -48,21 +57,23 @@ public class Main {
                                                                                         courseDAO);
         GroupService<List<GroupModel>, Integer> groupService = new GroupServiceImpl(groupDAO, 
                                                                                     studentDAO);
-        MenuView<List<GroupModel>, 
-                              List<CourseModel>, 
-                              List<StudentModel>, 
-                              List<StudentModel>, 
-                              Integer> serviceControllerView = new ConsoleMenuView();
-        Menu serviceController = new Menu(studentService, 
-                                                                    courseService, 
-                                                                    groupService,
-                                                                    serviceControllerView,
-                                                                    jdbcDaoConnectionFactory,
-                                                                    jdbcDaoConnectionPool);
+        StudentView<List<StudentModel>, Integer> consoleStudentView = new ConsoleStudentView();
+        CourseView<List<CourseModel>, List<StudentModel>> couseCouseView = new ConsoleCourseView();
+        GroupView<List<GroupModel>> consoleGroupView = new ConsoleGroupView();
+        MenuView menuView = new ConsoleMenuView();
+        
+        CourseMenu courseMenu = new CourseMenu(consoleStudentView, courseService, couseCouseView, 
+                                               studentService, jdbcDaoConnectionPool);
+        GroupMenu groupMenu = new GroupMenu(consoleGroupView, groupService, jdbcDaoConnectionPool);
+        StudentMenu studentMenu = new StudentMenu(couseCouseView, courseService, studentService, 
+                                                  consoleStudentView);
+        
+        
+        Menu menu = new Menu(courseMenu, groupMenu, studentMenu, jdbcDaoConnectionPool, menuView);
 
         try {
-            serviceController.bootstrap();
-            serviceController.execute();
+            menu.bootstrap();
+            menu.execute();
         } catch (Exception e) {
             LOGGER.error("Error", e);
         }

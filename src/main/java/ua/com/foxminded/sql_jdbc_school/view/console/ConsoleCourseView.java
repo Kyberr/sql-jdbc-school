@@ -7,10 +7,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
-import ua.com.foxminded.sql_jdbc_school.view.CourseMenuView;
+import ua.com.foxminded.sql_jdbc_school.view.CourseView;
 
-public class ConsoleCourseMenuView implements CourseMenuView<List<CourseModel>, List<StudentModel>> {
+public class ConsoleCourseView implements CourseView<List<CourseModel>, List<StudentModel>> {
     
+    private static final String FAILURE_STUDENT_FROM_COURSE_DELETING = "There is no such student "
+            + "in the course.";
+    private static final String ADD_ANOTHER_STUDENT_FROM_COURSE = "Press the \"Enter\" key to delete another "
+            + "student from a course or write \"exit\" and press the \"Enter\" key.";
+    private static final String SUCCESS_STUDENT_FROM_COURSE_DELETING = "The student has been "
+            + "deleted from the course.";
+    private static final String DELETE_STUDENT_ID_FROM_COURSE = "To delete a student from a course first enter the "
+            + "student's id from the list above and press the \"Enter\" key:";
     private static final String RETURN_MAIN_MENU_OR_EXIT = "Press the \"Enter\" key to return to the main "
             + "menu or write \"exit\" and press the \"Enter\" key.";
     private static final String EXECUTION_HAS_BEEN_STOPPED = "The program execution has been stopped.";
@@ -32,6 +40,30 @@ public class ConsoleCourseMenuView implements CourseMenuView<List<CourseModel>, 
     private static final int FIST_LINE = 0;
     private static final char NULL = '\0';
     private static final char HATCH = '-';
+    
+    @Override
+    public void failureStudentFromCourseDeleting() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(FAILURE_STUDENT_FROM_COURSE_DELETING);
+    }
+    
+    @Override
+    public void deleteAnotherStudentFromCourse() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(ADD_ANOTHER_STUDENT_FROM_COURSE);
+    }
+    
+    @Override
+    public void successStudentFromCourseDeleting() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(SUCCESS_STUDENT_FROM_COURSE_DELETING);
+    }
+    
+    @Override
+    public void deleteStudentIdFromCourse() {
+        PrintWriter printWriter = new PrintWriter(System.out, true);
+        printWriter.println(DELETE_STUDENT_ID_FROM_COURSE);
+    }
     
     @Override
     public void returnMainMenuOrExit() {

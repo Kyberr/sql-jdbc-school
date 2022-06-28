@@ -11,7 +11,7 @@ import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.view.GroupMenuView;
+import ua.com.foxminded.sql_jdbc_school.view.GroupView;
 
 public class GroupMenu {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -20,40 +20,48 @@ public class GroupMenu {
     private static final String EMPTY_STRING = "";
     private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     
-    GroupMenuView<List<GroupModel>> groupServiceMenuView;
+    GroupView<List<GroupModel>> groupMenuView;
     GroupService<List<GroupModel>, Integer> groupService;
     DAOConnectionPool daoConnectionPool;
     
-    public GroupMenu(GroupMenuView<List<GroupModel>> groupServiceMenuView, 
-                            GroupService<List<GroupModel>, Integer>  groupService, 
-                            DAOConnectionPool daoConnectionPool) {
-        this.groupServiceMenuView = groupServiceMenuView;
+    public GroupMenu(GroupView<List<GroupModel>> groupMenuView,
+                     GroupService<List<GroupModel>, Integer> groupService, 
+                     DAOConnectionPool daoConnectionPool) {
+        this.groupMenuView = groupMenuView;
         this.groupService = groupService;
         this.daoConnectionPool = daoConnectionPool;
     }
+    
+    public List<GroupModel> createGroups() throws ServiceException {
+        return groupService.createGroups();
+    }
+    
+    public void deleteAllGroups() throws ServiceException {
+        groupService.deleteAllGroups();
+    }
 
     public void findGroupsWithLessOrEqualStudents(Scanner studentsNumberScanner) throws ServiceException {
-        groupServiceMenuView.enterNumberOfStudents();
+        groupMenuView.enterNumberOfStudents();
         int studentQuantity = scanOnlyIntInput(studentsNumberScanner);
         List<GroupModel> groups = groupService.findGroupsWithLessOrEqualStudents(studentQuantity);
-        groupServiceMenuView.showNumberOfStudentsInGroups(groups);
+        groupMenuView.showNumberOfStudentsInGroups(groups);
         exitOrReturnMainMenu(studentsNumberScanner);
     }
     
     private void exitOrReturnMainMenu(Scanner scanner) {
-        groupServiceMenuView.returnMainMenuOrExit();
+        groupMenuView.returnMainMenuOrExit();
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
 
             if (input.equals(WORD_EXIT)) {
                 closeConnectionPool();
-                groupServiceMenuView.executionHasBeenStopped();
+                groupMenuView.executionHasBeenStopped();
                 System.exit(NORMAL_DELETE_STATUS);
             } else if (input.equals(EMPTY_STRING)) {
                 break;
             } else {
-                groupServiceMenuView.returnMainMenuOrExit();
+                groupMenuView.returnMainMenuOrExit();
             }
         }
     }
@@ -69,7 +77,7 @@ public class GroupMenu {
     private int scanOnlyIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            groupServiceMenuView.showIncorrectInputWarning();
+            groupMenuView.showIncorrectInputWarning();
         }
         int input = scanner.nextInt();
         scanner.nextLine(); // it is used to clean the buffer from the empty string

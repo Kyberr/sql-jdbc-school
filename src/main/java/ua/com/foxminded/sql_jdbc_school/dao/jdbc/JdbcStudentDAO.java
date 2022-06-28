@@ -59,7 +59,7 @@ public class JdbcStudentDAO implements StudentDAO {
     public JdbcStudentDAO(DAOConnectionPool connectionPool) {
         this.jdbcDaoConnectionPool = connectionPool;
     }
-
+    
     @Override
     public Integer deleteAll() throws DAOException {
         try {
@@ -195,15 +195,11 @@ public class JdbcStudentDAO implements StudentDAO {
                     status = preparedStatement.executeUpdate();
                     connection.commit();
                     jdbcDaoConnectionPool.releaseConnection(connection);
-                } catch (SQLException ex) {
+                } catch (SQLException e) {
                     if (connection != null) {
-                        try {
-                            connection.rollback(save);
-                        } catch (SQLException exp) {
-                            throw new SQLException(exp);
-                        }
-                        throw new SQLException(ex);
+                        connection.rollback(save);
                     }
+                    throw new SQLException(e);
                 }
             }
             return status;
@@ -311,15 +307,11 @@ public class JdbcStudentDAO implements StudentDAO {
                         status = preparedStatement.executeUpdate();
                     }
                     connection.commit();
-                } catch (SQLException ex) {
+                } catch (SQLException e) {
                     if (connection != null) {
-                        try {
-                            connection.rollback(save);
-                        } catch (SQLException exp) {
-                            throw new SQLException(exp);
-                        }
+                        connection.rollback(save);
                     }
-                    throw new SQLException(ex);
+                    throw new SQLException(e);
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(connection);
@@ -380,15 +372,11 @@ public class JdbcStudentDAO implements StudentDAO {
                         status = preparedStatement.executeUpdate();
                     }
                     connection.commit();
-                } catch (SQLException ex) {
+                } catch (SQLException e) {
                     if (connection != null) {
-                        try {
-                            connection.rollback(save);
-                        } catch (SQLException exp) {
-                            throw new SQLException(exp);
-                        }
+                        connection.rollback(save);
                     }
-                    throw new SQLException(ex);
+                    throw new SQLException(e);
                 }
             }
             jdbcDaoConnectionPool.releaseConnection(connection);

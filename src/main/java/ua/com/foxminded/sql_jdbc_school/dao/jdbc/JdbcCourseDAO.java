@@ -44,7 +44,7 @@ public class JdbcCourseDAO implements CourseDAO {
     public JdbcCourseDAO(DAOConnectionPool jdbcDaoConnectionPool) {
         this.jdbcDaoConnectionPool = jdbcDaoConnectionPool;
     }
-
+    
     @Override
     public Integer deleteAll() throws DAOException {
         try {
@@ -192,11 +192,7 @@ public class JdbcCourseDAO implements CourseDAO {
                     connection.commit();
                 } catch (SQLException e) {
                     if (connection != null) {
-                        try {
-                            connection.rollback(save);
-                        } catch (SQLException exc) {
-                            throw new SQLException(exc);
-                        }
+                        connection.rollback(save);
                     }
                     throw new SQLException(e);
                 }

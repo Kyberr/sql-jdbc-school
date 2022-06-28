@@ -41,7 +41,7 @@ public class JdbcGroupDAO implements GroupDAO {
     public JdbcGroupDAO(DAOConnectionPool jdbcDaoConnectionPool) {
         this.jdbcDaoConnectionPool = jdbcDaoConnectionPool;
     }
-
+    
     @Override
     public Integer deleteAll() throws DAOException {
         try {
@@ -134,7 +134,9 @@ public class JdbcGroupDAO implements GroupDAO {
                     }
                     connection.commit();
                 } catch (SQLException e) {
-                    connection.rollback(save);
+                    if (connection != null) {
+                        connection.rollback(save);
+                    }
                     throw new SQLException(e);
                 }
             }

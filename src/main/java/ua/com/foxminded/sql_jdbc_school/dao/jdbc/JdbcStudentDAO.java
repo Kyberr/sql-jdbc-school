@@ -268,7 +268,7 @@ public class JdbcStudentDAO implements StudentDAO {
     }
 
     @Override
-    public int deleteById(int studentId) throws DAOException {
+    public int deleteStudentById(int studentId) throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
             

@@ -36,7 +36,7 @@ class JdbcGroupDAOTest {
     private static final int TOTAL_GROUP_QUANTITY = 2;
     private static final int STUDENTS_QUANTITY = 3;
     private static final int GROUP_QUANITY = 2;
-    private static final String GET_ISERTED_GROUP = "selectInsertedGroup";
+    private static final String GET_ISERTED_GROUP = "selectGroup";
     private static final String GROUP_NAME = "group_name";
     private static final String NAME_OF_GROUP = "test";
     private static final String TEST_DATA = "test-data.sql";
@@ -133,7 +133,7 @@ class JdbcGroupDAOTest {
     }
     
     @Test
-    void insert_InsertionOfAcceptableArgument_DatabaseHasArgument() throws FileNotFoundException, 
+    void insert_InsertionOfGroup_DatabaseHasData() throws FileNotFoundException, 
                                                                 IOException, 
                                                                 SQLException, 
                                                                 DAOException {

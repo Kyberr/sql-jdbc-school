@@ -14,6 +14,12 @@ public class StudentEntity {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+    
+    public StudentEntity(Integer groupId, String firstName, String lastName) {
+        this.groupId = groupId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public StudentEntity(String firstName, String lastName) {
         this.firstName = firstName;

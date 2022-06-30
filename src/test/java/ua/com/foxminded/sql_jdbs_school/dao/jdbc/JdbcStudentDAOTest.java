@@ -1,16 +1,23 @@
 package ua.com.foxminded.sql_jdbs_school.dao.jdbc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,20 +25,36 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
+import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
-@Sql({"/test-schema.sql", "/test-data.sql"})
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class JdbcStudentDAOTest {
+    
     private static final Logger LOGGER = LogManager.getLogger();
+    private static Properties PROPERTIES = null;
+    private static final String STUDENT_ID = "student_id";
+    private static final String GROUP_ID = "group_id";
+    private static final String FIRST_NAME = "first_name";
+    private static final String LAST_NAME = "last_name";
+    private static final String TEST_QUERIES = "test-queries.properties";
+    private static final String STUDENT_LAST_NAME = "test";
+    private static final String STUDENT_FIRST_NAME = "test";
+    private static final String GET_STUDENT_HAVING_TEST_LAST_NAME = "getStudentHavingTestLastName";
+    private static final String GET_STUDENT_HAVING_ID_ONE = "getStudentHavingIdOne";
+    private static final int STUDENT_GROUP_ID = 2;
+    private static final int TEST_STUDENT_ID = 1;
     
     @InjectMocks
     JdbcStudentDAO jdbcStudentDao;
@@ -42,119 +65,74 @@ class JdbcStudentDAOTest {
     @Mock
     DAOConnectionPool daoConnectionPoolMock;
     
+    @BeforeAll
+    static void init() throws IOException {
+        try (InputStream queries = Thread.currentThread().getContextClassLoader()
+                                                         .getResourceAsStream(TEST_QUERIES);) {
+            PROPERTIES = new Properties();
+            PROPERTIES.load(queries);
+        }
+    }
+    
     @Test
-    void getAll() throws SQLException, DAOException {
-        /*
-        List<Map<String, Object>> students = jdbcTemplate.queryForList("select * from department.students");
-        assertEquals(6, students.size());
-        */
-        
-       // try {
-        Connection connection = jdbcTemplate.getDataSource().getConnection();
-        
+    void deleteById() throws SQLException, DAOException {
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection();) {
             when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
-    //        jdbcStudentDao.getAll();
-            assertEquals(6, jdbcStudentDao.getAll().size());
-       // } catch (DAOException | SQLException e) {
-         //   LOGGER.error("Error", e);
-      //  }
-        
-     //   assertTrue(jdbcTemplate.getDataSource().getConnection() != null);
-        
+            jdbcStudentDao.deleteStudentById(TEST_STUDENT_ID);
+            Map<String, Object> student = jdbcTemplate.queryForMap(PROPERTIES
+                    .getProperty(GET_STUDENT_HAVING_ID_ONE));
+            System.out.println(";lksdjf;ljkaf");
+           
+             assertNull(student.get(FIRST_NAME));
+        }
         
     }
     
+    @Test
+    void insert_InsertionOfStudent_DatabaseHasStudent() throws SQLException, DAOException, IOException {
+        
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+            when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
+            StudentEntity student = new StudentEntity(STUDENT_GROUP_ID, STUDENT_FIRST_NAME, 
+                                                      STUDENT_LAST_NAME);
+            List<StudentEntity> studentList = new ArrayList<>();
+            studentList.add(student);
+            jdbcStudentDao.insert(studentList);
+            Map<String, Object> insertedStudent = jdbcTemplate.queryForMap(PROPERTIES
+                    .getProperty(GET_STUDENT_HAVING_TEST_LAST_NAME));
+            
+            assertEquals(STUDENT_LAST_NAME, insertedStudent.get(LAST_NAME));
+            assertEquals(STUDENT_FIRST_NAME, insertedStudent.get(FIRST_NAME));
+            assertEquals(STUDENT_GROUP_ID, insertedStudent.get(GROUP_ID));
+        }
+    }
     
-	
-    /*
-    private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/"
-												  + "src/main/resource/test-db.properties";
-	private static final String TEST_TABLES_SCRIPT_PATH = "D:/repository/SqlJdbcSchool/"
-														+ "src/main/resource/test-tables.sql";
-	private static final String TEST_DATA_PATH = "D:/repository/SqlJdbcSchool/"
-											   + "src/main/resource/test-data.sql";
-	private static final String DB_URL = "databaseURL";
-    private static final String USER_NAME = "databaseUser";
-    private static final String USER_PASS = "databaseUserPassword";
-    private static final String END_LINE = "\n";
-    private static final Integer STUDENT_QUANTITY_HAVING_GROUP_ID = 5;
+    @Test
+    void getAll_GettingAllStudents_RightStudentQuantity() throws SQLException, DAOException {
+        
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection();) {
+            when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
+            assertEquals(6, jdbcStudentDao.getAll().size());
+        }
+    }
     
-    @InjectMocks
-    JdbcStudentDAO universityStudentDao;
-    
-    @Mock
-    DAOConnectionFactory universityConnectionDaoFactory;
-	
-	@BeforeAll
-	static void init() throws SQLException, DAOException, IOException {
-		Connection con = null;
-		Statement statement = null;
-		PreparedStatement prStatement = null;
-		
-		try {
-			FileInputStream testDbInput = new FileInputStream(TEST_DB_PROP_PATH);
-			Properties testDbProperties = new Properties();
-			testDbProperties.load(testDbInput);
-			con = DriverManager.getConnection(testDbProperties.getProperty(DB_URL),
-											  testDbProperties.getProperty(USER_NAME),
-											  testDbProperties.getProperty(USER_PASS));
-			
-			Path tablesScriptPath = Paths.get(TEST_TABLES_SCRIPT_PATH);
-			String tablesScript = Files.lines(tablesScriptPath)
-									   .collect(Collectors.joining(END_LINE));
-			statement = con.createStatement();
-			statement.execute(tablesScript);
-			Path testDataScriptPath = Paths.get(TEST_DATA_PATH);
-			String testDataScript = Files.lines(testDataScriptPath)
-										 .collect(Collectors.joining(END_LINE));
-			prStatement = con.prepareStatement(testDataScript);
-			prStatement.execute();
-		}  finally {
-			con.close();
-			statement.close();
-			prStatement.close();
-		}
-	}
-	
-	@Test
-	void readStudentsHavingGroupId_Call_CorrectStudnetQuantity() throws IOException, 
-																		SQLException, 
-																		DAOException {
-		Connection con = null;
-		
-		try {
-			FileInputStream testDbInput = new FileInputStream(TEST_DB_PROP_PATH);
-			Properties testDbProperties = new Properties();
-			testDbProperties.load(testDbInput);
-			con = DriverManager.getConnection(testDbProperties.getProperty(DB_URL),
-											  testDbProperties.getProperty(USER_NAME),
-											  testDbProperties.getProperty(USER_PASS));
-			when(universityConnectionDaoFactory.createConnection()).thenReturn(con);
-			assertEquals(STUDENT_QUANTITY_HAVING_GROUP_ID, 
-					     universityStudentDao.getStudentsHavingGroupId().size());
-		} finally {
-			con.close();
-		}
-	}
-	/*
-	@Test
-	void getById() throws SQLException, IOException, DAOException {
-		Connection con = null;
-		
-		try {
-			FileInputStream testDbInput = new FileInputStream(TEST_DB_PROP_PATH);
-			Properties testDbProperties = new Properties();
-			testDbProperties.load(testDbInput);
-			con = DriverManager.getConnection(testDbProperties.getProperty(DB_URL),
-											  testDbProperties.getProperty(USER_NAME),
-											  testDbProperties.getProperty(USER_PASS));
-			when(universityConnectionDaoFactory.createConnection()).thenReturn(con);
-			assertEquals(STUDENT_QUANTITY_HAVING_GROUP_ID, 
-					     universityStudentDao.().size());
-		} finally {
-			con.close();
-		}
-		
-	}
-	*/
+    @Test
+    void udate_UdatingStudentData_DatabaseHasUpdatedData() throws SQLException, DAOException, IOException {
+        
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection();) {
+            
+            when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
+            StudentEntity student = new StudentEntity(TEST_STUDENT_ID, STUDENT_GROUP_ID, STUDENT_FIRST_NAME, 
+                                                      STUDENT_LAST_NAME);
+            List<StudentEntity> studentList = new ArrayList<>();
+            studentList.add(student);
+            jdbcStudentDao.update(studentList);
+            Map<String, Object> studentFirstName = jdbcTemplate.queryForMap(
+                    PROPERTIES.getProperty(GET_STUDENT_HAVING_ID_ONE));
+            assertEquals(STUDENT_LAST_NAME, studentFirstName.get(LAST_NAME));
+            assertEquals(STUDENT_FIRST_NAME, studentFirstName.get(FIRST_NAME));
+            assertEquals(STUDENT_GROUP_ID, studentFirstName.get(GROUP_ID));
+            assertEquals(TEST_STUDENT_ID, studentFirstName.get(STUDENT_ID));
+        }
+    }
 }

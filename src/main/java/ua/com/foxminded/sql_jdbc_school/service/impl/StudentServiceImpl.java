@@ -215,7 +215,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Integer deleteStudent(Integer studentId) throws ServiceException {
         try {
-            return studentDAO.deleteById(studentId);
+            return studentDAO.deleteStudentById(studentId);
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_STUDENT, e);
             throw new ServiceException(ERROR_DELETE_STUDENT, e);

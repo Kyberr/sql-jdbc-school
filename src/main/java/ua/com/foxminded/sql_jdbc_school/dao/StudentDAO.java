@@ -19,7 +19,7 @@ public interface StudentDAO extends GenericDAO<StudentEntity, Integer> {
 
     public StudentEntity getStudentById(int studentId) throws DAOException;
 
-    public int deleteById(int studentId) throws DAOException;
+    public int deleteStudentById(int studentId) throws DAOException;
 
     public int update(List<StudentEntity> students) throws DAOException;
 }

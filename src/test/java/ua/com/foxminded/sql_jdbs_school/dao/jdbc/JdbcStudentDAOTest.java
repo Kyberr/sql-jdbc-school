@@ -1,6 +1,7 @@
 package ua.com.foxminded.sql_jdbs_school.dao.jdbc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -9,7 +10,9 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
@@ -79,13 +83,10 @@ class JdbcStudentDAOTest {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection();) {
             when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
             jdbcStudentDao.deleteStudentById(TEST_STUDENT_ID);
-            Map<String, Object> student = jdbcTemplate.queryForMap(PROPERTIES
-                    .getProperty(GET_STUDENT_HAVING_ID_ONE));
-            System.out.println(";lksdjf;ljkaf");
-           
-             assertNull(student.get(FIRST_NAME));
+            Statement statement = jdbcTemplate.getDataSource().getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(PROPERTIES.getProperty(GET_STUDENT_HAVING_ID_ONE));
+            assertFalse(resultSet.next());
         }
-        
     }
     
     @Test

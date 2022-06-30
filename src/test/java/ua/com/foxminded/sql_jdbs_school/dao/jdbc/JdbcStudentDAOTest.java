@@ -1,10 +1,70 @@
 package ua.com.foxminded.sql_jdbs_school.dao.jdbc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
+import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
+
 @ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
+@Sql({"/test-schema.sql", "/test-data.sql"})
 class JdbcStudentDAOTest {
+    private static final Logger LOGGER = LogManager.getLogger();
+    
+    @InjectMocks
+    JdbcStudentDAO jdbcStudentDao;
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    
+    @Mock
+    DAOConnectionPool daoConnectionPoolMock;
+    
+    @Test
+    void getAll() throws SQLException, DAOException {
+        /*
+        List<Map<String, Object>> students = jdbcTemplate.queryForList("select * from department.students");
+        assertEquals(6, students.size());
+        */
+        
+       // try {
+        Connection connection = jdbcTemplate.getDataSource().getConnection();
+        
+            when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
+    //        jdbcStudentDao.getAll();
+            assertEquals(6, jdbcStudentDao.getAll().size());
+       // } catch (DAOException | SQLException e) {
+         //   LOGGER.error("Error", e);
+      //  }
+        
+     //   assertTrue(jdbcTemplate.getDataSource().getConnection() != null);
+        
+        
+    }
+    
+    
 	
     /*
     private static final String TEST_DB_PROP_PATH = "D:/repository/SqlJdbcSchool/"

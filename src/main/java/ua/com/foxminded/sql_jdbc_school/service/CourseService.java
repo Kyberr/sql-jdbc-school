@@ -1,12 +1,12 @@
 package ua.com.foxminded.sql_jdbc_school.service;
 
-public interface CourseService<T, E> {
+import java.util.List;
 
-    public E deleteAllCourses() throws ServiceException;
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 
-    public E deleteStudentFromCourseById(E studentId, E courseId) throws ServiceException;
+public interface CourseService extends GenericService<List<CourseModel>, Integer> {
 
-    public T createCourses() throws ServiceException;
+    public Integer deleteStudentFromCourseById(Integer studentId, Integer courseId) throws ServiceException;
 
-    public T getAllCourses() throws ServiceException;
+    public List<CourseModel> getAllCourses() throws ServiceException;
 }

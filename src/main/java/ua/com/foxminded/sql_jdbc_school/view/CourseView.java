@@ -1,6 +1,11 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface CourseView<E, S> {
+import java.util.List;
+
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
+import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
+
+public interface CourseView extends GenericView {
     
     public void studentFromCourseDeletingFailed();
     
@@ -14,11 +19,9 @@ public interface CourseView<E, S> {
     
     public void returnMainMenuOrExit();
     
-    public void showIncorrectInputWarning();
-    
-    public void showStudentsOfCourse(S studentCourseList);
+    public void showStudentsOfCourse(List<StudentModel> studentCourseList);
     
     public void enterCourseId();
     
-    public void showCourses(E coursesList);
+    public void showCourses(List<CourseModel> coursesList);
 }

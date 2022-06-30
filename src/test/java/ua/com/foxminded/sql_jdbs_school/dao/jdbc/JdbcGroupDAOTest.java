@@ -98,11 +98,11 @@ class JdbcGroupDAOTest {
             Properties dbProp = new Properties();
             dbProp.load(testDbPropertiesIn);
 
-            try (Connection con = DriverManager.getConnection(dbProp.getProperty(DB_URL),
-                                                              dbProp.getProperty(USER_NAME), 
-                                                              dbProp.getProperty(USER_PASS));) {
+            try (Connection connection = DriverManager.getConnection(dbProp.getProperty(DB_URL),
+                                                                     dbProp.getProperty(USER_NAME), 
+                                                                     dbProp.getProperty(USER_PASS));) {
 
-                when(daoConnectionPoolMock.getConnection()).thenReturn(con);
+                when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
                 assertEquals(GROUP_QUANITY,
                              jdbcGroupDao.getGroupsHavingLessOrEqualStudents(STUDENTS_QUANTITY)
                                                .size());

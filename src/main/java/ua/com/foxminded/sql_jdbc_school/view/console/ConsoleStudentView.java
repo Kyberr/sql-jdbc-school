@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.view.StudentView;
 
-public class ConsoleStudentView implements StudentView<List<StudentModel>, Integer> {
+public class ConsoleStudentView implements StudentView {
     
     private static final String ADD_STUDENT_TO_COURSE_OR_RETURN = "Press the \"Enter\" key to add another "
             + "student or write \"exit\" and press the \"Enter\" key to return to the main menu.";

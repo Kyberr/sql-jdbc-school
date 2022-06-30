@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
-import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
@@ -28,18 +27,14 @@ public class CourseMenu {
     private static final String EMPTY_STRING = "";
     private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     
-    StudentView<List<StudentModel>, Integer> studenView;
-    CourseService<List<CourseModel>, Integer> courseService;
-    CourseView<List<CourseModel>, List<StudentModel>> courseView;
-    StudentService <List<StudentModel>, List<GroupModel>, String, Integer, List<CourseModel>> studentService;
+    StudentView studenView;
+    CourseService courseService;
+    CourseView courseView;
+    StudentService studentService;
     DAOConnectionPool daoConnectionPool;
     
-    public CourseMenu(StudentView<List<StudentModel>, Integer> studentView,
-                      CourseService<List<CourseModel>, Integer> courseService,
-                      CourseView<List<CourseModel>, List<StudentModel>> courseView,
-                      StudentService<List<StudentModel>, 
-                                     List<GroupModel>, String, Integer, List<CourseModel>> studentService,
-                      DAOConnectionPool daoConnectionPool) {
+    public CourseMenu(StudentView studentView, CourseService courseService, CourseView courseView, 
+                      StudentService studentService, DAOConnectionPool daoConnectionPool) {
         this.studenView = studentView;
         this.courseService = courseService;
         this.courseView = courseView;
@@ -48,11 +43,11 @@ public class CourseMenu {
     }
 
     public List<CourseModel> createCourses() throws ServiceException {
-        return courseService.createCourses();
+        return courseService.create();
     }
     
     public void deleteAllCourses() throws ServiceException {
-        courseService.deleteAllCourses();
+        courseService.deleteAll();
     }
     
     public void addStudentToCourse(Scanner scanner) throws ServiceException {

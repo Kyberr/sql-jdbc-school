@@ -19,7 +19,7 @@ import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
-public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer> {
+public class GroupServiceImpl implements GroupService {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_DELETE_ALL_GROUPS = "The service of groups deletion is failed.";
     private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
@@ -38,7 +38,7 @@ public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer>
     }
 
     @Override
-    public Integer deleteAllGroups() throws ServiceException {
+    public Integer deleteAll() throws ServiceException {
         int status = 0;
         try {
             status = studentDAO.deleteAll();
@@ -73,7 +73,7 @@ public class GroupServiceImpl implements GroupService<List<GroupModel>, Integer>
     }
 
     @Override
-    public List<GroupModel> createGroups() throws ServiceException {
+    public List<GroupModel> create() throws ServiceException {
         try {
             List<String> groupNames = generateNamesOfGroups();
             List<GroupEntity> groupEntities = groupNames.stream().map((line) -> new GroupEntity(null, line))

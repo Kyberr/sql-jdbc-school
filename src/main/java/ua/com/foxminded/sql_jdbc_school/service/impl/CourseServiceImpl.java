@@ -13,7 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
-public class CourseServiceImpl implements CourseService<List<CourseModel>, Integer> {
+public class CourseServiceImpl implements CourseService {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String ERROR_DELETE_ALL_COURSES = "The service of course deletion doesn't work.";
     private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
@@ -31,7 +31,7 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
     }
 
     @Override
-    public Integer deleteAllCourses() throws ServiceException {
+    public Integer deleteAll() throws ServiceException {
         try {
             return courseDao.deleteAll();
         } catch (DAOException e) {
@@ -51,7 +51,7 @@ public class CourseServiceImpl implements CourseService<List<CourseModel>, Integ
     }
 
     @Override
-    public List<CourseModel> createCourses() throws ServiceException {
+    public List<CourseModel> create() throws ServiceException {
         try {
             List<String> coursesList = reader.read(COURSE_NAME_LIST_FILENAME);
             List<CourseEntity> courseEntities = coursesList.parallelStream()

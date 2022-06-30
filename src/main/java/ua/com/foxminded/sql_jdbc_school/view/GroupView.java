@@ -1,14 +1,16 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface GroupView<T> {
-    
-    public void showIncorrectInputWarning();
+import java.util.List;
+
+import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
+
+public interface GroupView extends GenericView {
     
     public void programHasBeenStopped();
     
     public void returnMainMenuOrExit();
     
-    public void showStudentQuantityOfGroups(T groupsList);
+    public void showStudentQuantityOfGroups(List<GroupModel> groupsList);
     
     public void enterStudentQuantity();
 }

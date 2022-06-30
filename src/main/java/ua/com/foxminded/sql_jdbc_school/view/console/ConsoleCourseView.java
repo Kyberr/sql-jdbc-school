@@ -9,7 +9,7 @@ import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.view.CourseView;
 
-public class ConsoleCourseView implements CourseView<List<CourseModel>, List<StudentModel>> {
+public class ConsoleCourseView implements CourseView {
     
     private static final String FAILURE_STUDENT_FROM_COURSE_DELETING = "There is no such student "
             + "in the course.";

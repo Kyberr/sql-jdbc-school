@@ -62,7 +62,7 @@ class GroupServiceImplTest {
 	@Test
 	void createGroups() throws ServiceException, DAOException {
 		List<GroupEntity> groups = new ArrayList<>();
-		groupService.createGroups();
+		groupService.create();
 		InOrder inOrder = Mockito.inOrder(generatorMock, groupDaoMock);
 		inOrder.verify(generatorMock, times(1)).generateNamesOfGroups();
 		inOrder.verify(groupDaoMock, times(1)).insert(groups);

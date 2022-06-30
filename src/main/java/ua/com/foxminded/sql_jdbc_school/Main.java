@@ -1,6 +1,5 @@
 package ua.com.foxminded.sql_jdbc_school;
 
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,9 +17,6 @@ import ua.com.foxminded.sql_jdbc_school.menu.CourseMenu;
 import ua.com.foxminded.sql_jdbc_school.menu.GroupMenu;
 import ua.com.foxminded.sql_jdbc_school.menu.Menu;
 import ua.com.foxminded.sql_jdbc_school.menu.StudentMenu;
-import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
-import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
-import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
@@ -47,19 +43,12 @@ public class Main {
         CourseDAO courseDAO = new JdbcCourseDAO(jdbcDaoConnectionPool);
         StudentDAO studentDAO = new JdbcStudentDAO(jdbcDaoConnectionPool);
         GroupDAO groupDAO = new JdbcGroupDAO(jdbcDaoConnectionPool);
-        StudentService<List<StudentModel>, 
-                       List<GroupModel>, 
-                       String, Integer, 
-                       List<CourseModel>> studentService = new StudentServiceImpl(reader, 
-                                                                                  studentDAO, 
-                                                                                  courseDAO);
-        CourseService<List<CourseModel>, Integer> courseService = new CourseServiceImpl(reader, 
-                                                                                        courseDAO);
-        GroupService<List<GroupModel>, Integer> groupService = new GroupServiceImpl(groupDAO, 
-                                                                                    studentDAO);
-        StudentView<List<StudentModel>, Integer> consoleStudentView = new ConsoleStudentView();
-        CourseView<List<CourseModel>, List<StudentModel>> couseCouseView = new ConsoleCourseView();
-        GroupView<List<GroupModel>> consoleGroupView = new ConsoleGroupView();
+        StudentService studentService = new StudentServiceImpl(reader, studentDAO, courseDAO);
+        CourseService courseService = new CourseServiceImpl(reader, courseDAO);
+        GroupService groupService = new GroupServiceImpl(groupDAO, studentDAO);
+        StudentView consoleStudentView = new ConsoleStudentView();
+        CourseView couseCouseView = new ConsoleCourseView();
+        GroupView consoleGroupView = new ConsoleGroupView();
         MenuView menuView = new ConsoleMenuView();
         
         CourseMenu courseMenu = new CourseMenu(consoleStudentView, courseService, couseCouseView, 

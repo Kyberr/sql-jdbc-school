@@ -1,26 +1,29 @@
 package ua.com.foxminded.sql_jdbc_school.service;
 
-public interface StudentService<T, S, E, F, K> {
+import java.util.List;
 
-    public F deleteAllStudents() throws ServiceException;
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
+import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
+import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 
-    public T getStudentsOfCourseById(F courseId) throws ServiceException;
+public interface StudentService extends GenericService<List<StudentModel>, Integer> {
 
-    public F addStudentToCourseById(F studentId, F courseId) throws ServiceException;
+    public List<StudentModel> getAllStudents() throws ServiceException;
 
-    public T getAllStudentsHavingCourse() throws ServiceException;
+    public List<StudentModel> getStudentsOfCourseById(Integer courseId) throws ServiceException;
 
-    public T assignCourseToStudent(T students, K courses) throws ServiceException;
+    public Integer addStudentToCourseById(Integer studentId, Integer courseId) throws ServiceException;
 
-    public T getStudentsHavingGroupId() throws ServiceException;
+    public List<StudentModel> getAllStudentsHavingCourse() throws ServiceException;
 
-    public F deleteStudent(F studentId) throws ServiceException;
+    public List<StudentModel> assignCourseToStudent(List<StudentModel> students, 
+                                                    List<CourseModel> courses) throws ServiceException;
 
-    public T getAllStudents() throws ServiceException;
+    public List<StudentModel> getStudentsHavingGroupId() throws ServiceException;
 
-    public F addStudent(E lastName, E firstName) throws ServiceException;
+    public Integer deleteStudent(Integer studentId) throws ServiceException;
 
-    public T createStudents() throws ServiceException;
+    public Integer addStudent(String lastName, String firstName) throws ServiceException;
 
-    public T assignGroupToStudent(S groups) throws ServiceException;
+    public List<StudentModel> assignGroupToStudent(List<GroupModel> groups) throws ServiceException;
 }

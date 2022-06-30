@@ -20,16 +20,13 @@ public class StudentMenu {
     private static final int NORMAL_STATUS = 1;
     private static final String WORD_EXIT = "exit";
     
-    CourseView<List<CourseModel>, List<StudentModel>> courseView;
-    CourseService<List<CourseModel>, Integer> courseService;
-    StudentService<List<StudentModel>, List<GroupModel>, String, Integer, List<CourseModel>> studentService;
-    StudentView<List<StudentModel>, Integer> studentView;
+    CourseView courseView;
+    CourseService courseService;
+    StudentService studentService;
+    StudentView studentView;
 
-    public StudentMenu(CourseView<List<CourseModel>, List<StudentModel>> courseView,
-                       CourseService<List<CourseModel>, Integer> courseService,
-                       StudentService<List<StudentModel>, 
-                                      List<GroupModel>, String, Integer, List<CourseModel>> studentService,
-                       StudentView<List<StudentModel>, Integer> studentView) {
+    public StudentMenu(CourseView courseView, CourseService courseService, StudentService studentService, 
+                       StudentView studentView) {
         this.courseView = courseView;
         this.courseService = courseService;
         this.studentService = studentService;
@@ -46,11 +43,11 @@ public class StudentMenu {
     }
     
     public void createStudents() throws ServiceException {
-        studentService.createStudents();
+        studentService.create();
     }
     
     public void deleteAllStudents() throws ServiceException {
-        studentService.deleteAllStudents();
+        studentService.deleteAll();
     }
     
     public void deleteStudentFromDatabase(Scanner scanner) throws ServiceException {

@@ -25,11 +25,7 @@ import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
 
-public class StudentServiceImpl implements StudentService<List<StudentModel>, 
-                                                          List<GroupModel>, 
-                                                          String, 
-                                                          Integer, 
-                                                          List<CourseModel>> {
+public class StudentServiceImpl implements StudentService {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int CROURSE_AMPLITUDE = 3;
@@ -79,7 +75,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
     }
 
     @Override
-    public Integer deleteAllStudents() throws ServiceException {
+    public Integer deleteAll() throws ServiceException {
         int status = 0;
         
         try {
@@ -172,7 +168,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
 
     @Override
     public List<StudentModel> assignCourseToStudent(List<StudentModel> studentsHavingGroupId, 
-                                                  List<CourseModel> courses) throws ServiceException {
+                                                    List<CourseModel> courses) throws ServiceException {
 
         List<StudentModel> studentsHavingCourseId = generateStudentCourseRelation(studentsHavingGroupId, 
                                                                                 courses);
@@ -289,7 +285,7 @@ public class StudentServiceImpl implements StudentService<List<StudentModel>,
     }
 
     @Override
-    public List<StudentModel> createStudents() throws ServiceException {
+    public List<StudentModel> create() throws ServiceException {
         try {
             List<String> firstNames = reader.read(FIST_NAME_FILENAME);
             List<String> lastNames = reader.read(LAST_NAME_FILENAME);

@@ -1,6 +1,10 @@
 package ua.com.foxminded.sql_jdbc_school.view;
 
-public interface StudentView<F, M> {
+import java.util.List;
+
+import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
+
+public interface StudentView extends GenericView {
     
     public void addStudentToCourseOrReturnMenu();
     
@@ -10,17 +14,15 @@ public interface StudentView<F, M> {
     
     public void deleteStudentOrReturnMainMenu();
     
-    public void studentHasNotBeenDeleted(M studentID);
+    public void studentHasNotBeenDeleted(Integer studentID);
     
-    public void studentHasBeenDeleted(M studentId);
+    public void studentHasBeenDeleted(Integer studentId);
     
     public void confirmStudentDeleting();
     
-    public void showIncorrectInputWarning();
-    
     public void enterStudentId();
     
-    public void showStudents(F students);
+    public void showStudents(List<StudentModel> students);
     
     public void studentHasBeenAddedToDatabase();
     

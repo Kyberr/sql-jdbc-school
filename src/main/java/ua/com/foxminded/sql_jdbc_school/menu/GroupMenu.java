@@ -20,24 +20,22 @@ public class GroupMenu {
     private static final String EMPTY_STRING = "";
     private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     
-    GroupView<List<GroupModel>> groupView;
-    GroupService<List<GroupModel>, Integer> groupService;
+    GroupView groupView;
+    GroupService groupService;
     DAOConnectionPool daoConnectionPool;
     
-    public GroupMenu(GroupView<List<GroupModel>> groupView,
-                     GroupService<List<GroupModel>, Integer> groupService, 
-                     DAOConnectionPool daoConnectionPool) {
+    public GroupMenu(GroupView groupView,GroupService groupService, DAOConnectionPool daoConnectionPool) {
         this.groupView = groupView;
         this.groupService = groupService;
         this.daoConnectionPool = daoConnectionPool;
     }
     
     public List<GroupModel> createGroups() throws ServiceException {
-        return groupService.createGroups();
+        return groupService.create();
     }
     
     public void deleteAllGroups() throws ServiceException {
-        groupService.deleteAllGroups();
+        groupService.deleteAll();
     }
 
     public void findGroupsWithLessOrEqualStudents(Scanner scanner) throws ServiceException {

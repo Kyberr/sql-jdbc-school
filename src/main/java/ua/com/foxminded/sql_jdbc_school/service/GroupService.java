@@ -1,10 +1,10 @@
 package ua.com.foxminded.sql_jdbc_school.service;
 
-public interface GroupService<T, E> {
+import java.util.List;
 
-    public E deleteAllGroups() throws ServiceException;
+import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 
-    public T createGroups() throws ServiceException;
+public interface GroupService extends GenericService<List<GroupModel>, Integer> {
 
-    public T findGroupsWithLessOrEqualStudents(E studentQuantity) throws ServiceException;
+    public List<GroupModel> findGroupsWithLessOrEqualStudents(Integer studentQuantity) throws ServiceException;
 }

@@ -13,8 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
-import ua.com.foxminded.sql_jdbc_school.view.CourseView;
-import ua.com.foxminded.sql_jdbc_school.view.StudentView;
+import ua.com.foxminded.sql_jdbc_school.view.View;
 
 public class CourseMenu {
     
@@ -27,17 +26,15 @@ public class CourseMenu {
     private static final String EMPTY_STRING = "";
     private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     
-    StudentView studenView;
+    View view;
     CourseService courseService;
-    CourseView courseView;
     StudentService studentService;
     DAOConnectionPool daoConnectionPool;
     
-    public CourseMenu(StudentView studentView, CourseService courseService, CourseView courseView, 
+    public CourseMenu(View view, CourseService courseService, 
                       StudentService studentService, DAOConnectionPool daoConnectionPool) {
-        this.studenView = studentView;
+        this.view = view;
         this.courseService = courseService;
-        this.courseView = courseView;
         this.studentService = studentService;
         this.daoConnectionPool = daoConnectionPool;
     }
@@ -53,14 +50,14 @@ public class CourseMenu {
     public void addStudentToCourse(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentModel> studentsHaveGroupId = studentService.getStudentsHavingGroupId();
-            studenView.showStudents(studentsHaveGroupId);
+            view.showStudents(studentsHaveGroupId);
             List<CourseModel> allCourses = courseService.getAllCourses();
-            courseView.showCourses(allCourses);
-            studenView.enterStudentId();
+            view.showCourses(allCourses);
+            view.enterStudentId();
             int studentId = scanOnlyIntInput(scanner);
-            courseView.enterCourseId();
+            view.enterCourseId();
             int courseId = scanOnlyIntInput(scanner);
-            studenView.addStudentYesOrNo();
+            view.addStudentYesOrNo();
             String confirm = scanOnlyYesOrNo(scanner);
             int status = 0;
 
@@ -68,16 +65,16 @@ public class CourseMenu {
                 status = studentService.addStudentToCourseById(studentId, courseId);
                 
                 if (status == NORMAL_STATUS) {
-                    studenView.studentHasBeenAddedToCourse();
+                    view.studentHasBeenAddedToCourse();
                 } else {
-                    studenView.studentHasNotBeenAddedToCourse();
+                    view.studentHasNotBeenAddedToCourse();
                 }
             } else if (confirm.equals(WORD_NO)) {
                 break first;
             }
 
             for (;;) {
-                studenView.addStudentToCourseOrReturnMenu();
+                view.addStudentToCourseOrReturnMenu();
                 String input = scanner.nextLine();
 
                 if (input.equals(EMPTY_STRING)) {
@@ -92,30 +89,30 @@ public class CourseMenu {
     public void removeStudentFromCourse(Scanner scanner) throws ServiceException {
         for (;;) {
             List<StudentModel> studnetsHavingCourse = studentService.getAllStudentsHavingCourse();
-            courseView.showStudentsOfCourse(studnetsHavingCourse);
-            courseView.deleteStudentFromCourseById();
+            view.showStudentsOfCourse(studnetsHavingCourse);
+            view.deleteStudentFromCourseById();
             int studentId = scanOnlyIntInput(scanner);
-            courseView.enterCourseId();
+            view.enterCourseId();
             int courseId = scanOnlyIntInput(scanner);
-            studenView.confirmStudentDeleting();
+            view.confirmStudentDeleting();
             String yesOrNo = scanOnlyYesOrNo(scanner);
 
             if (yesOrNo.equals(WORD_YES)) {
                 int status = courseService.deleteStudentFromCourseById(studentId, courseId);
 
                 if (status == NORMAL_STATUS) {
-                    courseView.successStudentFromCourseDeleting();
-                    courseView.deleteAnotherStudentFromCourse();
+                    view.successStudentFromCourseDeleting();
+                    view.deleteAnotherStudentFromCourse();
                     String keyWord = scanOnlyEmptyStringOrWordExit(scanner);
 
                     if (keyWord.equals(WORD_EXIT)) {
                         break;
                     }
                 } else {
-                    courseView.studentFromCourseDeletingFailed();
+                    view.studentFromCourseDeletingFailed();
                 }
             }
-            courseView.deleteAnotherStudentFromCourse();
+            view.deleteAnotherStudentFromCourse();
             String keyWord = scanOnlyEmptyStringOrWordExit(scanner);
 
             if (keyWord.equals(WORD_EXIT)) {
@@ -126,11 +123,11 @@ public class CourseMenu {
     
     public void findStudentsRelatedToCourse(Scanner couseIdScanner) throws ServiceException {
         List<CourseModel> allCourses = courseService.getAllCourses();
-        courseView.showCourses(allCourses);
-        courseView.enterCourseId();
+        view.showCourses(allCourses);
+        view.enterCourseId();
         Integer courseID = scanOnlyIntInput(couseIdScanner);
         List<StudentModel> studentsOfCourse = studentService.getStudentsOfCourseById(courseID);
-        courseView.showStudentsOfCourse(studentsOfCourse);
+        view.showStudentsOfCourse(studentsOfCourse);
         exitOrReturnMainMenu(couseIdScanner);
     }
     
@@ -166,7 +163,7 @@ public class CourseMenu {
     private int scanOnlyIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            courseView.showIncorrectInputWarning();
+            view.showIncorrectInputWarning();
         }
         int input = scanner.nextInt();
         scanner.nextLine(); // it is used to clean the buffer from the empty string
@@ -174,19 +171,19 @@ public class CourseMenu {
     }
     
     private void exitOrReturnMainMenu(Scanner scanner) {
-        courseView.returnMainMenuOrExit();
+        view.returnMainMenuOrExit();
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
 
             if (input.equals(WORD_EXIT)) {
                 closeConnectionPool();
-                courseView.executionHasBeenStopped();
+                view.executionHasBeenStopped();
                 System.exit(NORMAL_EXIT_STATUS);
             } else if (input.equals(EMPTY_STRING)) {
                 break;
             } else {
-                courseView.returnMainMenuOrExit();
+                view.returnMainMenuOrExit();
             }
         }
     }

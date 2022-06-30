@@ -13,7 +13,7 @@ import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.view.MenuView;
+import ua.com.foxminded.sql_jdbc_school.view.View;
 
 public class Menu {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -28,16 +28,16 @@ public class Menu {
     private GroupMenu groupMenu;
     private StudentMenu studentMenu;
     private DAOConnectionPool daoConnectionPool;
-    private MenuView menuView;
+    private View view;
 
     public Menu(CourseMenu courseMenu, 
                 GroupMenu groupMenu, 
-                StudentMenu studentMenu, DAOConnectionPool daoConnectionPool, MenuView menuView) {
+                StudentMenu studentMenu, DAOConnectionPool daoConnectionPool, View view) {
         this.courseMenu = courseMenu;
         this.groupMenu = groupMenu;
         this.studentMenu = studentMenu;
         this.daoConnectionPool = daoConnectionPool;
-        this.menuView = menuView;
+        this.view = view;
     }
 
     public void execute() throws ServiceException {
@@ -45,7 +45,7 @@ public class Menu {
 
         try {
             for (;;) {
-                menuView.showMenuItems();
+                view.showMenuItems();
                 int caseNumber = preventWrongInputOrExit(scanner);
 
                 switch (caseNumber) {
@@ -102,14 +102,14 @@ public class Menu {
                     closeConnectionPool();
                     System.exit(NORMAL_DELETE_STATUS);
                 } else {
-                    menuView.showIncorrectInputWarning();
+                    view.showIncorrectInputWarning();
                 }
             } else {
                 output = scanner.nextInt();
                 scanner.nextLine();
 
                 if (output == 0 || output > NUMBER_OF_ITEMS) {
-                    menuView.showIncorrectInputWarning();
+                    view.showIncorrectInputWarning();
                 } else {
                     break;
                 }

@@ -46,8 +46,10 @@ import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class JdbcStudentDAOTest {
     
-    private static final Logger LOGGER = LogManager.getLogger();
     private static Properties PROPERTIES = null;
+    private static final Integer TEST_STUDENT_GROUP_ID = 1;
+    private static final String TEST_STUDENT_FIRST_NAME = "Smith";
+    private static final String TEST_STUDENT_LAST_NAME = "Smith";
     private static final String STUDENT_ID = "student_id";
     private static final String GROUP_ID = "group_id";
     private static final String FIRST_NAME = "first_name";
@@ -79,7 +81,18 @@ class JdbcStudentDAOTest {
     }
     
     @Test
-    void deleteById() throws SQLException, DAOException {
+    void getStudentById_GettingStudentById_ReceivedStudentHavingSpecifiedId() throws SQLException, 
+                                                                                     DAOException {
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection();) {
+            
+            when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
+            StudentEntity student = jdbcStudentDao.getStudentById(TEST_STUDENT_ID);
+            assertEquals(TEST_STUDENT_ID, student.getStudentId());
+        }
+    }
+    
+    @Test
+    void deleteById_DeletionStudent_DatabaseHasNoData() throws SQLException, DAOException {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection();) {
             when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
             jdbcStudentDao.deleteStudentById(TEST_STUDENT_ID);

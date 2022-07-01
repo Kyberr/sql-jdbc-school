@@ -9,6 +9,11 @@ public class CourseEntity {
 
     public CourseEntity() {
     }
+    
+    public CourseEntity(Integer courseId, String courseName) {
+        this.courseId = courseId;
+        this.courseName = courseName;
+    }
 
     public CourseEntity(Integer courseId, String courseName, String courseDescription) {
         this.courseId = courseId;

@@ -210,7 +210,7 @@ public class JdbcStudentDAO implements StudentDAO {
     }
 
     @Override
-    public List<StudentEntity> getStudentsHavingGroupId() throws DAOException {
+    public List<StudentEntity> getAllStudentsHavingGroupId() throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
             StudentEntity studentHavingGroupId = null;

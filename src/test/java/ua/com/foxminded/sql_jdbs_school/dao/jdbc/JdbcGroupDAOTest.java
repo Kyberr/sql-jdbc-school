@@ -36,7 +36,8 @@ class JdbcGroupDAOTest {
     private static final int TOTAL_GROUP_QUANTITY = 2;
     private static final int STUDENTS_QUANTITY = 3;
     private static final int GROUP_QUANITY = 2;
-    private static final String GET_ISERTED_GROUP = "selectGroup";
+    private static final String GET_ALL_GROUPS = "getAllGroups";
+    private static final String GET_ISERTED_GROUP = "selectGroupHavingNameTest";
     private static final String GROUP_NAME = "group_name";
     private static final String NAME_OF_GROUP = "test";
     private static final String TEST_DATA = "test-data.sql";
@@ -72,10 +73,11 @@ class JdbcGroupDAOTest {
                  InputStream testDataInput = Thread.currentThread()
                                                    .getContextClassLoader()
                                                    .getResourceAsStream(TEST_DATA);
-                 Connection con = DriverManager.getConnection(testDbPoperites.getProperty(DB_URL),
-                                                              testDbPoperites.getProperty(USER_NAME), 
-                                                              testDbPoperites.getProperty(USER_PASS));
-                 Statement statement = con.createStatement();) {
+                 Connection connection = DriverManager.getConnection(
+                         testDbPoperites.getProperty(DB_URL),
+                         testDbPoperites.getProperty(USER_NAME), 
+                         testDbPoperites.getProperty(USER_PASS));
+                 Statement statement = connection.createStatement();) {
                 
                 String schema = new BufferedReader(new InputStreamReader(schemaInput)).lines()
                         .collect(Collectors.joining(END_LINE));
@@ -95,12 +97,12 @@ class JdbcGroupDAOTest {
                                                   .getClassLoader()
                                                   .getResourceAsStream(TEST_DB_PROPERTIES);) {
 
-            Properties dbProp = new Properties();
-            dbProp.load(testDbPropertiesIn);
+            Properties dbProperties = new Properties();
+            dbProperties.load(testDbPropertiesIn);
 
-            try (Connection connection = DriverManager.getConnection(dbProp.getProperty(DB_URL),
-                                                                     dbProp.getProperty(USER_NAME), 
-                                                                     dbProp.getProperty(USER_PASS));) {
+            try (Connection connection = DriverManager.getConnection(dbProperties.getProperty(DB_URL),
+                                                                     dbProperties.getProperty(USER_NAME), 
+                                                                     dbProperties.getProperty(USER_PASS));) {
 
                 when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
                 assertEquals(GROUP_QUANITY,
@@ -122,11 +124,11 @@ class JdbcGroupDAOTest {
             Properties properties = new Properties();
             properties.load(testDbPropertiesIn);
 
-            try (Connection con = DriverManager.getConnection(properties.getProperty(DB_URL),
-                                                              properties.getProperty(USER_NAME), 
-                                                              properties.getProperty(USER_PASS));) {
+            try (Connection connection = DriverManager.getConnection(properties.getProperty(DB_URL),
+                                                                     properties.getProperty(USER_NAME), 
+                                                                     properties.getProperty(USER_PASS));) {
 
-                when(daoConnectionPoolMock.getConnection()).thenReturn(con);
+                when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
                 assertEquals(TOTAL_GROUP_QUANTITY, jdbcGroupDao.getAll().size());
             }
         }
@@ -175,18 +177,20 @@ class JdbcGroupDAOTest {
                                                                                SQLException, 
                                                                                DAOException {
         try (InputStream testDbPropertiesIn = this.getClass().getClassLoader()
-                                                             .getResourceAsStream(TEST_DB_PROPERTIES);) {
+                                                             .getResourceAsStream(TEST_DB_PROPERTIES);
+             InputStream testQueries = this.getClass().getClassLoader()
+                                                      .getResourceAsStream(TEST_QUERIES);) {
             Properties properties = new Properties();
             properties.load(testDbPropertiesIn);
+            properties.load(testQueries);
             
-            try (Connection con = DriverManager.getConnection(properties.getProperty(DB_URL), 
-                                                              properties.getProperty(USER_NAME), 
-                                                              properties.getProperty(USER_PASS));
-                 PreparedStatement prStatement = con.prepareStatement("select * from department.groups");
-                 InputStream testQueries = this.getClass().getClassLoader()
-                                                          .getResourceAsStream(TEST_QUERIES);) {
+            try (Connection connection = DriverManager.getConnection(properties.getProperty(DB_URL), 
+                                                                     properties.getProperty(USER_NAME), 
+                                                                     properties.getProperty(USER_PASS));
+                 PreparedStatement prStatement = connection.prepareStatement(properties
+                         .getProperty(GET_ALL_GROUPS));) {
                 
-                when(daoConnectionPoolMock.getConnection()).thenReturn(con);
+                when(daoConnectionPoolMock.getConnection()).thenReturn(connection);
                 jdbcGroupDao.deleteAll();
                 
                 try (ResultSet resultSet = prStatement.executeQuery();) {

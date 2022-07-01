@@ -200,7 +200,7 @@ public class StudentServiceImpl implements StudentService {
     public List<StudentModel> getStudentsHavingGroupId() throws ServiceException {
 
         try {
-            return studentDAO.getStudentsHavingGroupId().stream()
+            return studentDAO.getAllStudentsHavingGroupId().stream()
                     .map((studentEntity) -> new StudentModel(studentEntity.getStudentId(), 
                                                            studentEntity.getGroupId(),
                                                            studentEntity.getFirstName(), 

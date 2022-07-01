@@ -24,3 +24,16 @@ course_id integer default nextval('department.course_id_seq') primary key,
 course_name varchar not null,
 course_description varchar
 );
+
+create table department.student_course
+(
+student_id integer references department.students(student_id) on delete cascade,
+group_id integer references department.groups(group_id) on delete set null,
+first_name varchar,
+last_name varchar,
+course_id integer,
+course_name varchar,
+course_description varchar,
+foreign key (group_id) references department.courses(course_id) on delete set null,
+primary key (student_id, course_id)
+);

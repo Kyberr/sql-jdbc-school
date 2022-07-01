@@ -15,7 +15,7 @@ public interface StudentDAO extends GenericDAO<StudentEntity> {
 
     public int addStudentToCourse(StudentEntity student, CourseEntity course) throws DAOException;
 
-    public List<StudentEntity> getStudentsHavingGroupId() throws DAOException;
+    public List<StudentEntity> getAllStudentsHavingGroupId() throws DAOException;
 
     public StudentEntity getStudentById(int studentId) throws DAOException;
 

@@ -43,7 +43,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public int deleteStudentFromCourseById(int studentId, int courseId) throws ServiceException {
         try {
-            return courseDao.deleteStudentFromCourse(studentId, courseId);
+            return courseDao.deleteStudentFromCourseById(studentId, courseId);
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_STUDENT_FROM_COURSE, e);
             throw new ServiceException(ERROR_DELETE_STUDENT_FROM_COURSE, e);

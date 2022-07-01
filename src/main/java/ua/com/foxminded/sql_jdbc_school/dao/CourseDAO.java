@@ -8,7 +8,7 @@ public interface CourseDAO extends GenericDAO<CourseEntity> {
 
     public List<CourseEntity> getCoursesOfStudentById(int studentId) throws DAOException;
 
-    public int deleteStudentFromCourse(int studentId, int courseId) throws DAOException;
+    public int deleteStudentFromCourseById(int studentId, int courseId) throws DAOException;
 
     public CourseEntity getCourseById(int courseId) throws DAOException;
 }

@@ -5,11 +5,11 @@ import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
 
-public interface StudentDAO extends GenericDAO<StudentEntity, Integer> {
+public interface StudentDAO extends GenericDAO<StudentEntity> {
 
-    public List<StudentEntity> getStudensOfCourseById(Integer courseId) throws DAOException;
+    public List<StudentEntity> getStudensOfCourseById(int courseId) throws DAOException;
 
-    public StudentEntity getStudentOfCourseById(Integer studentId, Integer courseId) throws DAOException;
+    public StudentEntity getStudentOfCourseById(int studentId, int courseId) throws DAOException;
 
     public List<StudentEntity> getAllStudentsHavingCouse() throws DAOException;
 

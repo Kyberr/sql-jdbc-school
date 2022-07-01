@@ -38,7 +38,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Integer deleteAll() throws ServiceException {
+    public int deleteAll() throws ServiceException {
         int status = 0;
         try {
             status = studentDAO.deleteAll();
@@ -50,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupModel> findGroupsWithLessOrEqualStudents(Integer studentQuantity) throws ServiceException {
+    public List<GroupModel> findGroupsWithLessOrEqualStudents(int studentQuantity) throws ServiceException {
         try {
             List<GroupEntity> groupEntities = groupDAO.getGroupsHavingLessOrEqualStudents(studentQuantity);
             List<StudentEntity> studentEntities = studentDAO.getAll();

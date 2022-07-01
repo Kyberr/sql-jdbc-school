@@ -61,7 +61,7 @@ public class JdbcStudentDAO implements StudentDAO {
     }
     
     @Override
-    public Integer deleteAll() throws DAOException {
+    public int deleteAll() throws DAOException {
         try {
             int status = BAD_STATUS;
             Connection connection = jdbcDaoConnectionPool.getConnection();
@@ -81,7 +81,7 @@ public class JdbcStudentDAO implements StudentDAO {
     }
 
     @Override
-    public List<StudentEntity> getStudensOfCourseById(Integer courseId) throws DAOException {
+    public List<StudentEntity> getStudensOfCourseById(int courseId) throws DAOException {
         try {
             StudentEntity studentHavingCourse = null;
             List<StudentEntity> studentsHavingCourse = new ArrayList<>();
@@ -112,8 +112,8 @@ public class JdbcStudentDAO implements StudentDAO {
     }
 
     @Override
-    public StudentEntity getStudentOfCourseById(Integer studentId, 
-                                                Integer courseId) throws DAOException {
+    public StudentEntity getStudentOfCourseById(int studentId, 
+                                                int courseId) throws DAOException {
         try {
             StudentEntity studentHavingCourse = null;
             Connection connection = jdbcDaoConnectionPool.getConnection();
@@ -287,7 +287,7 @@ public class JdbcStudentDAO implements StudentDAO {
     }
 
     @Override
-    public Integer insert(List<StudentEntity> studentEntities) throws DAOException {
+    public int insert(List<StudentEntity> studentEntities) throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
             int status = BAD_STATUS;

@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.menu;
+package ua.com.foxminded.sql_jdbc_school.view;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -13,9 +13,8 @@ import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
-import ua.com.foxminded.sql_jdbc_school.view.View;
 
-public class Menu {
+public class ViewFacade {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CLOSE_CONNECTION_POOL_ERROR = "Closing connections of the pool failed.";
     private static final String ERROR_BOOTSTRAP = "The bootstraption has not performed.";
@@ -24,20 +23,21 @@ public class Menu {
     private static final int NORMAL_DELETE_STATUS = 0;
     private static final int NUMBER_OF_ITEMS = 6;
 
-    private CourseMenu courseMenu;
-    private GroupMenu groupMenu;
-    private StudentMenu studentMenu;
+    private CourseView courseMenu;
+    private GroupView groupMenu;
+    private StudentView studentMenu;
     private DAOConnectionPool daoConnectionPool;
-    private View view;
+    private ViewProcessor viewProcessor;
 
-    public Menu(CourseMenu courseMenu, 
-                GroupMenu groupMenu, 
-                StudentMenu studentMenu, DAOConnectionPool daoConnectionPool, View view) {
+    public ViewFacade(CourseView courseMenu, 
+                      GroupView groupMenu, 
+                      StudentView studentMenu, 
+                      DAOConnectionPool daoConnectionPool, ViewProcessor viewProcessor) {
         this.courseMenu = courseMenu;
         this.groupMenu = groupMenu;
         this.studentMenu = studentMenu;
         this.daoConnectionPool = daoConnectionPool;
-        this.view = view;
+        this.viewProcessor = viewProcessor;
     }
 
     public void execute() throws ServiceException {
@@ -45,7 +45,7 @@ public class Menu {
 
         try {
             for (;;) {
-                view.showMenuItems();
+                viewProcessor.showMenuItems();
                 int caseNumber = preventWrongInputOrExit(scanner);
 
                 switch (caseNumber) {
@@ -102,14 +102,14 @@ public class Menu {
                     closeConnectionPool();
                     System.exit(NORMAL_DELETE_STATUS);
                 } else {
-                    view.showIncorrectInputWarning();
+                    viewProcessor.showIncorrectInputWarning();
                 }
             } else {
                 output = scanner.nextInt();
                 scanner.nextLine();
 
                 if (output == 0 || output > NUMBER_OF_ITEMS) {
-                    view.showIncorrectInputWarning();
+                    viewProcessor.showIncorrectInputWarning();
                 } else {
                     break;
                 }

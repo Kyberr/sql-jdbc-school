@@ -4,7 +4,7 @@ import java.util.List;
 
 import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
 
-public interface CourseDAO extends GenericDAO<CourseEntity, Integer> {
+public interface CourseDAO extends GenericDAO<CourseEntity> {
 
     public List<CourseEntity> getCoursesOfStudentById(int studentId) throws DAOException;
 

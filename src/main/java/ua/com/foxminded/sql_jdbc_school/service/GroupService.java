@@ -4,7 +4,7 @@ import java.util.List;
 
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 
-public interface GroupService extends GenericService<List<GroupModel>, Integer> {
+public interface GroupService extends GenericService<List<GroupModel>> {
 
-    public List<GroupModel> findGroupsWithLessOrEqualStudents(Integer studentQuantity) throws ServiceException;
+    public List<GroupModel> findGroupsWithLessOrEqualStudents(int studentQuantity) throws ServiceException;
 }

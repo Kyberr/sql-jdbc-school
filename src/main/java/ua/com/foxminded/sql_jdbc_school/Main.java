@@ -13,10 +13,6 @@ import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcCourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcGroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcStudentDAO;
-import ua.com.foxminded.sql_jdbc_school.menu.CourseMenu;
-import ua.com.foxminded.sql_jdbc_school.menu.GroupMenu;
-import ua.com.foxminded.sql_jdbc_school.menu.Menu;
-import ua.com.foxminded.sql_jdbc_school.menu.StudentMenu;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.GroupService;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
@@ -24,8 +20,12 @@ import ua.com.foxminded.sql_jdbc_school.service.StudentService;
 import ua.com.foxminded.sql_jdbc_school.service.impl.CourseServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 import ua.com.foxminded.sql_jdbc_school.service.impl.StudentServiceImpl;
-import ua.com.foxminded.sql_jdbc_school.view.View;
-import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleView;
+import ua.com.foxminded.sql_jdbc_school.view.CourseView;
+import ua.com.foxminded.sql_jdbc_school.view.GroupView;
+import ua.com.foxminded.sql_jdbc_school.view.StudentView;
+import ua.com.foxminded.sql_jdbc_school.view.ViewFacade;
+import ua.com.foxminded.sql_jdbc_school.view.ViewProcessor;
+import ua.com.foxminded.sql_jdbc_school.view.console.ConsoleViewProcessor;
 
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -40,13 +40,13 @@ public class Main {
         StudentService studentService = new StudentServiceImpl(reader, studentDAO, courseDAO);
         CourseService courseService = new CourseServiceImpl(reader, courseDAO);
         GroupService groupService = new GroupServiceImpl(groupDAO, studentDAO);
-        View view = new ConsoleView();
+        ViewProcessor view = new ConsoleViewProcessor();
         
-        CourseMenu courseMenu = new CourseMenu(view, courseService, studentService, 
+        CourseView courseMenu = new CourseView(view, courseService, studentService, 
                                                jdbcDaoConnectionPool);
-        GroupMenu groupMenu = new GroupMenu(view, groupService, jdbcDaoConnectionPool);
-        StudentMenu studentMenu = new StudentMenu(view, courseService, studentService);
-        Menu menu = new Menu(courseMenu, groupMenu, studentMenu, jdbcDaoConnectionPool, view);
+        GroupView groupMenu = new GroupView(view, groupService, jdbcDaoConnectionPool);
+        StudentView studentMenu = new StudentView(view, courseService, studentService);
+        ViewFacade menu = new ViewFacade(courseMenu, groupMenu, studentMenu, jdbcDaoConnectionPool, view);
 
         try {
             menu.bootstrap();

@@ -31,7 +31,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Integer deleteAll() throws ServiceException {
+    public int deleteAll() throws ServiceException {
         try {
             return courseDao.deleteAll();
         } catch (DAOException e) {
@@ -41,7 +41,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Integer deleteStudentFromCourseById(Integer studentId, Integer courseId) throws ServiceException {
+    public int deleteStudentFromCourseById(int studentId, int courseId) throws ServiceException {
         try {
             return courseDao.deleteStudentFromCourse(studentId, courseId);
         } catch (DAOException e) {

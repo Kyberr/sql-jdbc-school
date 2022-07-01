@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
-import ua.com.foxminded.sql_jdbc_school.view.View;
+import ua.com.foxminded.sql_jdbc_school.view.ViewProcessor;
 
-public class ConsoleView implements View {
+public class ConsoleViewProcessor implements ViewProcessor {
     private static final String ADD_STUDENT_TO_COURSE_OR_RETURN = "Press the \"Enter\" key to add another "
             + "student or write \"exit\" and press the \"Enter\" key to return to the main menu.";
     private static final String STUDENT_HAS_NOT_BEEN_ADDED_TO_COURSE = "The student has not been "

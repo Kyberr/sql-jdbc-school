@@ -43,7 +43,7 @@ public class JdbcGroupDAO implements GroupDAO {
     }
     
     @Override
-    public Integer deleteAll() throws DAOException {
+    public int deleteAll() throws DAOException {
         try {
             int status = 0;
             Connection connection = jdbcDaoConnectionPool.getConnection();
@@ -115,7 +115,7 @@ public class JdbcGroupDAO implements GroupDAO {
     }
 
     @Override
-    public Integer insert(List<GroupEntity> groups) throws DAOException {
+    public int insert(List<GroupEntity> groups) throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
             int status = BAD_STATUS;

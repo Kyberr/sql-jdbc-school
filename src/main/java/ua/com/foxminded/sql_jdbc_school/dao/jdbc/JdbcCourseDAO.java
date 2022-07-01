@@ -46,7 +46,7 @@ public class JdbcCourseDAO implements CourseDAO {
     }
     
     @Override
-    public Integer deleteAll() throws DAOException {
+    public int deleteAll() throws DAOException {
         try {
             int status = 0;
             Connection connection = jdbcDaoConnectionPool.getConnection();
@@ -172,7 +172,7 @@ public class JdbcCourseDAO implements CourseDAO {
     }
 
     @Override
-    public Integer insert(List<CourseEntity> courseEntities) throws DAOException {
+    public int insert(List<CourseEntity> courseEntities) throws DAOException {
         try {
             Connection connection = jdbcDaoConnectionPool.getConnection();
             int status = BAD_STATUS;

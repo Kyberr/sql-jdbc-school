@@ -75,7 +75,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Integer deleteAll() throws ServiceException {
+    public int deleteAll() throws ServiceException {
         int status = 0;
         
         try {
@@ -88,7 +88,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentModel> getStudentsOfCourseById(Integer courseId) throws ServiceException {
+    public List<StudentModel> getStudentsOfCourseById(int courseId) throws ServiceException {
         try {
            
             CourseEntity course = courseDAO.getCourseById(courseId);
@@ -109,7 +109,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Integer addStudentToCourseById(Integer studentId, Integer courseId) throws ServiceException {
+    public int addStudentToCourseById(int studentId, int courseId) throws ServiceException {
         int status;
 
         try {
@@ -213,7 +213,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Integer deleteStudent(Integer studentId) throws ServiceException {
+    public int deleteStudent(int studentId) throws ServiceException {
         try {
             return studentDAO.deleteStudentById(studentId);
         } catch (DAOException e) {
@@ -239,7 +239,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Integer addStudent(String lastName, String firstName) throws ServiceException {
+    public int addStudent(String lastName, String firstName) throws ServiceException {
         try {
             List<StudentModel> studentDTOs = new ArrayList<>();
             studentDTOs.add(new StudentModel(firstName, lastName));

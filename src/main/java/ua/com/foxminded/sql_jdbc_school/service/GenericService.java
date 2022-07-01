@@ -1,8 +1,8 @@
 package ua.com.foxminded.sql_jdbc_school.service;
 
-public interface GenericService<T, E> {
+public interface GenericService<T> {
     
     public T create() throws ServiceException;
-    public E deleteAll() throws ServiceException;
+    public int deleteAll() throws ServiceException;
 
 }

@@ -2,11 +2,11 @@ package ua.com.foxminded.sql_jdbc_school.dao;
 
 import java.util.List;
 
-public interface GenericDAO<T, E> {
+public interface GenericDAO<T> {
     
-    public E insert(List<T> entity) throws DAOException;
+    public int insert(List<T> entity) throws DAOException;
 
     public List<T> getAll() throws DAOException;
 
-    public E deleteAll() throws DAOException;
+    public int deleteAll() throws DAOException;
 }

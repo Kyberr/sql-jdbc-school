@@ -6,7 +6,7 @@ import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 
-public interface View {
+public interface ViewProcessor {
     
 public void addStudentToCourseOrReturnMenu();
     

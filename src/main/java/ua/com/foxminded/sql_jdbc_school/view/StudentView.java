@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbc_school.menu;
+package ua.com.foxminded.sql_jdbc_school.view;
 
 import java.util.List;
 import java.util.Scanner;
@@ -9,9 +9,8 @@ import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 import ua.com.foxminded.sql_jdbc_school.service.CourseService;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.StudentService;
-import ua.com.foxminded.sql_jdbc_school.view.View;
 
-public class StudentMenu {
+public class StudentView {
     
     private static final String EMPTY_STRING = "";
     private static final String WORD_NO = "no";
@@ -19,12 +18,13 @@ public class StudentMenu {
     private static final int NORMAL_STATUS = 1;
     private static final String WORD_EXIT = "exit";
     
-    View view;
+    ViewProcessor viewProcessor;
     CourseService courseService;
     StudentService studentService;
 
-    public StudentMenu(View view, CourseService courseService, StudentService studentService) {
-        this.view = view;
+    public StudentView(ViewProcessor viewProcessor, CourseService courseService, 
+                       StudentService studentService) {
+        this.viewProcessor = viewProcessor;
         this.courseService = courseService;
         this.studentService = studentService;
     }
@@ -49,24 +49,24 @@ public class StudentMenu {
     public void deleteStudentFromDatabase(Scanner scanner) throws ServiceException {
         first: for (;;) {
             List<StudentModel> allStudents = studentService.getAllStudents();
-            view.showStudents(allStudents);
-            view.enterStudentId();
+            viewProcessor.showStudents(allStudents);
+            viewProcessor.enterStudentId();
             int studentId = scanOnlyIntInput(scanner);
-            view.confirmStudentDeleting();
+            viewProcessor.confirmStudentDeleting();
             String keyWord = scanOnlyYesOrNo(scanner);
 
             if (keyWord.equals(WORD_YES)) {
                 int status = studentService.deleteStudent(studentId);
 
                 if (status == NORMAL_STATUS) {
-                    view.studentHasBeenDeleted(studentId);
+                    viewProcessor.studentHasBeenDeleted(studentId);
                 } else {
-                    view.studentHasNotBeenDeleted(studentId);
+                    viewProcessor.studentHasNotBeenDeleted(studentId);
                 }
             }
             
             for (;;) {
-                view.deleteStudentOrReturnMainMenu();
+                viewProcessor.deleteStudentOrReturnMainMenu();
                 String input = scanner.nextLine();
 
                 if (input.equals(WORD_EXIT)) {
@@ -80,12 +80,12 @@ public class StudentMenu {
     
     public void addStudentToDatabase(Scanner scanner) throws ServiceException {
         for (;;) {
-            view.enterLastName();
+            viewProcessor.enterLastName();
             String lastName = scanner.nextLine();
-            view.enterFirstName();
+            viewProcessor.enterFirstName();
             String firstName = scanner.nextLine();
             addStudentToDatabaseWithConfirm(lastName, firstName, scanner);
-            view.addStudentToDatabaseOrReturnToMenu();
+            viewProcessor.addStudentToDatabaseOrReturnToMenu();
             String keyWord = scanOnlyEmptyStringOrExitWord(scanner);
 
             if (keyWord.equals(WORD_EXIT)) {
@@ -111,7 +111,7 @@ public class StudentMenu {
     private int scanOnlyIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            view.showIncorrectInputWarning();
+            viewProcessor.showIncorrectInputWarning();
         }
         int input = scanner.nextInt();
         scanner.nextLine(); // it is used to clean the buffer from the empty string
@@ -122,12 +122,12 @@ public class StudentMenu {
                                                  String firstName, 
                                                  Scanner scanner) throws ServiceException {
         for (;;) {
-            view.addStudentYesOrNo();
+            viewProcessor.addStudentYesOrNo();
             String input = scanner.nextLine();
 
             if (input.equals(WORD_YES)) {
                 if (studentService.addStudent(lastName, firstName) == NORMAL_STATUS) {
-                    view.studentHasBeenAddedToDatabase();
+                    viewProcessor.studentHasBeenAddedToDatabase();
                     break;
                 }
             } else if (input.equals(WORD_NO)) {

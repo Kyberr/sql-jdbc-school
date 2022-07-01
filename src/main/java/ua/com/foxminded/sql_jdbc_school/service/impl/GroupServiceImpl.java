@@ -41,7 +41,7 @@ public class GroupServiceImpl implements GroupService {
     public int deleteAll() throws ServiceException {
         int status = 0;
         try {
-            status = studentDAO.deleteAll();
+            status = groupDAO.deleteAll();
             return status;
         } catch (DAOException e) {
             LOGGER.error(ERROR_DELETE_ALL_GROUPS, e);
@@ -71,12 +71,13 @@ public class GroupServiceImpl implements GroupService {
             throw new ServiceException(ERROR_FIND_LESS_OR_EQUALS, e);
         } 
     }
-
+    
     @Override
     public List<GroupModel> create() throws ServiceException {
         try {
             List<String> groupNames = generateNamesOfGroups();
-            List<GroupEntity> groupEntities = groupNames.stream().map((line) -> new GroupEntity(null, line))
+            List<GroupEntity> groupEntities = groupNames.stream()
+                                                        .map((line) -> new GroupEntity(null, line))
                                                         .collect(Collectors.toList());
             groupDAO.insert(groupEntities);
             return groupDAO.getAll()
@@ -90,7 +91,7 @@ public class GroupServiceImpl implements GroupService {
         } 
     }
     
-    public List<String> generateNamesOfGroups() {
+    private List<String> generateNamesOfGroups() {
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         return Stream.generate(() -> new StringBuilder()
                         .append(alphabet.charAt(new Random().nextInt(alphabet.length())))

@@ -3,11 +3,13 @@ package ua.com.foxminded.sql_jdbs_school.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,7 +20,6 @@ import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
-import ua.com.foxminded.sql_jdbc_school.service.Generator;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 
@@ -39,11 +40,14 @@ class GroupServiceImplTest {
 	@Mock
 	StudentDAO studentDaoMock;
 	
-	@Mock
-	Generator generatorMock;
+	@Test
+	void deleteAll_DeletingOfAllGroups_RightNumberOfCalls() throws ServiceException, DAOException {
+	    groupService.deleteAll();
+	    verify(groupDaoMock, times(1)).deleteAll();
+	}
 	
 	@Test
-	void findGroupsWithLessOrEqualStudents_findingGroups_CorrectGroupQuantity () throws DAOException, 
+	void findGroupsWithLessOrEqualStudents_FindingGroups_CorrectGroupQuantity () throws DAOException, 
 																						ServiceException {
 		List<GroupEntity> groups = new ArrayList<>();
 		groups.add(new GroupEntity(GROUP_ID_1));
@@ -60,11 +64,10 @@ class GroupServiceImplTest {
 	}
 	
 	@Test
-	void createGroups() throws ServiceException, DAOException {
-		List<GroupEntity> groups = new ArrayList<>();
+	void create_CreationOfGroups_RightNumberAndOrderOfCalls() throws ServiceException, DAOException {
 		groupService.create();
-		InOrder inOrder = Mockito.inOrder(generatorMock, groupDaoMock);
-		inOrder.verify(generatorMock, times(1)).generateNamesOfGroups();
-		inOrder.verify(groupDaoMock, times(1)).insert(groups);
+		InOrder inOrder = Mockito.inOrder(groupDaoMock);
+		inOrder.verify(groupDaoMock, times(1)).insert(ArgumentMatchers.<GroupEntity>anyList());
+		inOrder.verify(groupDaoMock, times(1)).getAll();
 	}
 }

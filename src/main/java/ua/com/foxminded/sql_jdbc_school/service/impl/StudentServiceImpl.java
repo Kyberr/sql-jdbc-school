@@ -289,20 +289,20 @@ public class StudentServiceImpl implements StudentService {
         try {
             List<String> firstNames = reader.read(FIST_NAME_FILENAME);
             List<String> lastNames = reader.read(LAST_NAME_FILENAME);
-            List<StudentModel> studentDTOs = generateStudents(firstNames, lastNames);
-            List<StudentEntity> studentEntities = studentDTOs.stream()
+            List<StudentModel> studentModels = generateStudents(firstNames, lastNames);
+            List<StudentEntity> studentEntities = studentModels.stream()
                     .map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
                                                            studentDTO.getLastName()))
                     .collect(Collectors.toList());
             studentDAO.insert(studentEntities);
-            return studentDTOs;
+            return studentModels;
         } catch (ServiceException | DAOException e) {
             LOGGER.error(ERROR_CREATE_STUDENTS, e);
             throw new ServiceException(ERROR_CREATE_STUDENTS, e);
         } 
     }
     
-    public List<StudentModel> generateStudents(List<String> firstNames, List<String> lastNames) {
+    private List<StudentModel> generateStudents(List<String> firstNames, List<String> lastNames) {
         return Stream.generate(() -> new StudentModel(firstNames.get(new Random().nextInt(firstNames.size())),
                                                       lastNames.get(new Random().nextInt(lastNames.size()))))
                      .limit(200)

@@ -85,8 +85,8 @@ public class CourseServiceImpl implements CourseService {
             return courseDao.getAll()
                             .stream()
                             .map((entity) -> new CourseModel(entity.getCourseId(),
-                                                           entity.getCourseName(), 
-                                                           entity.getCourseDescription()))
+                                                             entity.getCourseName(), 
+                                                             entity.getCourseDescription()))
                             .collect(Collectors.toList());
         } catch (DAOException e) {
             LOGGER.error(ERROR_GET_ALL_COURSES, e);

@@ -1,11 +1,22 @@
 package ua.com.foxminded.sql_jdbs_school.service;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -13,12 +24,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.com.foxminded.sql_jdbc_school.dao.CourseDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
+import ua.com.foxminded.sql_jdbc_school.entity.CourseEntity;
+import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 import ua.com.foxminded.sql_jdbc_school.service.Reader;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.impl.CourseServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class CourseServiceImlTest {
+    
     private static final int STUDENT_ID = 1;
     private static final int COURSE_ID = 1;
 	
@@ -32,7 +46,7 @@ class CourseServiceImlTest {
 	private CourseDAO courseDAOMock;
 	
 	@Test
-	void deleteAll_DeletingOfAllCourses_RightNumberOfCalls() throws ServiceException, DAOException {
+	void deleteAll_DeletingOfAllCourses_CorrectNumberOfCalls() throws ServiceException, DAOException {
 	    courseService.deleteAll();
 	    verify(courseDAOMock, times(1)).deleteAll();
 	}
@@ -44,13 +58,20 @@ class CourseServiceImlTest {
 	    verify(courseDAOMock, times(1)).deleteStudentFromCourseById(anyInt(), anyInt());
 	}
 	
+	
 	@Test
-	void createCourses_Call_CorrectNumberAndOrderOfCalls() throws ServiceException, 
-	                                                              DAOException {
+	void assignIdAndAddToDatabase() throws DAOException, ServiceException {
+	    List<CourseModel> course = new ArrayList<>();
+	    courseService.assignIdAndAddToDatabase(course);
+	    InOrder inOrder = Mockito.inOrder(courseDAOMock);
+	    inOrder.verify(courseDAOMock, times(1)).insert(ArgumentMatchers.<CourseEntity>anyList());
+	}
+	
+	@Test
+	void createWithoutId_CreatingCourses_CorrectNumberOfCalls() throws ServiceException, 
+	                                                                     DAOException {
 		courseService.createWithoutId();
-		InOrder inOrder = Mockito.inOrder(readerMock, courseDAOMock);
-		inOrder.verify(readerMock, times(1)).read(any(String.class));
-		inOrder.verify(courseDAOMock, times(1)).getAll();
+		verify(readerMock, times(1)).read(anyString());
 	}
 	
 	@Test

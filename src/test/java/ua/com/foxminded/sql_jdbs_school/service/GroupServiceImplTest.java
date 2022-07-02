@@ -1,12 +1,12 @@
 package ua.com.foxminded.sql_jdbs_school.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +15,7 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
@@ -30,11 +28,13 @@ import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class GroupServiceImplTest {
-	private static final Integer GROUP_ID_1 = 1;
-	private static final Integer GROUP_ID_2 = 2;
-	private static final Integer GROUP_ID_3 = 3;
-	private static final Integer ANY_NUMBER = 10;
-	private static final Integer STUDENTS_WITH_GROUP_ID = 2;
+    private static final String GROUP_NAME_REGEX = "[a-z][a-z]-\\d\\d";
+    private static final int GROUP_QUANTITY = 10;
+	private static final int GROUP_ID_1 = 1;
+	private static final int GROUP_ID_2 = 2;
+	private static final int GROUP_ID_3 = 3;
+	private static final int ANY_NUMBER = 10;
+	private static final int STUDENTS_WITH_GROUP_ID = 2;
 	
 	@InjectMocks
 	GroupServiceImpl groupService;
@@ -46,7 +46,7 @@ class GroupServiceImplTest {
 	StudentDAO studentDaoMock;
 	
 	@Test
-	void deleteAll_DeletingOfAllGroups_RightNumberOfCalls() throws ServiceException, DAOException {
+	void deleteAll_DeletingAllGroups_CorectNumberOfCalls() throws ServiceException, DAOException {
 	    groupService.deleteAll();
 	    verify(groupDaoMock, times(1)).deleteAll();
 	}
@@ -69,21 +69,25 @@ class GroupServiceImplTest {
 	}
 	
 	@Test
-	void create_CreationOfGroups_RightNumberAndOrderOfCalls() throws ServiceException, DAOException {
-		groupService.createWithoutId();
-		InOrder inOrder = Mockito.inOrder(groupDaoMock);
-		inOrder.verify(groupDaoMock, times(1)).insert(ArgumentMatchers.<GroupEntity>anyList());
-		inOrder.verify(groupDaoMock, times(1)).getAll();
-		when(groupDaoMock.insert(ArgumentMatchers.<GroupEntity>anyList())).thenAnswer(new Answer<GroupEntity>() {
-		    @Override
-		    public GroupEntity answer(InvocationOnMock invocation) throws Throwable {
-		        Object object = invocation.getArguments()[0];
-		        List<?> list = new ArrayList<>();
-		        list = Arrays.asList((Object[]) object);
-		        GroupEntity group = (GroupEntity)list.get(0);
-		        return group;
-		    }
-		});
-		GroupModel groupModelList = groupDaoMock.insert(ArgumentMatchers.<GroupEntity>anyList());
+    void createWithoutId_CreationOfGroups_CorrectNumberOfGroups() {
+	    List<GroupModel> groups = groupService.createWithoutId();
+	    int groupQuantity = (int) groups.stream().count();
+	    assertEquals(GROUP_QUANTITY, groupQuantity);
+	}
+	
+	@Test
+    void createWithoutId_GenerationOfGroupNames_CorrectGroupNames() {
+	    List<GroupModel> groups = groupService.createWithoutId();
+	    groups.stream().forEach((group) -> assertTrue(group.getGroupName().matches(GROUP_NAME_REGEX)));
+    }
+	
+	@Test
+	void assignIdAndAddToDatabase_AssigningAndAddingGroupsToDatabase_CorrectOrderAndNumberOfCalls() 
+	        throws ServiceException, DAOException {
+	    List<GroupModel> groups = new ArrayList<>();
+	    groupService.assignIdAndAddToDatabase(groups);
+	    InOrder inOrder = Mockito.inOrder(groupDaoMock);
+	    inOrder.verify(groupDaoMock, times(1)).insert(ArgumentMatchers.<GroupEntity>anyList());
+	    inOrder.verify(groupDaoMock, times(1)).getAll();
 	}
 }

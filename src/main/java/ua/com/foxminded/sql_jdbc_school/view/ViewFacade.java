@@ -23,9 +23,9 @@ public class ViewFacade {
     private static final int NORMAL_DELETE_STATUS = 0;
     private static final int NUMBER_OF_ITEMS = 6;
 
-    private CourseView courseMenu;
-    private GroupView groupMenu;
-    private StudentView studentMenu;
+    private CourseView courseView;
+    private GroupView groupView;
+    private StudentView studentView;
     private DAOConnectionPool daoConnectionPool;
     private ViewProcessor viewProcessor;
 
@@ -33,9 +33,9 @@ public class ViewFacade {
                       GroupView groupMenu, 
                       StudentView studentMenu, 
                       DAOConnectionPool daoConnectionPool, ViewProcessor viewProcessor) {
-        this.courseMenu = courseMenu;
-        this.groupMenu = groupMenu;
-        this.studentMenu = studentMenu;
+        this.courseView = courseMenu;
+        this.groupView = groupMenu;
+        this.studentView = studentMenu;
         this.daoConnectionPool = daoConnectionPool;
         this.viewProcessor = viewProcessor;
     }
@@ -50,22 +50,22 @@ public class ViewFacade {
 
                 switch (caseNumber) {
                 case 1:
-                    groupMenu.findGroupsWithLessOrEqualStudents(scanner);
+                    groupView.findGroupsWithLessOrEqualStudents(scanner);
                     break;
                 case 2:
-                    courseMenu.findStudentsRelatedToCourse(scanner);
+                    courseView.findStudentsRelatedToCourse(scanner);
                     break;
                 case 3:
-                    studentMenu.addStudentToDatabase(scanner);
+                    studentView.addStudentToDatabase(scanner);
                     break;
                 case 4:
-                    studentMenu.deleteStudentFromDatabase(scanner);
+                    studentView.deleteStudentFromDatabase(scanner);
                     break;
                 case 5:
-                    courseMenu.addStudentToCourse(scanner);
+                    courseView.addStudentToCourse(scanner);
                     break;
                 case 6:
-                    courseMenu.removeStudentFromCourse(scanner);
+                    courseView.removeStudentFromCourse(scanner);
                     break;
                 }
             }
@@ -79,14 +79,14 @@ public class ViewFacade {
 
     public void bootstrap() throws ServiceException {
         try {
-            studentMenu.deleteAllStudents();
-            groupMenu.deleteAllGroups();
-            courseMenu.deleteAllCourses();
-            List<CourseModel> courses = courseMenu.createCourses();
-            studentMenu.createStudents();
-            List<GroupModel> groups = groupMenu.createGroups();
-            List<StudentModel> studentsHavingGroupId = studentMenu.assignGroupToStudent(groups);
-            studentMenu.assignCourseToStudent(studentsHavingGroupId, courses);
+            studentView.deleteAllStudents();
+            groupView.deleteAllGroups();
+            courseView.deleteAllCourses();
+            List<CourseModel> courses = courseView.createCourses();
+            studentView.createStudents();
+            List<GroupModel> groups = groupView.createGroups();
+            List<StudentModel> studentsHavingGroupId = studentView.assignGroupToStudent(groups);
+            studentView.assignCourseToStudent(studentsHavingGroupId, courses);
         } catch (ServiceException e) {
             LOGGER.error(ERROR_BOOTSTRAP, e);
             throw new ServiceException(ERROR_BOOTSTRAP, e);

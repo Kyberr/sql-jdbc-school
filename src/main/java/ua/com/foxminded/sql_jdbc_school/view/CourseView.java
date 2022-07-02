@@ -39,7 +39,8 @@ public class CourseView {
     }
 
     public List<CourseModel> createCourses() throws ServiceException {
-        return courseService.create();
+        List<CourseModel> coursesWithoutId =  courseService.createWithoutId();
+        return courseService.assignIdAndAddToDatabase(coursesWithoutId);
     }
     
     public void deleteAllCourses() throws ServiceException {

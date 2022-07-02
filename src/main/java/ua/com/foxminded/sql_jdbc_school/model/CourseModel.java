@@ -13,6 +13,10 @@ public class CourseModel {
         this.courseDescription = courseDescription;
     }
 
+    public CourseModel(String courseName) {
+        this.courseName = courseName;
+    }
+
     public Integer getCourseId() {
         return courseId;
     }

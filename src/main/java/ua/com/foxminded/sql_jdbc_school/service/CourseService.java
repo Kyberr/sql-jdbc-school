@@ -5,6 +5,8 @@ import java.util.List;
 import ua.com.foxminded.sql_jdbc_school.model.CourseModel;
 
 public interface CourseService extends GenericService<List<CourseModel>> {
+    
+    public List<CourseModel> createWithoutId() throws ServiceException;
 
     public int deleteStudentFromCourseById(int studentId, int courseId) throws ServiceException;
 

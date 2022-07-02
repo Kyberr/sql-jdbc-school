@@ -19,7 +19,7 @@ public class CourseServiceImpl implements CourseService {
     private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
                                                                  + "from the course doesn't work.";
     private static final String COURSE_NAME_LIST_FILENAME = "course-names.txt";
-    private static final String ERROR_CREATE_COURSES = "The courses creation service doesn't work.";
+    private static final String ASSIGN_ID_AND_ADD_TO_DATABASE = "Assigning and adding courses to the database failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all courses service doesn't work.";
     
     private final Reader reader;
@@ -49,14 +49,15 @@ public class CourseServiceImpl implements CourseService {
             throw new ServiceException(ERROR_DELETE_STUDENT_FROM_COURSE, e);
         } 
     }
-
+    
     @Override
-    public List<CourseModel> create() throws ServiceException {
+    public List<CourseModel> assignIdAndAddToDatabase(List<CourseModel> courses) throws ServiceException {
         try {
-            List<String> coursesList = reader.read(COURSE_NAME_LIST_FILENAME);
-            List<CourseEntity> courseEntities = coursesList.parallelStream()
-                    .map((courseName) -> new CourseEntity(courseName))
+            List<CourseEntity> courseEntities = courses.parallelStream()
+                    .map((model) -> new CourseEntity(model.getCourseName(), 
+                                                     model.getCourseDescription()))
                     .collect(Collectors.toList());
+            
             courseDao.insert(courseEntities);
             return courseDao.getAll()
                             .parallelStream()
@@ -65,9 +66,17 @@ public class CourseServiceImpl implements CourseService {
                                                            entity.getCourseDescription()))
                             .collect(Collectors.toList());
         } catch (DAOException e) {
-            LOGGER.error(ERROR_CREATE_COURSES, e);
-            throw new ServiceException(ERROR_CREATE_COURSES, e);
-        } 
+            LOGGER.error(ASSIGN_ID_AND_ADD_TO_DATABASE, e);
+            throw new ServiceException(ASSIGN_ID_AND_ADD_TO_DATABASE, e);
+        }
+    }
+
+    @Override
+    public List<CourseModel> createWithoutId() throws ServiceException {
+            List<String> coursesList = reader.read(COURSE_NAME_LIST_FILENAME);
+            return coursesList.parallelStream()
+                    .map((courseName) -> new CourseModel(courseName))
+                    .collect(Collectors.toList());
     }
 
     @Override

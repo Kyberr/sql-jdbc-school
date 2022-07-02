@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,12 +15,16 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
+
 import ua.com.foxminded.sql_jdbc_school.dao.DAOException;
 import ua.com.foxminded.sql_jdbc_school.dao.GroupDAO;
 import ua.com.foxminded.sql_jdbc_school.dao.StudentDAO;
 import ua.com.foxminded.sql_jdbc_school.entity.GroupEntity;
 import ua.com.foxminded.sql_jdbc_school.entity.StudentEntity;
+import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 import ua.com.foxminded.sql_jdbc_school.service.impl.GroupServiceImpl;
 
@@ -65,9 +70,20 @@ class GroupServiceImplTest {
 	
 	@Test
 	void create_CreationOfGroups_RightNumberAndOrderOfCalls() throws ServiceException, DAOException {
-		groupService.create();
+		groupService.createWithoutId();
 		InOrder inOrder = Mockito.inOrder(groupDaoMock);
 		inOrder.verify(groupDaoMock, times(1)).insert(ArgumentMatchers.<GroupEntity>anyList());
 		inOrder.verify(groupDaoMock, times(1)).getAll();
+		when(groupDaoMock.insert(ArgumentMatchers.<GroupEntity>anyList())).thenAnswer(new Answer<GroupEntity>() {
+		    @Override
+		    public GroupEntity answer(InvocationOnMock invocation) throws Throwable {
+		        Object object = invocation.getArguments()[0];
+		        List<?> list = new ArrayList<>();
+		        list = Arrays.asList((Object[]) object);
+		        GroupEntity group = (GroupEntity)list.get(0);
+		        return group;
+		    }
+		});
+		GroupModel groupModelList = groupDaoMock.insert(ArgumentMatchers.<GroupEntity>anyList());
 	}
 }

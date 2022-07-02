@@ -30,7 +30,8 @@ public class GroupView {
     }
     
     public List<GroupModel> createGroups() throws ServiceException {
-        return groupService.create();
+        List<GroupModel> groupsWithoutId = groupService.createWithoutId();
+        return groupService.assignIdAndAddToDatabase(groupsWithoutId);
     }
     
     public void deleteAllGroups() throws ServiceException {

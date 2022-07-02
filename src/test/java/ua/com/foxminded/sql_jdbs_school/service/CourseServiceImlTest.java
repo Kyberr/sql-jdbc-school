@@ -47,7 +47,7 @@ class CourseServiceImlTest {
 	@Test
 	void createCourses_Call_CorrectNumberAndOrderOfCalls() throws ServiceException, 
 	                                                              DAOException {
-		courseService.create();
+		courseService.createWithoutId();
 		InOrder inOrder = Mockito.inOrder(readerMock, courseDAOMock);
 		inOrder.verify(readerMock, times(1)).read(any(String.class));
 		inOrder.verify(courseDAOMock, times(1)).getAll();

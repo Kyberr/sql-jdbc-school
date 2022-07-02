@@ -55,7 +55,8 @@ public class StudentServiceImpl implements StudentService {
     private static final String ERROR_CREATE_STUDENT_COURSE_RELATION = "The relation creation failed.";
     private static final String FIST_NAME_FILENAME = "student-first-names.txt";
     private static final String LAST_NAME_FILENAME = "student-last-names.txt";
-    private static final String ERROR_CREATE_STUDENTS = "The student addition service to the database failed.";
+    private static final String ASSIGN_ID_AND_ADD_TO_DATABASE_ERROR = "The assigning id and adding students "
+            + "to database operations failed.";
     private static final String ERROR_ASSIGN_GROUP = "The assining group to students failed.";
     private static final String ERROR_ADD_STUDENT = "The student adding to the database failed.";
     private static final String ERROR_GET_ALL_STUDENT = "Getting students from the database failed.";
@@ -171,7 +172,7 @@ public class StudentServiceImpl implements StudentService {
                                                     List<CourseModel> courses) throws ServiceException {
 
         List<StudentModel> studentsHavingCourseId = generateStudentCourseRelation(studentsHavingGroupId, 
-                                                                                courses);
+                                                                                  courses);
 
         try {
             studentsHavingCourseId.stream().forEach((student) -> {
@@ -283,23 +284,32 @@ public class StudentServiceImpl implements StudentService {
             throw new ServiceException(ERROR_ASSIGN_GROUP, e);
         } 
     }
-
+    
     @Override
-    public List<StudentModel> create() throws ServiceException {
+    public List<StudentModel> assignIdAndAddToDatabase(List<StudentModel> students) throws ServiceException {
         try {
-            List<String> firstNames = reader.read(FIST_NAME_FILENAME);
-            List<String> lastNames = reader.read(LAST_NAME_FILENAME);
-            List<StudentModel> studentModels = generateStudents(firstNames, lastNames);
-            List<StudentEntity> studentEntities = studentModels.stream()
+            List<StudentEntity> studentEntities = students.parallelStream()
                     .map((studentDTO) -> new StudentEntity(studentDTO.getFirstName(), 
                                                            studentDTO.getLastName()))
                     .collect(Collectors.toList());
             studentDAO.insert(studentEntities);
-            return studentModels;
-        } catch (ServiceException | DAOException e) {
-            LOGGER.error(ERROR_CREATE_STUDENTS, e);
-            throw new ServiceException(ERROR_CREATE_STUDENTS, e);
-        } 
+            return studentDAO.getAll().parallelStream()
+                                      .map((entity) -> new StudentModel(entity.getStudentId(),
+                                                                        entity.getGroupId(),
+                                                                        entity.getFirstName(),
+                                                                        entity.getLastName()))
+                                      .collect(Collectors.toList());
+        } catch (DAOException e) {
+            LOGGER.error(ASSIGN_ID_AND_ADD_TO_DATABASE_ERROR, e);
+            throw new ServiceException(ASSIGN_ID_AND_ADD_TO_DATABASE_ERROR, e);
+        }
+    }
+
+    @Override
+    public List<StudentModel> createWithoutId() throws ServiceException {
+        List<String> firstNames = reader.read(FIST_NAME_FILENAME);
+        List<String> lastNames = reader.read(LAST_NAME_FILENAME);
+        return generateStudents(firstNames, lastNames);
     }
     
     private List<StudentModel> generateStudents(List<String> firstNames, List<String> lastNames) {

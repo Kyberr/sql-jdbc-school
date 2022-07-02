@@ -20,6 +20,11 @@ public class CourseEntity {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
     }
+    
+    public CourseEntity(String courseName, String courseDescription) {
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
+    }
 
     public CourseEntity(String courseName) {
         this.courseName = courseName;

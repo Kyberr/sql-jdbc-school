@@ -3,6 +3,7 @@ package ua.com.foxminded.sql_jdbc_school.model;
 import java.util.Objects;
 
 public class GroupModel {
+    
     private Integer groupId;
     private String groupName;
     private Integer studentQuantity;
@@ -15,6 +16,10 @@ public class GroupModel {
 
     public GroupModel(Integer groupId, String groupName) {
         this.groupId = groupId;
+        this.groupName = groupName;
+    }
+    
+    public GroupModel(String groupName) {
         this.groupName = groupName;
     }
 

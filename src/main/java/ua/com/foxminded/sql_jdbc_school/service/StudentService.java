@@ -7,6 +7,8 @@ import ua.com.foxminded.sql_jdbc_school.model.GroupModel;
 import ua.com.foxminded.sql_jdbc_school.model.StudentModel;
 
 public interface StudentService extends GenericService<List<StudentModel>> {
+    
+    public List<StudentModel> createWithoutId() throws ServiceException; 
 
     public List<StudentModel> getAllStudents() throws ServiceException;
 

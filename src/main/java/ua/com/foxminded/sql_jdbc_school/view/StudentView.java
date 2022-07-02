@@ -39,7 +39,8 @@ public class StudentView {
     }
     
     public void createStudents() throws ServiceException {
-        studentService.create();
+        List<StudentModel> studentsWithoutId = studentService.createWithoutId();
+        studentService.assignIdAndAddToDatabase(studentsWithoutId);
     }
     
     public void deleteAllStudents() throws ServiceException {

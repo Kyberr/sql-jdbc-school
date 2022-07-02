@@ -21,8 +21,9 @@ import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
 public class GroupServiceImpl implements GroupService {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String ASSIGN_ID_AND_ADD_TO_DATABASE_ERROR = "The assigning ID to groups "
+            + "and adding them to database failed.";
     private static final String ERROR_DELETE_ALL_GROUPS = "The service of groups deletion is failed.";
-    private static final String ERROR_CREATE_GROUPS = "The creation of groups is failed.";
     private static final String ERROR_FIND_LESS_OR_EQUALS = "The finding of groups having "
             + "less or equal to the specified number of students is failed. ";
     private static final String HYPHEN = "-";
@@ -73,22 +74,31 @@ public class GroupServiceImpl implements GroupService {
     }
     
     @Override
-    public List<GroupModel> create() throws ServiceException {
+    public List<GroupModel> createWithoutId() {
+        List<String> groupNames = generateNamesOfGroups();
+        return groupNames.stream()
+                         .map((line) -> new GroupModel(line))
+                         .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<GroupModel> assignIdAndAddToDatabase(List<GroupModel> groups) throws ServiceException {
         try {
-            List<String> groupNames = generateNamesOfGroups();
-            List<GroupEntity> groupEntities = groupNames.stream()
-                                                        .map((line) -> new GroupEntity(null, line))
-                                                        .collect(Collectors.toList());
+            List<GroupEntity> groupEntities = groups.stream()
+                  .map((group) -> new GroupEntity(group.getGroupName()))
+                  .collect(Collectors.toList());
+            
             groupDAO.insert(groupEntities);
+            
             return groupDAO.getAll()
                            .stream()
                            .map((groupEntity) -> new GroupModel(groupEntity.getGroupId(), 
                                                                 groupEntity.getGroupName()))
                            .collect(Collectors.toList());
         } catch (DAOException e) {
-            LOGGER.error(ERROR_CREATE_GROUPS, e);
-            throw new ServiceException(ERROR_CREATE_GROUPS, e);
-        } 
+            LOGGER.error(ASSIGN_ID_AND_ADD_TO_DATABASE_ERROR, e);
+            throw new ServiceException(ASSIGN_ID_AND_ADD_TO_DATABASE_ERROR, e);
+        }
     }
     
     private List<String> generateNamesOfGroups() {

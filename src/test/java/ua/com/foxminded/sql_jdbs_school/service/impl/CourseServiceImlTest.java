@@ -1,21 +1,15 @@
-package ua.com.foxminded.sql_jdbs_school.service;
+package ua.com.foxminded.sql_jdbs_school.service.impl;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;

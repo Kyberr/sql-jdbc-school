@@ -256,14 +256,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentModel> assignGroupToStudent(List<GroupModel> groups) throws ServiceException {
+    public List<StudentModel> assignGroupIdToStudent(List<GroupModel> groups) throws ServiceException {
         try {
             List<StudentEntity> studentEntities = studentDAO.getAll();
-            List<Integer> groupSize = generateStudentQuantiyOfGroup(studentEntities.size(), groups.size());
+            List<Integer> groupSizeList = generateStudentQuantiyOfGroup(studentEntities.size(), groups.size());
             List<StudentEntity> studentsHavingGroupId = new ArrayList<>();
             AtomicInteger atomicInteger = new AtomicInteger();
-            IntStream.range(0, groupSize.size())
-                     .forEach((groupIndex) -> IntStream.range(0, groupSize.get(groupIndex))
+            IntStream.range(0, groupSizeList.size())
+                     .forEach((groupIndex) -> IntStream.range(0, groupSizeList.get(groupIndex))
                              .forEach((index) -> {
                                  int studentIndex = atomicInteger.getAndIncrement();
                                  studentsHavingGroupId.add(
@@ -275,9 +275,9 @@ public class StudentServiceImpl implements StudentService {
             studentDAO.update(studentsHavingGroupId);
             return studentsHavingGroupId.stream()
                                         .map((studentEntity) -> new StudentModel(studentEntity.getStudentId(),
-                                                                               studentEntity.getGroupId(), 
-                                                                               studentEntity.getFirstName(), 
-                                                                               studentEntity.getLastName()))
+                                                                                 studentEntity.getGroupId(), 
+                                                                                 studentEntity.getFirstName(), 
+                                                                                 studentEntity.getLastName()))
                                         .collect(Collectors.toList());
         } catch (DAOException e) {
             LOGGER.error(ERROR_ASSIGN_GROUP, e);

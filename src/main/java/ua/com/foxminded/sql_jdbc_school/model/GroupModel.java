@@ -7,6 +7,10 @@ public class GroupModel {
     private Integer groupId;
     private String groupName;
     private Integer studentQuantity;
+    
+    public GroupModel(Integer groupId) {
+        this.groupId = groupId;
+    }
 
     public GroupModel(Integer groupId, String groupName, Integer studentQuantity) {
         this.groupId = groupId;

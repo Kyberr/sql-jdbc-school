@@ -35,7 +35,7 @@ public class StudentView {
     }
     
     public List<StudentModel> assignGroupToStudent(List<GroupModel> groups) throws ServiceException {
-        return studentService.assignGroupToStudent(groups);
+        return studentService.assignGroupIdToStudent(groups);
     }
     
     public void createStudents() throws ServiceException {

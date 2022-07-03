@@ -7,6 +7,9 @@ public class StudentEntity {
     private Integer groupId;
     private String firstName;
     private String lastName;
+    
+    public StudentEntity() {
+    }
 
     public StudentEntity(Integer studentId, Integer groupId, String firstName, String lastName) {
         this.studentId = studentId;

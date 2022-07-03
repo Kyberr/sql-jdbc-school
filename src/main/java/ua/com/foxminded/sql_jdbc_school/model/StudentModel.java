@@ -10,6 +10,9 @@ public class StudentModel {
     Integer courseId;
     String courseName;
     String courseDescription;
+    
+    public StudentModel() {
+    }
 
     public StudentModel(Integer studentId, Integer groupId, String firstName, String lastName, Integer courseId,
             String courseName, String courseDescription) {

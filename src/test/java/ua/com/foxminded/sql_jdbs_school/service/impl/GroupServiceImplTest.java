@@ -1,4 +1,4 @@
-package ua.com.foxminded.sql_jdbs_school.service;
+package ua.com.foxminded.sql_jdbs_school.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

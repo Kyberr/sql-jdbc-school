@@ -24,6 +24,10 @@ public class StudentModel {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
     }
+    
+    public StudentModel(Integer studentId) {
+        this.studentId = studentId;
+    }
 
     public StudentModel(Integer studentId, Integer groupId, String firstName, String lastName) {
         this.studentId = studentId;

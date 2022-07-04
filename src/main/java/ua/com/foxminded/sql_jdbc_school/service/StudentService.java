@@ -23,9 +23,9 @@ public interface StudentService extends GenericService<List<StudentModel>> {
 
     public List<StudentModel> getStudentsHavingGroupId() throws ServiceException;
 
-    public int deleteStudent(int studentId) throws ServiceException;
+    public int deleteStudentById(int studentId) throws ServiceException;
 
-    public int addStudent(String lastName, String firstName) throws ServiceException;
+    public int createStudent(String lastName, String firstName) throws ServiceException;
 
     public List<StudentModel> assignGroupIdToStudent(List<GroupModel> groups) throws ServiceException;
 }

@@ -57,7 +57,7 @@ public class StudentView {
             String keyWord = scanOnlyYesOrNo(scanner);
 
             if (keyWord.equals(WORD_YES)) {
-                int status = studentService.deleteStudent(studentId);
+                int status = studentService.deleteStudentById(studentId);
 
                 if (status == NORMAL_STATUS) {
                     viewProcessor.studentHasBeenDeleted(studentId);
@@ -127,7 +127,7 @@ public class StudentView {
             String input = scanner.nextLine();
 
             if (input.equals(WORD_YES)) {
-                if (studentService.addStudent(lastName, firstName) == NORMAL_STATUS) {
+                if (studentService.createStudent(lastName, firstName) == NORMAL_STATUS) {
                     viewProcessor.studentHasBeenAddedToDatabase();
                     break;
                 }

@@ -12,6 +12,12 @@ public class CourseModel {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
     }
+    
+
+    public CourseModel(Integer courseId) {
+        this.courseId = courseId;
+    }
+
 
     public CourseModel(String courseName) {
         this.courseName = courseName;

@@ -161,7 +161,7 @@ public class StudentServiceImpl implements StudentService {
                 }
             });
             return studentCourseRelation;
-        } catch (DAOException e) {
+        } catch (RuntimeException | DAOException e) {
             LOGGER.error(ERROR_GET_ALL, e);
             throw new ServiceException(ERROR_GET_ALL, e);
         } 

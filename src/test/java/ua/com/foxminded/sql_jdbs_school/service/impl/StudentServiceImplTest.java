@@ -3,6 +3,7 @@ package ua.com.foxminded.sql_jdbs_school.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,24 +71,34 @@ class StudentServiceImplTest {
     @Mock
     Reader readerMock;
     
-    void addStudentToCourseById() {
+    @Test
+    void addStudentToCourseById() throws ServiceException, DAOException {
+        StudentEntity studentEntity = new StudentEntity(TEST_STUDENT_ID);
+        CourseEntity courseEntity = new CourseEntity(TEST_COURSE_ID);
+        studentService.addStudentToCourseById(TEST_STUDENT_ID, TEST_COURSE_ID);
+        when(studentDaoMock.getStudentOfCourseById(anyInt(), anyInt())).thenReturn(studentEntity);
+        when(studentDaoMock.getStudentById(anyInt())).thenReturn(studentEntity);
+        when(courseDaoMock.getCourseById(anyInt())).thenReturn(courseEntity);
         
+        verify(studentDaoMock).addStudentToCourse(ArgumentMatchers.<StudentEntity>any(), 
+                                                  ArgumentMatchers.<CourseEntity>any());
     }
+    
     /*
     @Test
     void getAllStudentsHavingCourse_GettingStudentsFromDatabase_CorrectNumberAndOrderOfCalls() 
             throws DAOException, ServiceException {
         List<StudentEntity> studentEntityList = new ArrayList<>();
         studentEntityList.add(new StudentEntity(TEST_STUDENT_ID));
-   //     when(studentDaoMock.getAllStudentsHavingCouse()).thenReturn(studentEntityList);
+    //    when(studentDaoMock.getAllStudentsHavingCouse()).thenReturn(studentEntityList);
         studentService.getAllStudentsHavingCourse();
     //    InOrder inOrder = Mockito.inOrder(studentDaoMock, courseDaoMock);
         
         verify(studentDaoMock).getAllStudentsHavingCouse();
-  //      verify(courseDaoMock).getCoursesOfStudentById(ArgumentMatchers.anyInt());
+      //  verify(courseDaoMock).getCoursesOfStudentById(ArgumentMatchers.anyInt());
     }
     */
-    
+    /*
     @Test
     void assignCourseToStudent_AddingToDatabase_CorrectNumberOfCalls() throws ServiceException, DAOException {
         List<StudentModel> studentModelList = new ArrayList<>();
@@ -95,10 +106,10 @@ class StudentServiceImplTest {
         List<CourseModel> courseModelList = new ArrayList<>();
         courseModelList.add(new CourseModel(TEST_COURSE_ID));
         studentService.assignCourseToStudent(studentModelList, courseModelList);
-        verify(studentDaoMock, times(1)).addStudentToCourse(ArgumentMatchers.<StudentEntity>any(),
-                                                            ArgumentMatchers.<CourseEntity>any());
+        verify(studentDaoMock).addStudentToCourse(ArgumentMatchers.<StudentEntity>any(),
+                                                  ArgumentMatchers.<CourseEntity>any());
     }
-    
+    */
     @Test
     void assignCourseToStudent_AssigningCourse_CorrectNumberOfCoursesPerStudent() throws ServiceException {
         List<StudentModel> studentModelList = new ArrayList<>();

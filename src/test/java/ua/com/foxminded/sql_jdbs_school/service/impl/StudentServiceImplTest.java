@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,6 +40,7 @@ import ua.com.foxminded.sql_jdbc_school.service.impl.StudentServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceImplTest {
+    private static final int MIN_NUMBER_OF_STUDENT_COURSE_RELATIONS = 1;
     private static final int ONE_COURSE = 1;
     private static final int TEST_COURSE_ID = 1;
     private static final int TEST_STUDENT_ID = 1;
@@ -72,44 +74,69 @@ class StudentServiceImplTest {
     Reader readerMock;
     
     @Test
-    void addStudentToCourseById() throws ServiceException, DAOException {
-        StudentEntity studentEntity = new StudentEntity(TEST_STUDENT_ID);
-        CourseEntity courseEntity = new CourseEntity(TEST_COURSE_ID);
-        studentService.addStudentToCourseById(TEST_STUDENT_ID, TEST_COURSE_ID);
-        when(studentDaoMock.getStudentOfCourseById(anyInt(), anyInt())).thenReturn(studentEntity);
-        when(studentDaoMock.getStudentById(anyInt())).thenReturn(studentEntity);
-        when(courseDaoMock.getCourseById(anyInt())).thenReturn(courseEntity);
-        
-        verify(studentDaoMock).addStudentToCourse(ArgumentMatchers.<StudentEntity>any(), 
-                                                  ArgumentMatchers.<CourseEntity>any());
+    void deleteAll() throws ServiceException, DAOException {
+        studentService.deleteAll();
+        verify(studentDaoMock, times(1)).deleteAll();
     }
     
-    /*
+    @Test
+    void getStudentsOfCourseById_GettingCoursesAndStudentsFromDatabase_CorrectNumberOfCalls() 
+            throws DAOException, ServiceException {
+        studentService.getStudentsOfCourseById(TEST_COURSE_ID);
+        InOrder inOrder = Mockito.inOrder(courseDaoMock, studentDaoMock);
+        inOrder.verify(courseDaoMock, times(1)).getCourseById(anyInt());
+        inOrder.verify(studentDaoMock, times(1)).getStudensOfCourseById(anyInt());
+    }
+    
+    @Test
+    void addStudentToCourseById_AddingStudentCourseRelationToDatabase_CorrectNumberAndOrderOfCalls() 
+            throws ServiceException, DAOException {
+        StudentEntity student = new StudentEntity();
+        student.setStudentId(TEST_STUDENT_ID);
+        when(studentDaoMock.getStudentById(anyInt())).thenReturn(student);
+        
+        CourseEntity course = new CourseEntity();
+        course.setCourseId(TEST_COURSE_ID);
+        when(courseDaoMock.getCourseById(anyInt())).thenReturn(course);
+        
+        studentService.addStudentToCourseById(TEST_STUDENT_ID, TEST_COURSE_ID);
+        InOrder inOrder = Mockito.inOrder(studentDaoMock, courseDaoMock);
+        inOrder.verify(studentDaoMock, times(1)).getStudentOfCourseById(anyInt(), anyInt());
+        inOrder.verify(studentDaoMock, times(1)).getStudentById(anyInt());
+        inOrder.verify(courseDaoMock, times(1)).getCourseById(anyInt());
+        inOrder.verify(studentDaoMock, times(1)).addStudentToCourse(ArgumentMatchers.<StudentEntity>any(), 
+                                                                    ArgumentMatchers.<CourseEntity>any());
+    }
+    
     @Test
     void getAllStudentsHavingCourse_GettingStudentsFromDatabase_CorrectNumberAndOrderOfCalls() 
             throws DAOException, ServiceException {
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setStudentId(TEST_STUDENT_ID);
         List<StudentEntity> studentEntityList = new ArrayList<>();
-        studentEntityList.add(new StudentEntity(TEST_STUDENT_ID));
-    //    when(studentDaoMock.getAllStudentsHavingCouse()).thenReturn(studentEntityList);
+        studentEntityList.add(studentEntity);
+        when(studentDaoMock.getAllStudentsHavingCouse()).thenReturn(studentEntityList);
         studentService.getAllStudentsHavingCourse();
-    //    InOrder inOrder = Mockito.inOrder(studentDaoMock, courseDaoMock);
-        
-        verify(studentDaoMock).getAllStudentsHavingCouse();
-      //  verify(courseDaoMock).getCoursesOfStudentById(ArgumentMatchers.anyInt());
+        InOrder inOrder = Mockito.inOrder(studentDaoMock, courseDaoMock);
+        inOrder.verify(studentDaoMock, times(1)).getAllStudentsHavingCouse();
+        inOrder.verify(courseDaoMock, times(1)).getCoursesOfStudentById(anyInt());
     }
-    */
-    /*
+    
     @Test
     void assignCourseToStudent_AddingToDatabase_CorrectNumberOfCalls() throws ServiceException, DAOException {
         List<StudentModel> studentModelList = new ArrayList<>();
-        studentModelList.add(new StudentModel(TEST_STUDENT_ID));
+        IntStream.range(INITIAL_STUDENT_ID, NEXT_TO_LAST_STUDENT_ID)
+                 .forEach((id) -> studentModelList.add(new StudentModel(id)));
         List<CourseModel> courseModelList = new ArrayList<>();
-        courseModelList.add(new CourseModel(TEST_COURSE_ID));
+        IntStream.range(INITIAL_COURSE_ID, NEXT_TO_LAST_COURSE_ID)
+                 .forEach((id) -> courseModelList.add(new CourseModel(id)));
+
         studentService.assignCourseToStudent(studentModelList, courseModelList);
-        verify(studentDaoMock).addStudentToCourse(ArgumentMatchers.<StudentEntity>any(),
-                                                  ArgumentMatchers.<CourseEntity>any());
+        verify(studentDaoMock, atLeast(MIN_NUMBER_OF_STUDENT_COURSE_RELATIONS)).addStudentToCourse(
+                ArgumentMatchers.<StudentEntity>any(),
+                ArgumentMatchers.<CourseEntity>any());
     }
-    */
+    
     @Test
     void assignCourseToStudent_AssigningCourse_CorrectNumberOfCoursesPerStudent() throws ServiceException {
         List<StudentModel> studentModelList = new ArrayList<>();

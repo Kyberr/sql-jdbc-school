@@ -40,8 +40,8 @@ public class StudentServiceImpl implements StudentService {
     private static final int ONE_STUDENT = 1;
     private static final int ZERO_STUDENTS = 0;
     private static final int BAD_STATUS = 0;
-    private static final int STUDENT_INDEX = 0;
-    private static final int COURSE_INDEX = 1;
+    private static final int FIRST_ELEMENT = 0;
+    private static final int SECOND_ELEMENT = 1;
     private static final double ONE_HALF = 0.5;
     private static final double DOUBLE_AMPL_PROBABILITY = 10.0;
     private static final double DOUBLE_PROBABILITY_VALUE = 4.0;
@@ -68,11 +68,11 @@ public class StudentServiceImpl implements StudentService {
     private final CourseDAO courseDao;
     
     public StudentServiceImpl(Reader reader, 
-                              StudentDAO studentDAO, 
-                              CourseDAO courseDAO) {
+                              StudentDAO studentDao, 
+                              CourseDAO courseDao) {
         this.reader = reader;
-        this.studentDao = studentDAO;
-        this.courseDao = courseDAO;
+        this.studentDao = studentDao;
+        this.courseDao = courseDao;
     }
 
     @Override
@@ -91,7 +91,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<StudentModel> getStudentsOfCourseById(int courseId) throws ServiceException {
         try {
-           
             CourseEntity course = courseDao.getCourseById(courseId);
             return  studentDao.getStudensOfCourseById(courseId)
                               .parallelStream()
@@ -134,7 +133,7 @@ public class StudentServiceImpl implements StudentService {
             throw new ServiceException(ERROR_ADD_STUDENT_TO_COURSE_BY_ID, e);
         } 
     }
-
+    
     @Override
     public List<StudentModel> getAllStudentsHavingCourse() throws ServiceException {
         List<StudentModel> studentCourseRelation = new ArrayList<>();
@@ -360,18 +359,22 @@ public class StudentServiceImpl implements StudentService {
     private List<StudentModel> generateStudentCourseRelation(List<StudentModel> studentsHavingGroupId,
                                                              List<CourseModel> courses) {
         List<List<Integer>> studentCourseIndexRelation = generatetStudentCourseIndexRelation(
-                studentsHavingGroupId.size(), courses.size());
+                studentsHavingGroupId.size(), 
+                courses.size());
 
         try (Stream<List<Integer>> indexRelationStream = studentCourseIndexRelation.stream()) {
             return indexRelationStream
-                    .map((indexRelation) -> new StudentModel(
-                            studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getStudentId(),
-                            studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getGroupId(),
-                            studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getFirstName(),
-                            studentsHavingGroupId.get(indexRelation.get(STUDENT_INDEX)).getLastName(),
-                            courses.get(indexRelation.get(COURSE_INDEX)).getCourseId(),
-                            courses.get(indexRelation.get(COURSE_INDEX)).getCourseName(),
-                            courses.get(indexRelation.get(COURSE_INDEX)).getCourseDescription()))
+                    .map((indexRelation) -> {
+                        int studentIndex = indexRelation.get(FIRST_ELEMENT);
+                        int courseIndex = indexRelation.get(SECOND_ELEMENT);
+                        return new StudentModel(studentsHavingGroupId.get(studentIndex).getStudentId(),
+                                                studentsHavingGroupId.get(studentIndex).getGroupId(),
+                                                studentsHavingGroupId.get(studentIndex).getFirstName(),
+                                                studentsHavingGroupId.get(studentIndex).getLastName(),
+                                                courses.get(courseIndex).getCourseId(),
+                                                courses.get(courseIndex).getCourseName(),
+                                                courses.get(courseIndex).getCourseDescription());
+                    })
                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         }
     }

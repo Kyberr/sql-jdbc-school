@@ -1,5 +1,9 @@
 package ua.com.foxminded.sql_jdbc_school.service.impl;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +49,7 @@ public class StudentServiceImpl implements StudentService {
     private static final double ONE_HALF = 0.5;
     private static final double DOUBLE_AMPL_PROBABILITY = 10.0;
     private static final double DOUBLE_PROBABILITY_VALUE = 4.0;
+    private static final String CREATE_WHIOUT_ID_ERROR = "Creating courses failed.";
     private static final String ERROR_DELETE_STUDENTS = "The service of students deletion failed.";
     private static final String ERROR_GET_STUDENTS_OF_COURSE = "Getting students of the course failed.";
     private static final String ERROR_ADD_STUDENT_TO_COURSE_BY_ID = "Adding the student to the course failed.";
@@ -306,9 +311,20 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentModel> createWithoutId() throws ServiceException {
-        List<String> firstNames = reader.read(FIST_NAME_FILENAME);
-        List<String> lastNames = reader.read(LAST_NAME_FILENAME);
-        return generateStudents(firstNames, lastNames);
+        try {
+            URL firstNameFileUrl = StudentServiceImpl.class.getClassLoader()
+                                                           .getResource(FIST_NAME_FILENAME);
+            Path firstNameFilePath = Paths.get(firstNameFileUrl.toURI());
+            URL lastNameFileUrl = StudentServiceImpl.class.getClassLoader()
+                                                          .getResource(LAST_NAME_FILENAME);
+            Path lastNameFilePath = Paths.get(lastNameFileUrl.toURI());
+            List<String> firstNames = reader.read(firstNameFilePath);
+            List<String> lastNames = reader.read(lastNameFilePath);
+            return generateStudents(firstNames, lastNames);
+        } catch (URISyntaxException e) {
+            LOGGER.error(CREATE_WHIOUT_ID_ERROR, e);
+            throw new ServiceException(CREATE_WHIOUT_ID_ERROR, e);
+        }
     }
     
     private List<StudentModel> generateStudents(List<String> firstNames, List<String> lastNames) {

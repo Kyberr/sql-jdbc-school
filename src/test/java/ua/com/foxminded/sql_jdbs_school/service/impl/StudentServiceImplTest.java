@@ -2,13 +2,13 @@ package ua.com.foxminded.sql_jdbs_school.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -240,8 +240,8 @@ class StudentServiceImplTest {
         List<String> nameList = Stream.generate(() -> TEST_NAME)
                                       .limit(NAMES_QUANTITY)
                                       .collect(Collectors.toList());
-        when(readerMock.read(anyString())).thenReturn(nameList);
-        when(readerMock.read(anyString())).thenReturn(nameList);
+        when(readerMock.read(ArgumentMatchers.<Path>any())).thenReturn(nameList);
+        when(readerMock.read(ArgumentMatchers.<Path>any())).thenReturn(nameList);
         List<StudentModel> students = studentService.createWithoutId();
         assertEquals(STUDENT_QUANTITY, students.size());
     }

@@ -1,5 +1,9 @@
 package ua.com.foxminded.sql_jdbc_school.service.impl;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +19,7 @@ import ua.com.foxminded.sql_jdbc_school.service.ServiceException;
 
 public class CourseServiceImpl implements CourseService {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String CREATE_WITHOUT_ID = "Creating students failed.";
     private static final String ERROR_DELETE_ALL_COURSES = "The service of course deletion doesn't work.";
     private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
                                                                  + "from the course doesn't work.";
@@ -73,10 +78,19 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseModel> createWithoutId() throws ServiceException {
-            List<String> coursesList = reader.read(COURSE_NAME_LIST_FILENAME);
-            return coursesList.parallelStream()
-                    .map((courseName) -> new CourseModel(courseName))
-                    .collect(Collectors.toList());
+        try {
+            URL courseNameFileUrl = CourseServiceImpl.class.getClassLoader()
+                                                           .getResource(COURSE_NAME_LIST_FILENAME);
+            Path courseNameFilePath = Paths.get(courseNameFileUrl.toURI());
+            List<String> coursesList = reader.read(courseNameFilePath);
+            return coursesList.parallelStream().map((courseName) -> new CourseModel(courseName))
+                                               .collect(Collectors.toList());
+        } catch (URISyntaxException e) {
+            LOGGER.error(CREATE_WITHOUT_ID, e);
+            throw new ServiceException(null, e);
+        }
+        
+            
     }
 
     @Override

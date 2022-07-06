@@ -1,10 +1,10 @@
 package ua.com.foxminded.sql_jdbs_school.service.impl;
 
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +65,7 @@ class CourseServiceImlTest {
 	void createWithoutId_CreatingCourses_CorrectNumberOfCalls() throws ServiceException, 
 	                                                                     DAOException {
 		courseService.createWithoutId();
-		verify(readerMock, times(1)).read(anyString());
+		verify(readerMock, times(1)).read(ArgumentMatchers.<Path>any());
 	}
 	
 	@Test

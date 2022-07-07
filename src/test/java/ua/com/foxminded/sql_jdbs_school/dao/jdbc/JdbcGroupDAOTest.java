@@ -61,8 +61,8 @@ class JdbcGroupDAOTest {
         
 
         try (InputStream testDbProperitesIn = Thread.currentThread()
-                                             .getContextClassLoader()
-                                             .getResourceAsStream(TEST_DB_PROPERTIES)) {
+                                                    .getContextClassLoader()
+                                                    .getResourceAsStream(TEST_DB_PROPERTIES)) {
 
             Properties testDbPoperites = new Properties();
             testDbPoperites.load(testDbProperitesIn);

@@ -15,15 +15,13 @@ import ua.com.foxminded.sql_jdbc_school.dao.jdbc.JdbcDAOConnectionPool;
 
 public class JdbcDAOConnectionPool implements DAOConnectionPool {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String CONNECTION_POOL_ERROR = "The connection pool is full, "
+            + "there are no available connections.";
     private static final String GET_CONNECTION_ERROR = "The getting connection failed.";
-    private static final String WAIT_FREE_CONNECTION_ERROR = "The thread waiting for the "
-                                                           + "connection has been interrupted.";
     private static final String CLOSE_CONNECTION_POOL_ERROR = "The close connection operation failed.";
     private static final int CON_TIMEOUT = 1;
     private static final int ONE = 1;
     private static final int MAX_POOL_SIZE = 20;
-    private boolean wakeFlag;
-    private boolean suspendFlag;
 
     private List<Connection> availablePool = new ArrayList<>();
     private List<Connection> inUsePool = new ArrayList<>();
@@ -35,8 +33,6 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
 
     @Override
     public synchronized Connection getConnection() throws DAOException {
-        suspendFlag = false;
-        wakeFlag = false;
         Connection connection = null;
 
         try {
@@ -47,10 +43,10 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
             } else if (!availablePool.isEmpty()) {
                 connection = getConnectionFromPool();
             } else {
-                waitFreeConnection();
-                connection = getConnection();
+                LOGGER.error(CONNECTION_POOL_ERROR);
+                throw new SQLException(CONNECTION_POOL_ERROR);
             }
-        } catch (SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             LOGGER.error(GET_CONNECTION_ERROR, e);
             Thread.currentThread().interrupt();
             throw new DAOException(GET_CONNECTION_ERROR, e);
@@ -62,12 +58,6 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
     public synchronized void releaseConnection(Connection connection) {
         inUsePool.remove(inUsePool.size() - ONE);
         availablePool.add(connection);
-
-        if (!availablePool.isEmpty() && suspendFlag) {
-            while (!wakeFlag) {
-                notifyAll();
-            }
-        }
     }
 
     @Override
@@ -81,20 +71,6 @@ public class JdbcDAOConnectionPool implements DAOConnectionPool {
                 LOGGER.error(CLOSE_CONNECTION_POOL_ERROR, e);
                 throw new DAOException(CLOSE_CONNECTION_POOL_ERROR, e);
             }
-        }
-    }
-
-    private void waitFreeConnection() throws InterruptedException {
-        try {
-            while (availablePool.isEmpty()) {
-                suspendFlag = true;
-                wait();
-                wakeFlag = true;
-            }
-        } catch (InterruptedException e) {
-            LOGGER.error(WAIT_FREE_CONNECTION_ERROR, e);
-            Thread.currentThread().interrupt();
-            throw new InterruptedException();
         }
     }
 

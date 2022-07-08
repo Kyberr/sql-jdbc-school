@@ -23,7 +23,6 @@ public class CourseServiceImpl implements CourseService {
     private static final String ERROR_DELETE_ALL_COURSES = "The service of course deletion doesn't work.";
     private static final String ERROR_DELETE_STUDENT_FROM_COURSE = "The service of the deletion of a student "
                                                                  + "from the course doesn't work.";
-    private static final String COURSE_NAME_LIST_FILENAME = "course-names.txt";
     private static final String ASSIGN_ID_AND_ADD_TO_DATABASE = "Assigning and adding courses to the database failed.";
     private static final String ERROR_GET_ALL_COURSES = "The getting all courses service doesn't work.";
     
@@ -77,10 +76,10 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseModel> createWithoutId() throws ServiceException {
+    public List<CourseModel> createWithoutId(String courseNameListFilename) throws ServiceException {
         try {
             URL courseNameFileUrl = CourseServiceImpl.class.getClassLoader()
-                                                           .getResource(COURSE_NAME_LIST_FILENAME);
+                                                           .getResource(courseNameListFilename);
             Path courseNameFilePath = Paths.get(courseNameFileUrl.toURI());
             List<String> coursesList = reader.read(courseNameFilePath);
             return coursesList.parallelStream().map((courseName) -> new CourseModel(courseName))

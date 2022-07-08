@@ -38,8 +38,10 @@ public class StudentView {
         return studentService.assignGroupIdToStudent(groups);
     }
     
-    public void createStudents() throws ServiceException {
-        List<StudentModel> studentsWithoutId = studentService.createWithoutId();
+    public void createStudents(String firstNameListFilename, 
+                               String lastNameListFilename) throws ServiceException {
+        List<StudentModel> studentsWithoutId = studentService.createWithoutId(firstNameListFilename, 
+                                                                              lastNameListFilename);
         studentService.assignIdAndAddToDatabase(studentsWithoutId);
     }
     

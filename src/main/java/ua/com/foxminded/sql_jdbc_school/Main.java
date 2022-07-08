@@ -31,6 +31,10 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
+        String courseNameListFilename = "course-names.txt";
+        String firstNameListFilename = "student-first-names.txt";
+        String lastNameListFilename = "student-last-names.txt";
+        
         Reader reader = new Reader();
         DAOConnectionFactory jdbcDaoConnectionFactory = new JdbcDAOConnectionFactory();
         DAOConnectionPool jdbcDaoConnectionPool = new JdbcDAOConnectionPool(jdbcDaoConnectionFactory);
@@ -49,7 +53,7 @@ public class Main {
         ViewFacade menu = new ViewFacade(courseMenu, groupMenu, studentMenu, jdbcDaoConnectionPool, view);
 
         try {
-            menu.bootstrap();
+            menu.bootstrap(courseNameListFilename, firstNameListFilename, lastNameListFilename);
             menu.execute();
         } catch (Exception e) {
             LOGGER.error("Error", e);

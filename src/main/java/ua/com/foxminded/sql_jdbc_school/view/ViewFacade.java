@@ -77,13 +77,15 @@ public class ViewFacade {
         }
     }
 
-    public void bootstrap() throws ServiceException {
+    public void bootstrap(String courseNameListFilename, 
+                          String firstNameListFilename, 
+                          String lastNameListFilename) throws ServiceException {
         try {
             studentView.deleteAllStudents();
             groupView.deleteAllGroups();
             courseView.deleteAllCourses();
-            List<CourseModel> courses = courseView.createCourses();
-            studentView.createStudents();
+            List<CourseModel> courses = courseView.createCourses(courseNameListFilename);
+            studentView.createStudents(firstNameListFilename, lastNameListFilename);
             List<GroupModel> groups = groupView.createGroups();
             List<StudentModel> studentsHavingGroupId = studentView.assignGroupToStudent(groups);
             studentView.assignCourseToStudent(studentsHavingGroupId, courses);

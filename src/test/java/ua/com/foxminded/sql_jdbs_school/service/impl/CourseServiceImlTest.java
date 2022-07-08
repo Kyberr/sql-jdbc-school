@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ class CourseServiceImlTest {
     
     private static final int STUDENT_ID = 1;
     private static final int COURSE_ID = 1;
+    private static final String COURSE_NAME_LIST_FILENAME = "course-names.txt";
 	
 	@InjectMocks
 	CourseServiceImpl courseService;
@@ -63,8 +65,8 @@ class CourseServiceImlTest {
 	
 	@Test
 	void createWithoutId_CreatingCourses_CorrectNumberOfCalls() throws ServiceException, 
-	                                                                     DAOException {
-		courseService.createWithoutId();
+	                                                                     DAOException, IOException {
+		courseService.createWithoutId(COURSE_NAME_LIST_FILENAME);
 		verify(readerMock, times(1)).read(ArgumentMatchers.<Path>any());
 	}
 	

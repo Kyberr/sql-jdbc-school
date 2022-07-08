@@ -38,8 +38,8 @@ public class CourseView {
         this.daoConnectionPool = daoConnectionPool;
     }
 
-    public List<CourseModel> createCourses() throws ServiceException {
-        List<CourseModel> coursesWithoutId =  courseService.createWithoutId();
+    public List<CourseModel> createCourses(String courseListFilename) throws ServiceException {
+        List<CourseModel> coursesWithoutId =  courseService.createWithoutId(courseListFilename);
         return courseService.assignIdAndAddToDatabase(coursesWithoutId);
     }
     

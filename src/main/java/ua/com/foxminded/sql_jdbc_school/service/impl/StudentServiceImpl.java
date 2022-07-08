@@ -58,8 +58,6 @@ public class StudentServiceImpl implements StudentService {
     private static final String ERROR_GET_ALL = "Getting all of the students from the database failed.";
     private static final String ERROR_ADD_STUDENT_TO_COURSE = "The studen has not been added to the course.";
     private static final String ERROR_CREATE_STUDENT_COURSE_RELATION = "The relation creation failed.";
-    private static final String FIST_NAME_FILENAME = "student-first-names.txt";
-    private static final String LAST_NAME_FILENAME = "student-last-names.txt";
     private static final String ASSIGN_ID_AND_ADD_TO_DATABASE_ERROR = "The assigning id and adding students "
             + "to database operations failed.";
     private static final String ERROR_ASSIGN_GROUP = "The assining group to students failed.";
@@ -310,13 +308,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentModel> createWithoutId() throws ServiceException {
+    public List<StudentModel> createWithoutId(String firstNameListFilename, 
+                                              String lastNameListFilename) throws ServiceException {
         try {
             URL firstNameFileUrl = StudentServiceImpl.class.getClassLoader()
-                                                           .getResource(FIST_NAME_FILENAME);
+                                                           .getResource(firstNameListFilename);
             Path firstNameFilePath = Paths.get(firstNameFileUrl.toURI());
             URL lastNameFileUrl = StudentServiceImpl.class.getClassLoader()
-                                                          .getResource(LAST_NAME_FILENAME);
+                                                          .getResource(lastNameListFilename);
             Path lastNameFilePath = Paths.get(lastNameFileUrl.toURI());
             List<String> firstNames = reader.read(firstNameFilePath);
             List<String> lastNames = reader.read(lastNameFilePath);

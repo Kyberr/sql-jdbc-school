@@ -58,6 +58,8 @@ class StudentServiceImplTest {
     private static final int INITIAL_COURSE_ID =  1;
     private static final int INITIAL_STUDENT_ID =  1;
     private static final int NAMES_QUANTITY = 20;
+    private static final String FIRST_NAME_LIST_FILENAME = "student-first-names.txt";
+    private static final String LAST_NAME_LIST_FILENAME = "student-last-names.txt";
     private static final String TEST_NAME = "SomeName";
     
     
@@ -242,7 +244,8 @@ class StudentServiceImplTest {
                                       .collect(Collectors.toList());
         when(readerMock.read(ArgumentMatchers.<Path>any())).thenReturn(nameList);
         when(readerMock.read(ArgumentMatchers.<Path>any())).thenReturn(nameList);
-        List<StudentModel> students = studentService.createWithoutId();
+        List<StudentModel> students = studentService.createWithoutId(FIRST_NAME_LIST_FILENAME, 
+                                                                     LAST_NAME_LIST_FILENAME);
         assertEquals(STUDENT_QUANTITY, students.size());
     }
 }
